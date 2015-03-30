@@ -1,0 +1,176 @@
+.\" To get a preview of the man page as it will actually be displayed, run
+.\"
+.\" > nroff -man julia.1 | less
+.\"
+.\" at the terminal.
+.\"
+.\" Suggestions and improvements very much appreciated!
+.\" Nothing is too large or too small.
+.\" This man page was largely taken from pre-existing sources of documentation.
+.\" This is documented by comments in the man page's source.
+.\"
+.\" # TODOs:
+.\" 1. Simple, hopefully portable way to get the man page on everyone's manpath.
+.\"    (The whole point was to be able to simply `man julia`!)
+.\"
+.\" Possible sections to add to man page:
+.\" - licensing
+.\" - internet resources and/or documentation
+.\" - environment
+.\" - see also
+.\" - diagnostics
+.\" - notes
+
+.TH JULIA 1 2013-12-10 Julia "Julia Programmers' Reference Guide"
+
+.\" from the front page of http://julialang.org/
+.SH NAME
+julia - high-level, high-performance dynamic programming language for technical computing
+
+.SH SYNOPSIS
+julia [option] [program] [args..]
+
+.\" Taken almost verbatim from the front page of http://julialang.org/
+.SH DESCRIPTION
+Julia is a high-level, high-performance dynamic programming language
+for technical computing, with syntax that is familiar to users
+of other technical computing environments.
+It provides a sophisticated compiler, distributed parallel execution,
+numerical accuracy, and an extensive mathematical function library.
+The library, largely written in Julia itself, also integrates mature,
+best-of-breed C and Fortran libraries for linear algebra,
+random number generation, signal processing, and string processing.
+In addition, the Julia developer community is contributing a number of
+external packages through Julia's built-in package manager at a rapid pace.
+Julia programs are organized around multiple dispatch;
+by defining functions and overloading them for different combinations
+of argument types, which can also be user-defined.
+For a more in-depth discussion of the rationale and advantages of Julia
+over other systems, please see the online manual:
+http://docs.julialang.org/en/latest/manual/
+
+If a Julia source file is given as a \fIprogram\fP (optionally followed by
+ arguments in \fIargs\fP) Julia will execute the program and exit.
+
+.\" This section was taken nearly verbatim from the output of `julia --help`
+.SH "COMMAND-LINE OPTIONS"
+.TP 25
+
+.TP
+-v, --version
+Display version information
+
+.TP
+-h, --help
+Print help message
+
+.TP
+-q, --quiet
+Quiet startup without banner
+
+.TP
+-H, --home <dir>
+Set location of julia executable
+
+.TP
+-e, --eval <expr>
+Evaluate <expr>
+
+.TP
+-E, --print <expr>
+Evaluate and show <expr>
+
+.TP
+-P, --post-boot <expr>
+Evaluate <expr>, but don't disable interactive mode
+
+.TP
+-L, --load <file>
+Load <file> immediately on all processors
+
+.TP
+-J, --sysimage <file>
+Start up with the given system image file
+
+.TP
+-C, --cpu-target <target>
+Limit usage of cpu features up to <target>
+
+.TP
+-p, --procs <n>
+Run n local processes
+
+.TP
+--machinefile <file>
+Run processes on hosts listed in <file>
+
+.TP
+-i
+Force isinteractive() to be true
+
+.TP
+--color={yes|no}
+Enable or disable color text
+
+.TP
+--history-file={yes|no}
+Load or save history
+
+.TP
+--startup-file={yes|no}
+Load ~/.juliarc.jl
+
+.TP
+--compile={yes|no|all}
+Enable or disable compiler, or request exhaustive compilation
+
+.TP
+--code-coverage={none|user|all}, --code-coverage
+Count executions of source lines (omitting setting is equivalent to 'user')
+
+.TP
+--track-allocation={none|user|all}, --track-allocation
+Count bytes allocated by each source line
+
+.TP
+-O, --optimize
+Run time-intensive code optimizations
+
+.TP
+--check-bounds={yes|no}
+Emit bounds checks always or never (ignoring declarations)
+
+.TP
+--dump-bitcode={yes|no}
+Dump bitcode for the system image (used with --build)
+
+.TP
+--depwarn={yes|no}
+Enable or disable syntax and method deprecation warnings
+
+.TP
+--inline={yes|no}
+Control whether inlining is permitted (overrides functions declared as @inline)
+
+.TP
+--math-mode={ieee|user}
+Always use IEEE semantics for math (ignoring declarations),
+or adhere to declarations in source code
+
+.SH FILES
+.I ~/.juliarc.jl
+.RS
+Per user startup file.
+.RE
+
+.I /etc/julia/juliarc.jl
+.RS
+System-wide startup file.
+.RE
+
+.SH BUGS
+Please report any bugs using the GitHub issue tracker:
+https://github.com/julialang/julia/issues?state=open
+
+.SH AUTHORS
+Contributors: https://github.com/JuliaLang/julia/graphs/contributors
