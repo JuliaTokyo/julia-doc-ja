@@ -1,6 +1,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%
- Julia Documentation
+ Julia ドキュメント
 %%%%%%%%%%%%%%%%%%%%%
 
 * :ref:`manual`
@@ -10,7 +10,7 @@
 .. _manual:
 
 ########
- Manual
+ マニュアル
 ########
 
 .. toctree::
@@ -54,7 +54,7 @@
 .. _stdlib:
 
 ##################
- Standard Library
+ 標準ライブラリ
 ##################
 
 .. toctree::
@@ -82,7 +82,7 @@
 .. _devdocs:
 
 #######################
-Developer Documentation
+ 開発者向けドキュメント
 #######################
 
 .. toctree::
