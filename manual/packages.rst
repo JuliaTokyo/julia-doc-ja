@@ -11,11 +11,19 @@ It can also install external libraries using your operating system's standard sy
 The list of registered Julia packages can be found at `<http://pkg.julialang.org>`_.
 All package manager commands are found in the :mod:`Pkg <Base.Pkg>` module, included in Julia's :mod:`Base` install.
 
+Juliaは、Juliaで実装されたadd-on機能をインストールするためのbuilt-inパッケージマネージャーを持っています。OSの標準的な外部ライブラリや、ソースからコンパイルした外部ライブラリをインストールすることもできます。登録済みのJuliaパッケージ一覧は、  `<http://pkg.julialang.org>`_ で確認することができます。全てのパッケージ管理用コマンドは、Juliaの :mod:`Base` 内にインストールされている :mod:`Pkg <Base.Pkg>` モジュールに確認することができます。
+
 Package Status
 --------------
 
+パッケージの状況
+-------------------
+
 The :func:`Pkg.status` function prints out a summary of the state of packages you have installed.
-Initially, you'll have no packages installed::
+Initially, you'll have no packages installed
+
+:func:`Pkg.status` 関数は、イントール済みパッケージの状態のサマリーを表示します。最初は、パッケージは何もインストールされていません。
+::
 
     julia> Pkg.status()
     INFO: Initializing package repository /Users/stefan/.julia/v0.4
@@ -23,7 +31,10 @@ Initially, you'll have no packages installed::
     No packages installed.
 
 Your package directory is automatically initialized the first time you run a :mod:`Pkg <Base.Pkg>` command that expects it to exist – which includes  :func:`Pkg.status`.
-Here's an example non-trivial set of required and additional packages::
+Here's an example non-trivial set of required and additional packages
+
+パッケージのディレクトリは、 :mod:`Pkg <Base.Pkg>` コマンドの(:func:`Pkg.status` があるという前提で)初回実行時に、自動的に初期化されます。
+::
 
     julia> Pkg.status()
     Required packages:
@@ -35,7 +46,10 @@ Here's an example non-trivial set of required and additional packages::
 
 These packages are all on registered versions, managed by :mod:`Pkg <Base.Pkg>`.
 Packages can be in more complicated states, indicated by annotations to the right of the installed package version; we will explain these states and annotations as we encounter them.
-For programmatic usage, :func:`Pkg.installed` returns a dictionary, mapping installed package names to the version of that package which is installed::
+For programmatic usage, :func:`Pkg.installed` returns a dictionary, mapping installed package names to the version of that package which is installed
+
+これらのパッケージは、 :mod:`Pkg <Base.Pkg>` で管理されている登録済みのバージョンになっています。（TODO ちょっと意味がつかみづらいところ）インストールされているバージョンが右側に表示されているように、パッケージは複雑になっています。プログラミング用途としては、 :func:`Pkg.installed` は、インストールされているパッケージとバージョンをマッピングした辞書を返却します。
+::
 
     julia> Pkg.installed()
     Dict{ASCIIString,VersionNumber} with 4 entries:
@@ -47,16 +61,26 @@ For programmatic usage, :func:`Pkg.installed` returns a dictionary, mapping inst
 Adding and Removing Packages
 ----------------------------
 
+パッケージの追加と削除
+----------------------------
+
 Julia's package manager is a little unusual in that it is declarative rather than imperative.
 This means that you tell it what you want and it figures out what versions to install (or remove) to satisfy those requirements optimally – and minimally.
 So rather than installing a package, you just add it to the list of requirements and then "resolve" what needs to be installed.
 In particular, this means that if some package had been installed because it was needed by a previous version of something you wanted, and a newer version doesn't have that requirement anymore, updating will actually remove that package.
 
+Juliaのパッケージマネージャーは、無条件(imperative→TODO 不要だった消してください)にというよりも宣言(declarative→TODO 不要だった消してください)するという形式になっており、少し戸惑うかもしれません。これは、やりたいことを明確にするということと、問題を解決するために最適かつ最小のインストール(もしくは削除)すべきパッケージのバージョンを明確にするためです。すなわち、パッケージをインストールするというより、やりたいことのリストを作成し、何をインストールすべきかということを"明確にする"ということなのです。
+
 Your package requirements are in the file ``~/.julia/v0.4/REQUIRE``.
 You can edit this file by hand and then call :func:`Pkg.resolve` to install, upgrade or remove packages to optimally satisfy the requirements, or you can do :func:`Pkg.edit`, which will open ``REQUIRE`` in your editor (configured via the ``EDITOR`` or ``VISUAL`` environment variables), and then automatically call :func:`Pkg.resolve` afterwards if necessary.
 If you only want to add or remove the requirement for a single package, you can also use the non-interactive :func:`Pkg.add` and :func:`Pkg.rm` commands, which add or remove a single requirement to ``REQUIRE`` and then call :func:`Pkg.resolve`.
 
-You can add a package to the list of requirements with the :func:`Pkg.add` function, and the package and all the packages that it depends on will be installed::
+パッケージに関する要件は、 ``~/.julia/v0.4/REQUIRE`` のファイルに記載します。 ``REQUIRE`` ファイルを編集後、必要なパッケージをインストール、更新、削除を行うために :func:`Pkg.resolve` を呼び出します。それとは別に、 :func:`Pkg.edit` を呼び出す方法があります。２番目の方法は、 ``REQUIRE`` ファイルを予め設定された( ``EDITOR`` や ``VISUAL`` の環境変数で設定可能です)エディターでオープンし、必要に応じて、 :func:`Pkg.resolve` を呼び出してくれます。ある１つのパッケージを追加もしくは削除したい場合は、単に :func:`Pkg.add` および :func:`Pkg.rm` のコマンド(対話型ではない)を使うことも可能です。これらコマンドは、１つのパッケージを ``REQUIRE`` に追加・削除し、 :func:`Pkg.resolve` を呼び出すものです。
+
+You can add a package to the list of requirements with the :func:`Pkg.add` function, and the package and all the packages that it depends on will be installed
+
+:func:`Pkg.add` を使ってパッケージを追加すると、そのパッケージと依存するパッケージ全てがインストールされます。
+::
 
     julia> Pkg.status()
     No packages installed.
@@ -77,13 +101,19 @@ You can add a package to the list of requirements with the :func:`Pkg.add` funct
      - NumericExtensions             0.2.17
      - Stats                         0.2.6
 
-What this is doing is first adding ``Distributions`` to your ``~/.julia/v0.4/REQUIRE`` file::
+What this is doing is first adding ``Distributions`` to your ``~/.julia/v0.4/REQUIRE`` file
+
+この例では、最初に ``Distributions`` が ``~/.julia/v0.4/REQUIRE`` ファイルに追加されています。
+::
 
     $ cat ~/.julia/v0.4/REQUIRE
     Distributions
 
 It then runs :func:`Pkg.resolve` using these new requirements, which leads to the conclusion that the ``Distributions`` package should be installed since it is required but not installed.
-As stated before, you can accomplish the same thing by editing your ``~/.julia/v0.4/REQUIRE`` file by hand and then running :func:`Pkg.resolve` yourself::
+As stated before, you can accomplish the same thing by editing your ``~/.julia/v0.4/REQUIRE`` file by hand and then running :func:`Pkg.resolve` yourself
+
+新しいパッケージ情報にしたがって、 :func:`Pkg.resolve` が呼び出され、 ``Distributions`` がインストールされます。
+::
 
     $ echo UTF16 >> ~/.julia/v0.4/REQUIRE
 
@@ -103,7 +133,12 @@ This is functionally equivalent to calling :func:`Pkg.add("UTF16") <Pkg.add>`, e
 The format of the ``REQUIRE`` file is described in `Requirements Specification`_;
 it allows, among other things, requiring specific ranges of versions of packages.
 
-When you decide that you don't want to have a package around any more, you can use :func:`Pkg.rm` to remove the requirement for it from the ``REQUIRE`` file::
+この例では、 :func:`Pkg.add("UTF16") <Pkg.add>` を呼び出してインストールするのと同じことをしています。インストールしている最中に、 :func:`Pkg.add` を使って、 ``REQUIRE`` を変更していないのがわかると思います。この場合、 :func:`Pkg.add` が呼び出されるまで、 ``REQUIRE`` は変更されないという問題があります。 ``REQUIRE`` ファイルのフォーマットは、 `Requirements Specification` を参照してください。パッケージのバージョンの範囲について書かれています。
+
+When you decide that you don't want to have a package around any more, you can use :func:`Pkg.rm` to remove the requirement for it from the ``REQUIRE`` file
+
+パッケージが不要になった場合、 :func:`Pkg.rm` を呼び出して、 ``REQUIRE`` から不要なパッケージを削除することができます。
+::
 
     julia> Pkg.rm("Distributions")
     INFO: Removing Distributions v0.2.7
@@ -126,23 +161,39 @@ Once again, this is equivalent to editing the ``REQUIRE`` file to remove the lin
 While :func:`Pkg.add` and :func:`Pkg.rm` are convenient for adding and removing requirements for a single package, when you want to add or remove multiple packages, you can call :func:`Pkg.edit` to manually change the contents of ``REQUIRE`` and then update your packages accordingly.
 :func:`Pkg.edit` does not roll back the contents of ``REQUIRE`` if :func:`Pkg.resolve` fails – rather, you have to run :func:`Pkg.edit` again to fix the files contents yourself.
 
-Because the package manager uses git internally to manage the package git repositories, users may run into protocol issues (if behind a firewall, for example), when running :func:`Pkg.add`. The following command can be run from the command line to tell git to use 'https' instead of the 'git' protocol when cloning repositories::
+この例でも、 ``REQUIRE`` 不要なパッケージ情報をファイルから削除し、 :func:`Pkg.resolve` を呼び出して、パッケージを削除するのと同じことをしています。 :func:`Pkg.add` や :func:`Pkg.rm` は１つのパッケージを追加・削除するのに便利ですが、複数のパッケージを追加・削除する場合には、 :func:`Pkg.edit` を呼び出すことによって ``REQUIRE`` を編集し、パッケージを更新します。 :func:`Pkg.resolve` が失敗した場合、 :func:`Pkg.edit` 使って ``REQUIRE`` の編集した箇所をもとに戻すことができません。 :func:`Pkg.edit` は、ファイルの修正などに使ったほうがよいでしょう。
+
+Because the package manager uses git internally to manage the package git repositories, users may run into protocol issues (if behind a firewall, for example), when running :func:`Pkg.add`. The following command can be run from the command line to tell git to use 'https' instead of the 'git' protocol when cloning repositories
+
+パッケージマネージャーは、内部のパッケージ管理用リポジトリのために、gitを使っています。そのため、 :func:`Pkg.add` を実行するときに、プロトコルに関係する問題(ファイアウォールの設定など)が発生するかもしれません。リポジトリをクローンする時に、 'git' プロトコルではなく 'https' を使うときに、下記のコマンドを参考にしてください。
+::
 
     git config --global url."https://".insteadOf git://
 
 Offline Installation of Packages
 --------------------------------
 
+パッケージのオフラインでのインストール
+------------------------------------------
+
 For machines with no Internet connection, packages may be installed by copying
 the package root directory (given by :func:`Pkg.dir`) from a machine with the
 same operating system and environment.
 
+インターネットに接続できない場合は、同一のOSおよび環境からパッケージのためのルートディレクトリ( :func:`Pkg.dir` で取得できます)に必要なパッケージをコピーすれば、インストールしたことになります。
+
 :func:`Pkg.add` does the following within the package root directory:
 
+:func:`Pkg.add` は、パッケージのためのルートディレクトリ内で以下のことを行います。:
+
 1. Adds the name of the package to ``INSTALLED``.
+1. パッケージ名を ``INSTALLED`` に追加します。
 2. Downloads the package to ``.cache``, then copies the package to the package root directory.
+2. ``.cache`` にパッケージをダウンロードし、パッケージのためのルートディレクトリにパッケージをコピーします。
 3. Recursively performs step 2 against all the packages listed in the package's ``REQUIRES`` file.
+3. ``REQUIRES`` ファイルに書かれている全てのパッケージに対して2の処理を繰り返します。
 4. Runs :func:`Pkg.build`
+4. :func:`Pkg.build` を実行します。
 
 .. warning::
 
@@ -151,7 +202,13 @@ same operating system and environment.
    differences in operating system versions, build environments, and/or
    absolute path dependencies.
 
+   異なる環境にインストールされているパッケージをコピーするときは、パッケージが必要とするバイナリとの外部依存関係が壊れやすくなります。
+   そのようなパッケージは、OSのバージョン、ビルド環境、絶対パスなどの違いによって壊れてしまうかもしれません。
+
 Installing Unregistered Packages
+--------------------------------
+
+未登録パッケージのインストール
 --------------------------------
 
 Julia packages are simply git repositories, clonable via any of the `protocols <https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS>`_ that git supports, and containing Julia code that follows certain layout conventions.
