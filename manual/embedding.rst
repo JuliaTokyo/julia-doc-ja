@@ -204,7 +204,7 @@ C言語側は、 ``jl_eval_string`` を通してJuliaの式から得られる結
 
 In the first step, a handle to the Julia function ``sqrt`` is retrieved by calling ``jl_get_function``. The first argument passed to ``jl_get_function`` is a pointer to the ``Base`` module in which ``sqrt`` is defined. Then, the double value is boxed using ``jl_box_float64``. Finally, in the last step, the function is called using ``jl_call1``. ``jl_call0``, ``jl_call2``, and ``jl_call3`` functions also exist, to conveniently handle different numbers of arguments. To pass more arguments, use ``jl_call``
 
-最初に、 ``jl_get_function`` を使って、Juliaの関数の ``sqrt`` の結果を得ます。 ``jl_get_function`` の第一引数は、 ``sqrt`` が定義されている ``Base`` モジュールへのポインタです。次に、 ``jl_box_float64`` を使ってdouble型の値をボクシングします。最後に、 ``jl_call1`` を使って、Juliaの関関数を呼び出します。 ``jl_call0``, ``jl_call2``, および ``jl_call3`` などの関数が存在します。これら関数により、異なる数の引数を容易に取り扱うことができます。多くの引数を渡したい場合は、``jl_call`` を使ってください。
+最初に、 ``jl_get_function`` を使って、Juliaの関数の ``sqrt`` の結果を得ます。 ``jl_get_function`` の第一引数は、 ``sqrt`` が定義されている ``Base`` モジュールへのポインタです。次に、 ``jl_box_float64`` を使ってdouble型の値をボクシングします。最後に、 ``jl_call1`` を使って、Juliaの関数を呼び出します。 ``jl_call0``, ``jl_call2``, および ``jl_call3`` などの関数が存在します。これら関数により、異なる数の引数を容易に取り扱うことができます。多くの引数を渡したい場合は、``jl_call`` を使ってください。
 ::
 
     jl_value_t *jl_call(jl_function_t *f, jl_value_t **args, int32_t nargs)
@@ -225,7 +225,7 @@ As we have seen, Julia objects are represented in C as pointers. This raises the
 
 Typically, Julia objects are freed by a garbage collector (GC), but the GC does not automatically know that we are holding a reference to a Julia value from C. This means the GC can free objects out from under you, rendering pointers invalid.
 
-Juliaのオブジェクトは、ガベージコレクター (GC)によって解放されます。しかし、C言語側からJulia変数への参照を保持しているかどうかに関して、GCは知るすべがありません。GCは、ポインタを無効化することにより、オブジェクトを開放することができるのです。
+一般的には、Juliaのオブジェクトは、ガベージコレクター (GC)によって解放されます。しかし、C言語側からJulia変数への参照を保持しているかどうかに関して、GCは知るすべがありません。GCは、ポインタを無効化することにより、オブジェクトを開放することができるのです。
 
 The GC can only run when Julia objects are allocated. Calls like ``jl_box_float64`` perform allocation, and allocation might also happen at any point in running Julia code. However, it is generally safe to use pointers in between ``jl_...`` calls. But in order to make sure that values can survive ``jl_...`` calls, we have to tell Julia that we hold a reference to a Julia value. This can be done using the ``JL_GC_PUSH`` macros
 
@@ -256,7 +256,7 @@ Several Julia values can be pushed at once using the ``JL_GC_PUSH2`` , ``JL_GC_P
 
 The garbage collector also operates under the assumption that it is aware of every old-generation object pointing to a young-generation one. Any time a pointer is updated breaking that assumption, it must be signaled to the collector with the ``gc_wb`` (write barrier) function like so
 
-全ての旧世代のオブジェクトから新世代のオブジェクトへのポインターを把握しているという前提のもとで、ガベージコレクターは動作します。ポインターに対して前提を壊すような更新がなされると、 ``gc_wb`` (書き込み防止) の情報とともにその更新が、ガベージコレクターに通知されます。
+全ての旧世代のオブジェクトから新世代のオブジェクトへのポインターを把握しているという前提のもとで、ガベージコレクターは動作します。ポインターに対して前提を壊すような更新がなされると、 ``gc_wb`` (書き込み防止) の情報とともにその更新が、常にガベージコレクターに通知されます。
 ::
 
     jl_value_t *parent = some_old_value, *child = some_young_value;
@@ -265,7 +265,7 @@ The garbage collector also operates under the assumption that it is aware of eve
 
 It is in general impossible to predict which values will be old at runtime, so the write barrier must be inserted after all explicit stores. One notable exception is if the ``parent`` object was just allocated and garbage collection was not run since then. Remember that most ``jl_...`` functions can sometimes invoke garbage collection.
 
-どのオブジェクト(値)が、実行時に旧世代になるかを予測することは可能です。書き込み防止は、明示的に全てのオブジェクトがメモリ上に保持された後に設定されます。一つの例外は、 ``parent`` オブジェクトのメモリがちょうど確保された後に、ガベージコレクションが動作しないときです。
+どのオブジェクト(値)が、実行時に旧世代になるかを予測することは不可能です。書き込み防止は、明示的に全てのオブジェクトがメモリ上に保持された後に設定されます。例外の一つは、 ``parent`` オブジェクトのメモリがちょうど確保された後に、ガベージコレクションが動作しないときです。ほとんどの ``jl_...`` 関数は、ガベージコレクションを時々実行するということを覚えておいてください。
 
 The write barrier is also necessary for arrays of pointers when updating their data directly. For example
 
@@ -344,14 +344,14 @@ The last argument is a boolean indicating whether Julia should take ownership of
 
 In order to access the data of x, we can use ``jl_array_data``
 
-xのデータへアクセスするために、 ``jl_array_data`` を使います。
+xのデータへアクセスするためには、 ``jl_array_data`` を使うことができます。
 ::
 
     double *xData = (double*)jl_array_data(x);
 
 Now we can fill the array
 
-配列にオブジェクトを代入します。
+これで、配列にオブジェクトを代入することができるようになります。
 ::
 
     for(size_t i=0; i<jl_array_len(x); i++)
@@ -359,7 +359,7 @@ Now we can fill the array
 
 Now let us call a Julia function that performs an in-place operation on ``x``
 
-``x`` の要素を逆に並べ替えるJuliaの関数が呼び出されるように設定してみましょう。
+それでは、 ``x`` の要素を逆に並べ替えるJuliaの関数が呼び出されるように設定してみましょう。
 ::
 
     jl_function_t *func  = jl_get_function(jl_base_module, "reverse!");
@@ -451,7 +451,7 @@ This call will appear to do nothing. However, it is possible to check whether an
 
 If you are using the Julia C API from a language that supports exceptions (e.g. Python, C#, C++), it makes sense to wrap each call into libjulia with a function that checks whether an exception was thrown, and then rethrows the exception in the host language.
 
-JuliaのC APIをサポートしている言語(例えば、Python, C#, C++)から呼び出す場合、例外を送出するかどうかを確認する関数とともにlibjuliaを使ってラッパーを実装することに意味があります。その後、Juliaを呼び出している言語に対して例外を再送出してください。
+例外をサポートしている言語(例えば、Python, C#, C++)からJuliaのC API呼び出す場合、例外を送出するかどうかを確認する関数とともにlibjuliaを使ってラッパーを実装することに意味があります。その後、Juliaを呼び出している言語に対して例外を再送出してください。
 
 
 Throwing Julia Exceptions

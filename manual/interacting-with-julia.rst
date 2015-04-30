@@ -125,7 +125,7 @@ Search modes
 
 In all of the above modes, the executed lines get saved to a history file, which can be searched.  To initiate an incremental search through the previous history, type ``^R`` — the control key together with the ``r`` key.  The prompt will change to ``(reverse-i-search)`':``, and as you type the search query will appear in the quotes.  The most recent result that matches the query will dynamically update to the right of the colon as more is typed.  To find an older result using the same query, simply type ``^R`` again.
 
-今までお話した全てモードは、履歴ファイルに実行した行の情報が保存されます。それらの情報は検索が可能です。過去の履歴に対してインクリメンタル検索するためには、``^R`` - CTRLキーと ``r`` を同時にタイプします。プロンプトが、``(reverse-i-search)`':`` に変わります。検索文字を入力すると同時に、引用符の中にその文字が表示されます。文字入力を繰り返すと、入力された検索文字にマッチした最新の入力履歴結果が、コロンの右側に動的に更新されていきます。より古い入力履歴の結果を検索したい場合は、再度 ``^R`` をタイプしてください。
+今までお話した全てモードでは、履歴ファイルに実行した行の情報が保存されています。それらの情報は検索が可能です。過去の履歴に対してインクリメンタル検索するためには、``^R`` - CTRLキーと ``r`` を同時にタイプします。プロンプトが、``(reverse-i-search)`':`` に変わります。検索文字を入力すると同時に、引用符の中にその文字が表示されます。文字入力を繰り返すと、入力された検索文字にマッチした最新の入力履歴結果が、コロンの右側に動的に更新されていきます。より古い入力履歴の結果を検索したい場合は、再度 ``^R`` をタイプしてください。
 
 Just as ``^R`` is a reverse search, ``^S`` is a forward search, with the prompt ``(i-search)`':``.  The two may be used in conjunction with each other to move through the previous or next matching results, respectively.
 
@@ -140,7 +140,7 @@ Key bindings
 
 The Julia REPL makes great use of key bindings.  Several control-key bindings were already introduced above (``^D`` to exit, ``^R`` and ``^S`` for searching), but there are many more.  In addition to the control-key, there are also meta-key bindings.  These vary more by platform, but most terminals  default to using alt- or option- held down with a key to send the meta-key (or can be configured to do so).
 
-JuliaのREPLは、キーバインドを利用することが可能です。CTRLキーバインディングに関しては、いくつか(終了用の ``^D`` ,検索用の ``^R`` と ``^S`` )紹介してきました。
+JuliaのREPLは、キーバインドを利用することが可能です。CTRLキーバインディングに関しては、いくつか(終了用の ``^D`` ,検索用の ``^R`` と ``^S`` )紹介してきましたが、他にもたくさんのキーバインディングがあります。いままでの、CTRLキーバインディングに加えて、メタキーバインディングを設定することもできます。プラットフォームによっては多種多様ですが、ほとんどの場合、デフォルトでメタキーを送信するためのキーとALTキーもしくはOPTIONキーとの組み合わせになっています(独自に設定されている場合もあるでしょう)。
 
 +-----------------------------+--------------------------------------------------------------+
 | **Program control**                                                                        |
@@ -227,7 +227,7 @@ JuliaのREPLは、キーバインドを利用することが可能です。CTRL�
 +-----------------------------+--------------------------------------------------------------+
 | **Editing**                                                                                |
 |                                                                                            |
-| **編集中**                                                                                 |
+| **編集**                                                                                   |
 +-----------------------------+--------------------------------------------------------------+
 | Backspace, ``^H``           | Delete the previous character                                |
 |                             |                                                              |
@@ -251,7 +251,7 @@ JuliaのREPLは、キーバインドを利用することが可能です。CTRL�
 +-----------------------------+--------------------------------------------------------------+
 | ``^K``                      | "Kill" to end of line, placing the text in a buffer          |
 |                             |                                                              |
-|                             | 行末までの全てをカット                                       |
+|                             | 行末までの全てをカットし、バッファに文字列を格納             |
 +-----------------------------+--------------------------------------------------------------+
 | ``^Y``                      | "Yank" insert the text from the kill buffer                  |
 |                             |                                                              |
@@ -260,10 +260,6 @@ JuliaのREPLは、キーバインドを利用することが可能です。CTRL�
 | ``^T``                      | Transpose the characters about the cursor                    |
 |                             |                                                              |
 |                             | カーソル位置の文字と1つ前の文字を交換する                    |
-+-----------------------------+--------------------------------------------------------------+
-| Delete, ``^D``              | Forward delete one character (when buffer has text)          |
-|                             |                                                              |
-|                             | 次方向の1文字削除（次方向に文字が存在する場合）              |
 +-----------------------------+--------------------------------------------------------------+
 
 Customizing keybindings
@@ -274,7 +270,7 @@ Customizing keybindings
 
 Julia's REPL keybindings may be fully customized to a user's preferences by passing a dictionary to ``REPL.setup_interface()``. The keys of this dictionary may be characters or strings. The key ``'*'`` refers to the default action. Control plus character ``x`` bindings are indicated with ``"^x"``. Meta plus ``x`` can be written ``"\\Mx"``. The values of the custom keymap must be ``nothing`` (indicating that the input should be ignored) or functions that accept the signature ``(PromptState, AbstractREPL, Char)``. For example, to bind the up and down arrow keys to move through history without prefix search, one could put the following code in ``.juliarc.jl``
 
-JuliaのREPLキーバインドは、 ``REPL.setup_interface()`` を使うことによって、ユーザの好み合わせてカスタマイズ可能です。キーバインド辞書のキーは、文字もしくは文字列を指定します。キー ``'*'`` は、デフォルトの振る舞いに従います。CTRLと文字 ``x`` のバインドは、 ``"^x"`` と表記します。メタ文字と ``x`` のバインドは、 ``"\\Mx"`` と書くこととします。カスタマイズされたキーマップの値は、 ``nothing`` （入力は無視するという意味です）であるか、予約済みのもの ``(PromptState, AbstractREPL, Char)`` のいずれかでなければなりません。
+JuliaのREPLキーバインドは、 ``REPL.setup_interface()`` を使うことによって、ユーザの好みに合わせてカスタマイズ可能です。キーバインド辞書のキーは、文字もしくは文字列を指定します。キー ``'*'`` は、デフォルトの振る舞いに従います。CTRLと文字 ``x`` のバインドは、 ``"^x"`` と表記します。メタ文字と ``x`` のバインドは、 ``"\\Mx"`` と書くこととします。カスタマイズされたキーマップの値は、 ``nothing`` （入力は無視するという意味です）であるか、予約済みのもの ``(PromptState, AbstractREPL, Char)`` のいずれかでなければなりません。例えば、前方一致検索をせず、履歴内を移動するために上下キーをバインドする場合、下記のようなコードを ``.juliarc.jl`` に書いてみました。
 ::
 
     import Base: LineEdit, REPL
