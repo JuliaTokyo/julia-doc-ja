@@ -112,7 +112,7 @@ What this is doing is first adding ``Distributions`` to your ``~/.julia/v0.4/REQ
 It then runs :func:`Pkg.resolve` using these new requirements, which leads to the conclusion that the ``Distributions`` package should be installed since it is required but not installed.
 As stated before, you can accomplish the same thing by editing your ``~/.julia/v0.4/REQUIRE`` file by hand and then running :func:`Pkg.resolve` yourself
 
-新しいパッケージ情報にしたがって、 :func:`Pkg.resolve` が呼び出され、 ``Distributions`` がインストールされます。
+新しいパッケージ情報により、 :func:`Pkg.resolve` が呼び出され、 ``Distributions`` が未インストールであれば、インストールされます。以前に説明したように、 ``~/.julia/v0.4/REQUIRE`` ファイルを編集し、自身で :func:`Pkg.resolve` を呼び出した場合と同じです。
 ::
 
     $ echo UTF16 >> ~/.julia/v0.4/REQUIRE
@@ -214,7 +214,10 @@ Installing Unregistered Packages
 Julia packages are simply git repositories, clonable via any of the `protocols <https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS>`_ that git supports, and containing Julia code that follows certain layout conventions.
 Official Julia packages are registered in the `METADATA.jl <https://github.com/JuliaLang/METADATA.jl>`_ repository, available at a well-known location [1]_.
 The :func:`Pkg.add` and :func:`Pkg.rm` commands in the previous section interact with registered packages, but the package manager can install and work with unregistered packages too.
-To install an unregistered package, use :func:`Pkg.clone(url) <Pkg.clone>`, where ``url`` is a git URL from which the package can be cloned::
+To install an unregistered package, use :func:`Pkg.clone(url) <Pkg.clone>`, where ``url`` is a git URL from which the package can be cloned
+
+Juliaパッケージは、単なるGitのリポジトリです。 `protocols <https://www.kernel.org/pub/software/scm/git/docs/git-clone.html#URLS>`_ でクローンすることができますし、下記の特定のレイアウト規約にそったJuliaのソースコードを含んでいます。正規のJuliaのパッケージは、 `METADATA.jl <https://github.com/JuliaLang/METADATA.jl>`_ というよく知られているリポジトリに登録されています [1]_ 。
+::
 
     julia> Pkg.clone("git://example.com/path/to/Package.jl.git")
     INFO: Cloning Package from git://example.com/path/to/Package.jl.git
@@ -228,16 +231,28 @@ To install an unregistered package, use :func:`Pkg.clone(url) <Pkg.clone>`, wher
 By convention, Julia repository names end with ``.jl`` (the additional ``.git`` indicates a "bare" git repository), which keeps them from colliding with repositories for other languages, and also makes Julia packages easy to find in search engines.
 When packages are installed in your ``.julia/v0.4`` directory, however, the extension is redundant so we leave it off.
 
+規約によれば、Juliaリポジトリ名は、 ``.jl`` で終了します(末尾に追加されている ``.git`` は、Gitリポジトリを意味します)。これは、他の言語のリポジトリとの衝突を避けるためのものです。また、検索エンジンで検索をするときにもJuliaパッケージが容易に見つけられるようになっています。しかしながら、パッケージを、 ``.julia/v0.4`` ディレクトリにインストールする場合、その拡張子は不要ですので取り除いてください。
+
 If unregistered packages contain a ``REQUIRE`` file at the top of their source tree, that file will be used to determine which registered packages the unregistered package depends on, and they will automatically be installed.
 Unregistered packages participate in the same version resolution logic as registered packages, so installed package versions will be adjusted as necessary to satisfy the requirements of both registered and unregistered packages.
 
+未登録のパッケージがソースツリーの一番上に ``REQUIRE`` が存在する場合、そのファイルは、未登録パッケージの依存する登録パッケージを明確にするために使われ、依存パッケージは自動的にインストールされます。未登録パッケージは、登録パッケージと同じバージョン解決ロジックに従います。インストールされたパッケージのバージョンは、登録パッケージおよび未登録パッケージの両方の要件に対応するように調整されます。
+
 .. [1] The official set of packages is at https://github.com/JuliaLang/METADATA.jl, but individuals and organizations can easily use a different metadata repository. This allows control which packages are available for automatic installation. One can allow only audited and approved package versions, and make private packages or forks available. See :ref:`Custom METADATA <man-custom-metadata>` for details.
+
+.. [1] 一連の正規パッケージは、https://github.com/JuliaLang/METADATA.jl にあります。個人や団体においては、異なるメタデータリポジトリを使うことも簡単にできるようになっています。これは、パッケージの自動インストールを可能にするための管理方法です。承認されたパッケージのバージョンのみを許可することもできますし、プライベートなパッケージを作ることも可能ですし、リポジトリを分岐することも可能です。詳細に関しては、 :ref:`Custom METADATA <man-custom-metadata>` を参照してください。
 
 Updating Packages
 -----------------
 
+パッケージ更新
+-----------------
+
 When package developers publish new registered versions of packages that you're using, you will, of course, want the new shiny versions.
-To get the latest and greatest versions of all your packages, just do :func:`Pkg.update`::
+To get the latest and greatest versions of all your packages, just do :func:`Pkg.update`
+
+パッケージ開発者が、読者の使っているパッケージを新規登録バージョンとして公開すると、読者は新バージョンが必要になるでしょう。全パッケージの最新バージョンを取得するには、ただ :func:`Pkg.update` を実行するだけです。
+::
 
     julia> Pkg.update()
     INFO: Updating METADATA...
@@ -250,22 +265,38 @@ After this, :func:`Pkg.update` attempts to update packages that are checked out 
 Upstream changes will only be applied if no merging or rebasing is necessary – i.e. if the branch can be `"fast-forwarded" <http://git-scm.com/book/en/Git-Branching-Basic-Branching-and-Merging>`_.
 If the branch cannot be fast-forwarded, it is assumed that you're working on it and will update the repository yourself.
 
+最初に、パッケージを更新するには、 ``~/.julia/v0.4/METADATA`` に対してpullし、登録されているパッケージの新バージョンが公開されているかどうか確認します。その後、パッケージを更新するために :func:`Pkg.update` を実行します。ここでいうパッケージは、チェックアウトしたブランチ内のもので、かつパッケージの上流リポジトリから更新部分をpullしたときにソースコード汚染が発生しないもの(例えば、Git管理下にあるファイルが変更されてないもの)を指します。上流の変更は、mergeやrebaseが必要ない場合にのみ適用されます。例えば、ブランチの `"fast-forwarded" <http://git-scm.com/book/en/Git-Branching-Basic-Branching-and-Merging>`_　の場合が該当します。
+
 Finally, the update process recomputes an optimal set of package versions to have installed to satisfy your top-level requirements and the requirements of "fixed" packages.
 A package is considered fixed if it is one of the following:
+
+最後に、更新プロセスは、最適化された一連のパッケージバージョンを再計算します。それは、利用者のトップレベルの要求や"変更なし(fixed)"というパッケージの要求を満たすためです。下記のいずれかに該当する場合に、パッケージは変更なし(fixed)と判断されます。:
 
 1. **Unregistered:** the package is not in ``METADATA`` – you installed it with :func:`Pkg.clone`.
 2. **Checked out:** the package repo is on a development branch.
 3. **Dirty:** changes have been made to files in the repo.
 
+1. **Unregistered:** パッケージが ``METADATA`` に存在しない場合。自身で、 :func:`Pkg.clone`　を使ってインストールしたことによる。
+2. **Checked out:** パッケージリポジトリが、開発用ブランチである場合。
+3. **Dirty:** リポジトリのファイルが変更されている場合。
+
 If any of these are the case, the package manager cannot freely change the installed version of the package, so its requirements must be satisfied by whatever other package versions it picks.
 The combination of top-level requirements in ``~/.julia/v0.4/REQUIRE`` and the requirement of fixed packages are used to determine what should be installed.
+
+上記のいずれかに当てはまる場合、パッケージマネージャーはインストール済みのパッケージのバージョンを自由に変更できなくなってしまいます。ですので、先に述べました２つの要求は、他のパッケージのバージョンに対しても満たされなればなりません。 ``~/.julia/v0.4/REQUIRE`` に記載されたトップレベルの要求と変更なし(fixed)パッケージの要求の組み合わせは、何をインストールすべきなのかという観点から判断されます。
 
 Checkout, Pin and Free
 ----------------------
 
+チェックアウト、固定(Pin)と解放(Free)
+-------------------------------------
+
 You may want to use the ``master`` version of a package rather than one of its registered versions.
 There might be fixes or functionality on master that you need that aren't yet published in any registered versions, or you may be a developer of the package and need to make changes on ``master`` or some other development branch.
-In such cases, you can do :func:`Pkg.checkout(pkg) <Pkg.checkout>` to checkout the ``master`` branch of ``pkg`` or :func:`Pkg.checkout(pkg,branch) <Pkg.checkout>` to checkout some other branch::
+In such cases, you can do :func:`Pkg.checkout(pkg) <Pkg.checkout>` to checkout the ``master`` branch of ``pkg`` or :func:`Pkg.checkout(pkg,branch) <Pkg.checkout>` to checkout some other branch
+
+読者の中には、登録済みのバージョンの１つよりも、 ``master`` バージョンを使いたい人がいるかもしれません。それは、修正や登録済みのバージョンにリリースされていない使っている機能があるからかもしれません。もしくは、読者がパッケージ開発者で ``master`` か他の開発用ブランチへの変更が必要なのかもしれません。このような場合、 :func:`Pkg.checkout(pkg) <Pkg.checkout>` を使ってください。これは、 ``pkg`` の ``master`` ブランチをチェックアウトするためのものです。もしくは、 :func:`Pkg.checkout(pkg,branch) <Pkg.checkout>` を使ってください。これは、他のブランチをチェックアウトするためのものです。
+::
 
     julia> Pkg.add("Distributions")
     INFO: Installing Distributions v0.2.9
@@ -294,11 +325,18 @@ In such cases, you can do :func:`Pkg.checkout(pkg) <Pkg.checkout>` to checkout t
 Immediately after installing ``Distributions`` with :func:`Pkg.add` it is on the current most recent registered version – ``0.2.9`` at the time of writing this.
 Then after running :func:`Pkg.checkout("Distributions") <Pkg.checkout>`, you can see from the output of :func:`Pkg.status` that ``Distributions`` is on an unregistered version greater than ``0.2.9``, indicated by the "pseudo-version" number ``0.2.9+``.
 
+:func:`Pkg.add` を使って、 ``Distributions`` をインストールした直後に、最新の登録済みバージョンになります。執筆時の最新バージョンは、 ``0.2.9`` です。次に、 :func:`Pkg.checkout("Distributions") <Pkg.checkout>` を実行後、 :func:`Pkg.status` が出力する結果を見ることができます。この時の ``Distributions`` は、 ``0.2.9`` より新しい未登録のバージョンですので、"擬似バージョン"として ``0.2.9+`` が出力されています。
+
 When you checkout an unregistered version of a package, the copy of the ``REQUIRE`` file in the package repo takes precedence over any requirements registered in ``METADATA``, so it is important that developers keep this file accurate and up-to-date, reflecting the actual requirements of the current version of the package.
 If the ``REQUIRE`` file in the package repo is incorrect or missing, dependencies may be removed when the package is checked out.
 This file is also used to populate newly published versions of the package if you use the API that :mod:`Pkg <Base.Pkg>` provides for this (described below).
 
-When you decide that you no longer want to have a package checked out on a branch, you can "free" it back to the control of the package manager with :func:`Pkg.free(pkg) <Pkg.free>`::
+未登録バージョンのパッケージをチェックアウトする場合、パッケージリポジトリ内の ``REQUIRE`` ファイルの内容は、 ``METADATA`` ファイルの内容よりも優先されます。そのため、開発者は ``REQUIRE`` ファイルを正しく、最新で、現在のパッケージの要求が反映されている状態に保つことが重要です。パッケージリポジトリ内の ``REQUIRE`` ファイルに誤りがある場合やファイルが存在しない場合は、パッケージがチェックアウトされたときにパッケージ間の依存関係は解消されます。 :mod:`Pkg <Base.Pkg>` が(以下に示すような機能を)提供するAPIを使って、このファイルは、公開されている新バージョンのパッケージをまとめて管理するためにも利用されます。
+
+When you decide that you no longer want to have a package checked out on a branch, you can "free" it back to the control of the package manager with :func:`Pkg.free(pkg) <Pkg.free>`
+
+読者のブランチでパッケージが不要になった場合、 :func:`Pkg.free(pkg) <Pkg.free>` を使ってパッケージマネージャー管理下に戻すため、パッケージを"解放(Free)"することができます。
+::
 
     julia> Pkg.free("Distributions")
     INFO: Freeing Distributions...
@@ -313,7 +351,12 @@ When you decide that you no longer want to have a package checked out on a branc
 
 After this, since the package is on a registered version and not on a branch, its version will be updated as new registered versions of the package are published.
 
-If you want to pin a package at a specific version so that calling :func:`Pkg.update` won't change the version the package is on, you can use the :func:`Pkg.pin` function::
+次に、当該パッケージは登録済みのバージョンではあるが、ブランチには存在しないため、公開されている登録済みの新バージョンに更新されるでしょう。
+
+If you want to pin a package at a specific version so that calling :func:`Pkg.update` won't change the version the package is on, you can use the :func:`Pkg.pin` function
+
+:func:`Pkg.update` の呼び出しによって、現在のパッケージのバージョンを変更させないように、特定のバージョンに固定したい場合、 :func:`Pkg.pin` を使ってください。
+::
 
     julia> Pkg.pin("Stats")
     INFO: Creating Stats branch pinned.47c198b1.tmp
@@ -327,7 +370,10 @@ If you want to pin a package at a specific version so that calling :func:`Pkg.up
 
 After this, the ``Stats`` package will remain pinned at version ``0.2.7`` – or more specifically, at commit ``47c198b1``, but since versions are permanently associated a given git hash, this is the same thing.
 :func:`Pkg.pin` works by creating a throw-away branch for the commit you want to pin the package at and then checking that branch out.
-By default, it pins a package at the current commit, but you can choose a different version by passing a second argument::
+By default, it pins a package at the current commit, but you can choose a different version by passing a second argument
+
+次に、 ``Stats`` パッケージは、 ``0.2.7`` というバージョンに固定されたままになっていることがわかります。より具体的には、 ``47c198b1`` でコミットされており、パッケージのバージョンがGitのハッシュ値と結び付けられていることと同じ状況になってしまっています。デフォルトでは、パッケージは最新のコミットに紐付けられていますが、２番めの引数を通じて異なるバージョンを選ぶことも可能です。
+::
 
     julia> Pkg.pin("Stats",v"0.2.5")
     INFO: Creating Stats branch pinned.1fd0983b.tmp
@@ -341,7 +387,11 @@ By default, it pins a package at the current commit, but you can choose a differ
      - Stats                         0.2.5              pinned.1fd0983b.tmp
 
 Now the ``Stats`` package is pinned at commit ``1fd0983b``, which corresponds to version ``0.2.5``.
-When you decide to "unpin" a package and let the package manager update it again, you can use :func:`Pkg.free` like you would to move off of any branch::
+When you decide to "unpin" a package and let the package manager update it again, you can use :func:`Pkg.free` like you would to move off of any branch
+
+今、 ``Stats`` パッケージは、 ``1fd0983b`` というコミットに紐付けられています。それは、バージョン ``0.2.5`` とのことになります。
+パッケージを"固定解除(unpin)"し、パッケージマネージャーによる更新をさせるためには、ブランチが不要になった場合のように :func:`Pkg.free` を使ってください。
+::
 
     julia> Pkg.free("Stats")
     INFO: Freeing Stats...
@@ -358,17 +408,28 @@ After this, the ``Stats`` package is managed by the package manager again, and f
 The throw-away ``pinned.1fd0983b.tmp`` branch remains in your local ``Stats`` repo, but since git branches are extremely lightweight, this doesn't really matter;
 if you feel like cleaning them up, you can go into the repo and delete those branches [2]_.
 
+そして、 ``Stats`` パッケージは、再度パッケージマネージャー管理下にあることがわかります。今後の :func:`Pkg.update` 呼び出しは、パッケージを公開済みの新しいバージョンに更新されるでしょう。この使い捨てられた ``pinned.1fd0983b.tmp`` ブランチは、ローカルの ``Stats`` リポジトリに残っています。しかし、Gitのブランチは極めて軽いシステムであるため、問題にはなりません。残存している不要なブランチをきれいにしたい場合、レポジトリに入って削除することができます [2]_ 。
+
 .. [2] Packages that aren't on branches will also be marked as dirty if you make changes in the repo, but that's a less common thing to do.
+
+.. [2] リポジトリ内で変更作業を行い、そのブランチに存在しないパッケージは、dirtyと記録されます。しかし、それは、一般的ではありません。
 
 .. _man-custom-metadata:
 
 Custom METADATA Repository
 --------------------------
+
+カスタムされたMETADATAリポジトリ
+------------------------------------
+
 By default, Julia assumes you will be using the `official METADATA.jl <https://github.com/JuliaLang/METADATA.jl>`_ repository for downloading and installing packages.
 You can also provide a different metadata repository location.
 A common approach is to keep your ``metadata-v2`` branch up to date with the Julia official branch and add another branch with your custom packages.
 You can initialize your local metadata repository using that custom location and branch and then periodically rebase your custom branch with the official ``metadata-v2`` branch.
-In order to use a custom repository and branch, issue the following command::
+In order to use a custom repository and branch, issue the following command
+
+デフォルトでは、Juliaは `official METADATA.jl <https://github.com/JuliaLang/METADATA.jl>`_ リポジトリをパッケージのダウンロードやインストールのために使っているという前提条件を持っています。異なるメタデータリポジトリを提供することも可能です。一般的なアプローチは、Juliaの公式ブランチとともに、最新の ``metadata-v2`` ブランチを使い続けることでしょう。カスタムされた場所やブランチを使ってローカルのメタデータリポジトリを初期化し、定期的に公式 ``metadata-v2`` ブランチを使ってrebaseします。カスタムされたリポジトリやブランチを使うためには、下記のコマンドを実行します。
+::
 
     julia> Pkg.init("https://me.example.com/METADATA.jl.git", "branch")
 
@@ -376,27 +437,44 @@ The branch argument is optional and defaults to ``metadata-v2``.
 Once initialized, a file named ``META_BRANCH`` in your ``~/.julia/vX.Y/`` path will track the branch that your METADATA repository was initialized with.
 If you want to change branches, you will need to either modify the ``META_BRANCH`` file directly (be careful!) or remove the ``vX.Y`` directory and re-initialize your METADATA repository using the ``Pkg.init`` command.
 
+ブランチ引数は、オプションで、デフォルトでは ``metadata-v2`` が設定されています。一度初期化されれば、 ``~/.julia/vX.Y/`` というパスにある ``META_BRANCH`` というファイルが、METADATAリポジトリとともに初期化されたブランチを追跡します。ブランチを変更する場合には、 ``META_BRANCH`` ファイルを直接修正するか、 ``vX.Y`` ディレクトリを削除する必要があるでしょう。その後、 ``Pkg.init`` コマンドを使ってMETADATAリポジトリを再度初期化します。
+
 *******************
 Package Development
+*******************
+
+*******************
+パッケージ開発
 *******************
 
 Julia's package manager is designed so that when you have a package installed, you are already in a position to look at its source code and full development history.
 You are also able to make changes to packages, commit them using git, and easily contribute fixes and enhancements upstream.
 Similarly, the system is designed so that if you want to create a new package, the simplest way to do so is within the infrastructure provided by the package manager.
 
+Juliaのパッケージマネージャーは、インストール済みのパッケージが存在する場合に、ソースコードやすべての開発履歴を見ることができるように設計されています。Gitを通じてパッケージを変更することやコミットすることもできますし、簡単に修正や改善にコントリビュートすることができます。同様に、新しいパッケージを作成したいと思った時に、最善な方法はパッケージマネージャーによって提供されるインフラ内で開発することであるように設計されています。
+
 .. _man-pkg-dev-setup:
 
 Initial Setup
 -------------
 
-Since packages are git repositories, before doing any package development you should setup the following standard global git configuration settings::
+初期セットアップ
+-----------------
+
+Since packages are git repositories, before doing any package development you should setup the following standard global git configuration settings
+
+パッケージはGitリポジトリにあるので、開発前に、下記の標準的なGitのGlobal設定を実施する必要があります。
+::
 
     $ git config --global user.name "FULL NAME"
     $ git config --global user.email "EMAIL"
 
 where ``FULL NAME`` is your actual full name (spaces are allowed between the double quotes) and ``EMAIL`` is your actual email address.
 Although it isn't necessary to use `GitHub <https://github.com/>`_ to create or publish Julia packages, most Julia packages as of writing this are hosted on GitHub and the package manager knows how to format origin URLs correctly and otherwise work with the service smoothly.
-We recommend that you create a `free account <https://github.com/join>`_ on GitHub and then do::
+We recommend that you create a `free account <https://github.com/join>`_ on GitHub and then do
+
+``FULL NAME`` は自身の氏名(ダブルクォテーションの間ではスペースが許されます)を、 ``EMAIL`` には自身のメールアドレスを書きます。Juliaのパッケージを作成や公開するのに、 `GitHub <https://github.com/>`_ は不要ですが、ほとんどのJuliaのパッケージは、GitHub上にホストされていますし、パッケージマネージャーは、ソースとなっているURLを正しく解釈しますし、快適なサービスを提供します。読者は、GitHub上に、 `無料アカウント(free account) <https://github.com/join>`_ を作成することをお勧めします。その後に、以下のことを行ってください。
+::
 
     $ git config --global github.user "USERNAME"
 
@@ -405,10 +483,18 @@ Once you do this, the package manager knows your GitHub user name and can config
 You should also `upload <https://github.com/settings/ssh>`_ your public SSH key to GitHub and set up an `SSH agent <http://linux.die.net/man/1/ssh-agent>`_ on your development machine so that you can push changes with minimal hassle.
 In the future, we will make this system extensible and support other common git hosting options like `BitBucket <https://bitbucket.org>`_ and allow developers to choose their favorite.
 
+``USERNAME`` は、実際のGitHubのユーザー名です。一度設定を行えば、パッケージマネージャーはGitHubのユーザー名を記憶し、各種設定を行うことができるようになります。GitHubにSSH公開鍵を `アップロード(upload) <https://github.com/settings/ssh>`_ すべきでしょう。その後、 `SSH agent <http://linux.die.net/man/1/ssh-agent>`_ を開発用マシーンにセットアップします。そうすれば、変更を簡単にpushできるようになります。将来的には、このシステムを拡張しますし、`BitBucket <https://bitbucket.org>`_ のような他の一般的なGitのホスティングオプションをサポートしますし、開発者の嗜好に合わせられるようにします。
+
 Making changes to an existing package
 -------------------------------------
 
+既存のパッケージに対する変更
+-------------------------------------
+
 Documentation changes
+~~~~~~~~~~~~~~~~~~~~~
+
+ドキュメントの修正
 ~~~~~~~~~~~~~~~~~~~~~
 
 If you want to improve the online documentation of a package, the
@@ -423,7 +509,12 @@ want to make (this is your *commit message*), and then hit "Propose
 file change."  Your changes will be submitted for consideration by the
 package owner(s) and collaborators.
 
+パッケージに関するオンラインドキュメントをより良くしたい場合、最も簡単なアプローチ(少しの変更のみです)は、GitHubのオンライン編集機能を使うことです。最初に、リポジトリのGitHubの"ホームページ(home page)"に行ってください。次に、リポジトリのフォルダ階層の中から対象のファイル(例えば、 ``README.md`` )を探して、クリックしてください。右上の角の小さな"鉛筆(pencil)"アイコンとともに、ドキュメントの内容が表示されます。そのアイコンをクリックし、ファイルを編集モードにします。変更を行ってください。変更に関する要約(*コミットメッセージ*　になります)を書いてください。その後、"Propose　file change"ボタンを押してください。変更内容は、パッケージのオーナーや協力者の検討課題として提出されます。
+
 Code changes
+~~~~~~~~~~~~
+
+コードの変更
 ~~~~~~~~~~~~
 
 If you want to fix a bug or add new functionality, you want to be able
@@ -438,12 +529,17 @@ can't see the code on your private machine, you first *push* your
 changes to a publicly-visible location, your own online *fork* of
 the package (hosted on your own personal GitHub account).
 
+バグの修正や新しい機能の追加をする場合、検討課題として提出する前に、それらの変更をテストしたいと思うでしょう。パッケージオーナーのフィードバックに応じて、自身の提案を更新する簡単な方法が必要でしょう。したがって、このような場合には、自身のマシーン上でローカルに作業することです。自身の変更が終了した時点で、検討課題として提出しますことになります。このプロセスは、 *プルリクエスト(pull request)* と呼ばれます。これは、プロジェクトのメインリポジトリに、自身の変更の"プル(pull)"を要求していることによります。オンラインリポジトリからは、自身のプライベートなマシーン内のコードを見ることはできませんので、最初に、パッケージを *フォーク(fork)* した自身のオンラインの公開されている場所に変更箇所を *プッシュ(push)* します。
+
 Let's assume you already have the ``Foo`` package installed.  In the
 description below, anything starting with ``Pkg.`` is meant to be
 typed at the Julia prompt; anything starting with ``git`` is meant to
 be typed in :ref:`julia's shell mode <man-shell-mode>` (or using the
 shell that comes with your operating system).  Within Julia, you can
-combine these two modes::
+combine these two modes
+
+すでに、 ``Foo`` パッケージがインストールされているとしましょう。下記にあるように、 ``Pkg.`` で始めるすべての場合は、Juliaのプロンプトでタイプされることを意味しています。 ``git`` で始まるすべての場合は、 :ref:`julia's shell mode <man-shell-mode>` (もしくは、自身のOSのシェル)でタイプされることを意味しています。Juliaでは、これら２つのモードを結合することができます。
+::
 
     julia> cd(Pkg.dir("Foo"))          # go to Foo's folder
 
@@ -451,6 +547,8 @@ combine these two modes::
 
 Now suppose you're ready to make some changes to ``Foo``.  While there
 are several possible approaches, here is one that is widely used:
+
+今、 ``Foo``　に複数の変更を適用する準備ができているものとします。いくつかの可能なアプローチがある一方で、ここではよく使われてる手法の１つを紹介します。
 
 - From the Julia prompt, type :func:`Pkg.checkout("Foo") <Pkg.checkout>`. This
   ensures you're running the latest code (the ``master`` branch), rather than
@@ -461,6 +559,8 @@ are several possible approaches, here is one that is widely used:
   fix gets distributed to the rest of the community.) If you receive
   an error ``Foo is dirty, bailing``, see :ref:`Dirty packages
   <man-pkg-dirty>` below.
+
+- Juliaプロンプトで、 :func:`Pkg.checkout("Foo") <Pkg.checkout>` をタイプします。インストール済みの "正式リリース(official release)" バージョンではなく、最新のコード (``master`` ブランチ)で実行していることを保証します。(バグ修正をする場合は、この時点でバグが修正されているかどうかの確認をすることをお勧めします。)その後、修正がコミュニティの残りの人たちに配布されるように、新しい公式リリースにタグ付けするためのリクエストを出すことができます。``Foo is dirty, bailing`` のようなエラーを受け取った場合、下記の :ref:`Dirty packages <man-pkg-dirty>` を参照してください。
 
 - Create a branch for your changes: navigate to the package folder
   (the one that Julia reports from :func:`Pkg.dir("Foo") <Pkg.dir>`) and (in
@@ -475,6 +575,8 @@ are several possible approaches, here is one that is widely used:
   changes, don't worry: see :ref:`more detail about branching
   <man-post-hoc-branching>` below.
 
+- 変更のためのブランチを作成します。パッケージのフォルダー( :func:`Pkg.dir("Foo") <Pkg.dir>` によりJuliaが通知したものです)へ行ってください。(シェルモードにて) ``git checkout -b <newbranch>`` により新しいブランチを作成します。 ``<newbranch>`` は、修正内容がわかるような名前にしましょう。例えば、``fixbar`` です。ブランチを作成すれば、新しいワークブランチと ``master`` ブランチを簡単に行き来することができるようになります(`<http://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell>`_ を参照してください)。
+
 - Make your changes. Whether it's fixing a bug or adding new
   functionality, in most cases your change should include updates to
   both the ``src/`` and ``test/`` folders.  If you're fixing a bug,
@@ -484,6 +586,8 @@ are several possible approaches, here is one that is widely used:
   other changes.  If you're adding new functionality, creating tests
   demonstrates to the package owner that you've made sure your code
   works as intended.
+
+- 変更を実施してください。バグを修正するでも新しい機能を追加するのでも構いません。ほとんどの場合、変更は ``src/`` と ``test/`` の両フォルダー対して行います。バグを修正する場合、(現コードの)バグを再現するための最小のコードをテストスイートに追加します。バグに対するテストコードを書くことで、今後に発生する他の変更に伴うバグの偶発的な再発を避けられるでしょう。新しい機能を追加する場合、テストを実装することによって自身のコードが意図した振る舞いをしていることをパッケージオーナーに伝えられます。
 
 - Run the package's tests and make sure they pass. There are several ways to
   run the tests:
