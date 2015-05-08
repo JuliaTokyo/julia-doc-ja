@@ -587,24 +587,32 @@ are several possible approaches, here is one that is widely used:
   demonstrates to the package owner that you've made sure your code
   works as intended.
 
-- 変更を実施してください。バグを修正するでも新しい機能を追加するのでも構いません。ほとんどの場合、変更は ``src/`` と ``test/`` の両フォルダー対して行います。バグを修正する場合、(現コードの)バグを再現するための最小のコードをテストスイートに追加します。バグに対するテストコードを書くことで、今後に発生する他の変更に伴うバグの偶発的な再発を避けられるでしょう。新しい機能を追加する場合、テストを実装することによって自身のコードが意図した振る舞いをしていることをパッケージオーナーに伝えられます。
+- 次に変更を実施してください。バグを修正するでも新しい機能を追加するのでも構いません。ほとんどの場合、変更は ``src/`` と ``test/`` の両フォルダー対して行います。バグを修正する場合、(現コードの)バグを再現するための最小のコードをテストスイートに追加します。バグに対するテストコードを書くことで、今後に発生する他の変更に伴うバグの偶発的な再発を避けられるでしょう。新しい機能を追加する場合、テストを実装することによって自身のコードが意図した振る舞いをしていることをパッケージオーナーに伝えられます。
 
 - Run the package's tests and make sure they pass. There are several ways to
   run the tests:
 
+- パッケージのテストコードを実行してください。そして、テストがパスすることを確認してください。テストを実行する方法はいくつかあります。
+
   + From Julia, run :func:`Pkg.test("Foo") <Pkg.test>`: this will run your
     tests in a separate (new) julia process.
+  + Juliaから、 :func:`Pkg.test("Foo") <Pkg.test>`: を実行してください。実装したテストコードを異なる(新しい)Juliaのプロセスにて実行します。
   + From Julia, ``include("runtests.jl")`` from the package's ``test/`` folder
     (it's possible the file has a different name, look for one that runs all
     the tests): this allows you to run the tests repeatedly in the same session
     without reloading all the package code; for packages that take a while to
     load, this can be much faster. With this approach, you do have to do some
     extra work to make :ref:`changes in the package code <man-workflow-tips>`.
+  + Juliaにおいて、 ``test/`` パッケージフォルダのテストランナーをインクルードしてください(``include("runtests.jl")``　を記述してください。別なファイル名をつけることも可能です。すべてのテストを実行するために、該当ファイルを探すからです)。
+    このテストランナーは、パッケージを再読み込みすることなく、同一セッション内で繰り返しテストを実行することができます。パッケージをロードするには時間がかかるので、このテストランナーを使うと非常に高速にテストを実行することができます。
+    この方法は、 :ref:`changes in the package code <man-workflow-tips>` を行う場合に、追加作業が発生します。
   + From the shell, run ``julia runtests.jl`` from within the package's
     ``test/`` folder.
-
+  + シェルモードで、パッケージが含まれている ``test/`` フォルダーにあるテストランナーを ``julia runtests.jl`` を使って実行してください。
 
 - Commit your changes: see `<http://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository>`_.
+
+- 変更箇所をコミットしてください。 `<http://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository>`_ を参照してください。
 
 - Submit your changes: From the Julia prompt, type
   :func:`Pkg.submit("Foo") <Pkg.submit>`. This will push your changes to your
@@ -614,30 +622,45 @@ are several possible approaches, here is one that is widely used:
   then click "submit." At that point, the package owner will be notified of
   your changes and may initiate discussion.
 
+- 変更を同期してください。Juliaプロンプトで、 :func:`Pkg.submit("Foo") <Pkg.submit>` をタイプしてください。これは、変更をフォークしたGitHubに変更箇所をプッシュしてくれます。GitHubをフォークしていない場合、フォークしてください(エラーが発生した場合には、 :ref:`make sure you've set up your SSH keys <man-pkg-dev-setup>`　を参照してください)。
+
 - The package owner may suggest additional improvements. To respond to those
   suggestions, you can easily update the pull request (this only works for
   changes that have not already been merged; for merged pull requests, make new
   changes by starting a new branch):
+
+- パッケージオーナーは、改善提案してくれるでしょう。それらの提案に対応するために、簡単にプルリクエストを更新することができます(この手法はマージされていない変更箇所に対してのみ使うことができますので、マージ後は、新しいブランチを作成して修正することになります)。
 
   + If you've changed branches in the meantime, make sure you go back
     to the same branch with ``git checkout fixbar`` (from shell mode)
     or :func:`Pkg.checkout("Foo", "fixbar") <Pkg.checkout>` (from the Julia
     prompt).
 
+  + ブランチを変更している間、(シェルモードにて) ``git checkout fixbar`` により、同じブランチを使ってください。
+
   + As above, make your changes, run the tests, and commit your changes.
+
+  + 今までのように、変更し、テストして、変更箇所をコミットしてください。
 
   + From the shell, type ``git push``.  This will add your new
     commit(s) to the same pull request; you should see them appear
     automatically on the page holding the discussion of your pull
     request.
 
+  + シェルモードにて、 ``git push`` をタイプしてください。新しい変更箇所を同じプルリクエストにコミットします。プルリクエストの議論が行われているページに自動的に反映されることを確認してください。
+
   One potential type of change the owner may request is that you
   squash your commits.  See :ref:`Squashing <man-pkg-squash>` below.
+
+  オーナーの要求に沿うような変更がなされた場合、コミットされた変更をスカッシュ(squash)します。以下の :ref:`Squashing <man-pkg-squash>` を参照してください。
 
 .. _man-pkg-dirty:
 
 Dirty packages
 ~~~~~~~~~~~~~~
+
+汚染されたパッケージ
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you can't change branches because the package manager complains
 that your package is dirty, it means you have some changes that have
@@ -649,9 +672,17 @@ delete the entire ``"Foo"`` folder and reinstall a fresh copy with
 :func:`Pkg.add("Foo") <Pkg.add>`. Naturally, this deletes any changes you've
 made.
 
+パッケージマネージャーがパッケージが汚染されていると警告しているため、ブランチが変更できない場合、コミットしていない変更が存在することになります。
+シェルモードで、 ``git diff`` を使って、変更箇所の確認をしてください。変更を取りやめる(``git checkout changedfile.jl``)、もしくはブランチを替えるまえにコミットしてください。
+手動でそのような問題を解決できない場合は、最後の手段として、 ``"Foo"`` フォルダーすべてを削除してください。その後、 :func:`Pkg.add("Foo") <Pkg.add>` を使って、新しいコピーを再インストールしてください。
+当然ながら、この手段は、すべての変更を失うことになります。
+
 .. _man-post-hoc-branching:
 
 Making a branch *post hoc*
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*post hoc* ブランチの作成
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Especially for newcomers to git, one often forgets to create a new
@@ -662,31 +693,50 @@ kindly show you that some files have been modified and create the new
 branch for you.  *Your changes have not yet been committed to this new
 branch*, so the normal work rules still apply.
 
+特に、Git初心者は、いくつかの変更を行ってしまうまで、新しいブランチを作っていないことに気づかないものです。
+変更箇所をステージ(stage)やコミットしていないのであれば、通常であれば ``git checkout -b <newbranch>`` で新しいブランチを作成することができます。Gitは、複数のファイルを変更し、新しいブランチを作成してくれます。
+*新しいブランチにおいて、変更箇所はコミットされていません* ので、通常の作業ルールはそのまま適用されています。
+
 However, if you've already made a commit to ``master`` but wish to go
 back to the official ``master`` (called ``origin/master``), use the
 following procedure:
 
+しかしながら、 ``master`` にコミットされていて、公式な ``master`` (``origin/master`` と呼ばれます)に戻したい場合、下記の方法にしたがってください。
+
 - Create a new branch. This branch will hold your changes.
+- 新しいブランチを作成します。このブランチにて変更を行います。
 - Make sure everything is committed to this branch.
+- このブランチに対してすべてのコミットを行います。
 - ``git checkout master``. If this fails, *do not* proceed further
   until you have resolved the problems, or you may lose your changes.
+- ``git checkout master``　を実行します。このコマンドが失敗した場合、問題が解決するまで先に進めてはいけません。そうしないと、変更箇所をすべて失うことになります。
 - *Reset* ``master`` (your current branch) back to an earlier state
   with ``git reset --hard origin/master`` (see
   `<http://git-scm.com/blog/2011/07/11/reset.html>`_).
+- ``git reset --hard origin/master`` (`<http://git-scm.com/blog/2011/07/11/reset.html>`_ を参照してください)を使って、 ``master`` (現在のブランチ)を *リセット(Reset)* し、前の状態に戻します。
 
 This requires a bit more familiarity with git, so it's much better to
 get in the habit of creating a branch at the outset.
+
+Gitに対して、多少の親近感が湧いたと思います。それでも、最初にブランチを作成するという習慣を身に付けることは非常に重要です。
 
 .. _man-pkg-squash:
 
 Squashing and rebasing
 ~~~~~~~~~~~~~~~~~~~~~~
 
+スカッシュ(Squashing)とリベース(rebasing)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. highlight:: none
 
 Depending on the tastes of the package owner (s)he may ask you to
 "squash" your commits. This is especially likely if your change is
-quite simple but your commit history looks like this::
+quite simple but your commit history looks like this
+
+パッケージオーナーの好みによるかもしれませんが、コミットを"スカッシュ(squash)"するように依頼されるかもしれません。
+変更が非常に簡単なものであれば、特にありえることでしょう。その場合、コミット履歴は以下のようになります。
+::
 
    WIP: add new 1-line whizbang function (currently breaks package)
    Finish whizbang function
@@ -703,18 +753,30 @@ encouraged to do some reading
 (`<http://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_).  However,
 a brief summary of the procedure is as follows:
 
+これは、Gitのより高度な利用方法に該当します。関連する資料を何か読んでおくことを強くお勧めします(`<http://git-scm.com/book/en/v2/Git-Branching-Rebasing>`_)。
+これらの手順に関して要約すると、以下のようになります。
+
 - To protect yourself from error, start from your ``fixbar`` branch
   and create a new branch with ``git checkout -b fixbar_backup``.  Since
   you started from ``fixbar``, this will be a copy. Now go back to
   the one you intend to modify with ``git checkout fixbar``.
+- エラー発生時に対応できるように、 ``fixbar`` ブランチに対して、 ``git checkout -b fixbar_backup`` により、新しいブランチを作成します。
+  これは、 ``fixbar`` のコピーを作成しています。それでは、 ``git checkout fixbar`` により、 ``fixbar`` を変更することに戻りましょう。
 - From the shell, type ``git rebase -i origin/master``.
+- シェルモードにて、 ``git rebase -i origin/master`` をタイプします。
 - To combine commits, change ``pick`` to ``squash`` (for additional
   options, consult other sources). Save the file and close the editor
   window.
+- コミットをまとめるため、 ``pick`` を ``squash`` (その他のオプションに関しては、別なソースを参照してください)に変更します。
+  ファイルを保存し、エディターを終了してください。
 - Edit the combined commit message.
+- まとめられたコミットメッセージを編集してください。
 
 If the rebase goes badly, you can go back to the beginning to try
-again like this::
+again like this
+
+リベースがうまく行かなかった場合、下記のようにすれば、元の状態に戻せます。
+::
 
    git checkout fixbar
    git reset --hard fixbar_backup
@@ -723,70 +785,121 @@ Now let's assume you've rebased successfully. Since your ``fixbar``
 repository has now diverged from the one in your GitHub fork, you're
 going to have to do a *force push*:
 
+それでは、リベースがうまく行ったとしましょう。
+``fixbar`` リポジトリは、GitHubからフォークしたものから異なっています。
+*強制プッシュ(force push)* を行ってください。:
+
 - To make it easy to refer to your GitHub fork, create a "handle" for
   it with ``git remote add myfork
   https://github.com/myaccount/Foo.jl.git``, where the URL comes from
   the "clone URL" on your GitHub fork's page.
+- GitHubからフォークしたものを参照することを簡単にするため、  ``git remote add myfork　https://github.com/myaccount/Foo.jl.git`` により、 "ハンドル(handle)" を作成します。
+  URLは、GitHubからフォークしたページの "クローンURL(clone URL)" です。
 - Force-push to your fork with ``git push myfork +fixbar``. The `+`
   indicates that this should replace the ``fixbar`` branch found at
   ``myfork``.
+- ``git push myfork +fixbar`` を使って、強制プッシュしてください。 `+` は、 ``myfork`` で見つかる ``fixbar`` ブランチに置き換えることを意味します。
 
 
 Creating a new Package
 ----------------------
 
+新パッケージ作成
+----------------------
+
 Guidelines for Naming a Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+パッケージの命名ガイドライン
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Package names should be sensible to most Julia users, *even to those who are
 not domain experts*.
 
+パッケージ名に関しては、ほとんどのJuliaユーザーが敏感でなければなりません。*それが、ドメイン専門家でなかったとしてもです。*
+
 1. Avoid jargon. In particular, avoid acronyms unless there is minimal
    possibility of confusion.
 
+1. 専門用語を避けてください。特に、混乱するようなアクロニム(頭字語：単語の頭文字をつなぎあわせた語)は避けてください。
+
   * It's ok to say ``USA`` if you're talking about the USA.
+
+  * USAについて話をしているのであれば、 ``USA`` は問題無いでしょう。
 
   * It's not ok to say ``PMA``, even if you're talking about positive mental
     attitude.
 
+  * 積極的な心構え(positive mental attitude)について話をしていたとしても、 ``PMA`` は良くないでしょう。
+
 2. Packages that provide most of their functionality in association with a new
    type should have pluralized names.
 
+2. 新しいタイプ(type)に関連した大部分の機能を提供するようなパッケージは、複数形の名前にしなければなりません。
+
   * ``DataFrames`` provides the ``DataFrame`` type.
 
+  * ``DataFrames`` は、 ``DataFrame`` タイプを扱います。
+
   * ``BloomFilters`` provides the ``BloomFilter`` type.
+
+  * ``BloomFilters`` は、 ``BloomFilter`` タイプを扱います。
 
   * In contrast, ``JuliaParser`` provides no new type, but instead new
     functionality in the ``JuliaParser.parse()`` function.
 
+  * 対照的に、 ``JuliaParser`` は、新しいタイプではなく、代わりに ``JuliaParser.parse()`` 関数内で新しい機能を提供します。
+
 3. Err on the side of clarity, even if clarity seems long-winded to you.
+
+3. 明確さは重要です。その明確さのために、くどいと感じられるものであったとしてもです。
 
   * ``RandomMatrices`` is a less ambiguous name than ``RndMat`` or ``RMT``,
     even though the latter are shorter.
 
+  *  ``RndMat`` や　``RMT`` のほうがより短いとしても、 ``RandomMatrices`` のほうには曖昧さがありません。
+
 4. A less systematic name may suit a package that implements one of several
    possible approaches to its domain.
+
+4. 規則性のない名前は、対応するドメインに関連するようなパッケージに合わせたものにしてください。
 
   * Julia does not have a single comprehensive plotting package. Instead,
     ``Gadfly``, ``PyPlot``, ``Winston`` and other packages each implement a
     unique approach based on a particular design philosophy.
 
+  * Juliaには、包括的な描画パッケージは存在しません。代わりに、``Gadfly`` や ``PyPlot`` や ``Winston`` などのパッケージは、独自の設計思想にもとづいたユニークな手法が実装されています。
+
   * In contrast, ``SortingAlgorithms`` provides a consistent interface to use
     many well-established sorting algorithms.
+
+  * 対照的に、 ``SortingAlgorithms`` は、さまざまなよく知られているソートアルゴリズムを使うための、一貫性のあるインターフェースを提供しています。
 
 5. Packages that wrap external libraries or programs should be named after
    those libraries or programs.
 
+5. 外部のライブラリやプログラムをラップしているようなパッケージは、それらのライブラリやプログラム名前をとって名付けるべきです。
+
   * ``CPLEX.jl`` wraps the ``CPLEX`` library, which can be identified easily in
     a web search.
 
+  * ``CPLEX.jl`` は、 ``CPLEX`` ライブラリをラップしたものです。WEB検索にて、簡単に特定されるものです。
+
   * ``MATLAB.jl`` provides an interface to call the MATLAB engine from within Julia.
+
+  * ``MATLAB.jl`` は、Julia内部からMATLABエンジンを呼び出すためのインターフェースです。
 
 Generating the package
 ~~~~~~~~~~~~~~~~~~~~~~
 
+パッケージの生成
+~~~~~~~~~~~~~~~~~~~~~~
+
 Suppose you want to create a new Julia package called ``FooBar``.
-To get started, do :func:`Pkg.generate(pkg,license) <Pkg.generate>` where ``pkg`` is the new package name and ``license`` is the name of a license that the package generator knows about::
+To get started, do :func:`Pkg.generate(pkg,license) <Pkg.generate>` where ``pkg`` is the new package name and ``license`` is the name of a license that the package generator knows about
+
+``FooBar`` と呼ばれる新Juliaパッケージを作成することとしましょう。最初に、 :func:`Pkg.generate(pkg,license) <Pkg.generate>` を実行してください。 ``pkg`` は新しいパッケージ名で、 ``license`` はパッケージジェネレータ登録済みのライセンス名です。
+::
 
     julia> Pkg.generate("FooBar","MIT")
     INFO: Initializing FooBar repo: /Users/stefan/.julia/v0.4/FooBar
@@ -798,7 +911,10 @@ To get started, do :func:`Pkg.generate(pkg,license) <Pkg.generate>` where ``pkg`
     INFO: Generating .travis.yml
     INFO: Committing FooBar generated files
 
-This creates the directory ``~/.julia/v0.4/FooBar``, initializes it as a git repository, generates a bunch of files that all packages should have, and commits them to the repository::
+This creates the directory ``~/.julia/v0.4/FooBar``, initializes it as a git repository, generates a bunch of files that all packages should have, and commits them to the repository
+
+ここでは、 ``~/.julia/v0.4/FooBar`` ディレクトリを作成し、Gitのリポジトリとして初期化し、パッケージに必要な一連のファイルを作成し、リポジトリにコミットを行っています。
+::
 
     $ cd ~/.julia/v0.4/FooBar && git show --stat
 
@@ -825,39 +941,71 @@ This creates the directory ``~/.julia/v0.4/FooBar``, initializes it as a git rep
 At the moment, the package manager knows about the MIT "Expat" License, indicated by ``"MIT"``, the Simplified BSD License, indicated by ``"BSD"``, and version 2.0 of the Apache Software License, indicated by ``"ASL"``.
 If you want to use a different license, you can ask us to add it to the package generator, or just pick one of these three and then modify the ``~/.julia/v0.4/PACKAGE/LICENSE.md`` file after it has been generated.
 
+この時点で、パッケージマネージャーは、MIT "Expat" ライセンスの場合は ``"MIT"`` と表示し、Simplified BSD Licenseライセンスの場合は ``"BSD"`` と表示し、Apache Software Licenseのバージョン2.0の場合は ``"ASL"`` と表示します。
+異なるライセンスを適用したい場合、パッケージジェネレータに追加するよう依頼してもらうか、 ``~/.julia/v0.4/PACKAGE/LICENSE.md`` ファイルが作成された後に、3つのライセンスのうち1つを修正してもらうことになります。
+　
 If you created a GitHub account and configured git to know about it, :func:`Pkg.generate` will set an appropriate origin URL for you.
 It will also automatically generate a ``.travis.yml`` file for using the `Travis <https://travis-ci.org>`_ automated testing service.
 You will have to enable testing on the Travis website for your package repository, but once you've done that, it will already have working tests.
 Of course, all the default testing does is verify that ``using FooBar`` in Julia works.
 
+GitHubアカウントを作成し、Gitの設定終了後、 :func:`Pkg.generate` を実行すると、適切なURLを設定されます。
+同時に、 ``.travis.yml`` ファイルを自動生成します。このファイルは、 `Travis <https://travis-ci.org>`_ 自動テストサービスを利用するためのものです。
+TravisのWEBサイトにてパッケージのリポジトリをテストするための設定をする必要があります。一度設定してしまえば、テストサービスを受けることができます。
+デフォルトのテストで実施されるのは、Julia内で ``using FooBar`` が動作することを確かめることです。
+
 Making Your Package Available
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+パッケージを利用可能な状態にする
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you've made some commits and you're happy with how ``FooBar`` is working, you may want to get some other people to try it out.
 First you'll need to create the remote repository and push your code to it;
 we don't yet automatically do this for you, but we will in the future and it's not too hard to figure out [3]_.
-Once you've done this, letting people try out your code is as simple as sending them the URL of the published repo – in this case::
+Once you've done this, letting people try out your code is as simple as sending them the URL of the published repo – in this case
+
+いくつかのコミットを行い、 ``FooBar`` 動作するようになれば、他の人に使ってもらいたいと思うかもしれません。
+最初に、リモートリポジトリを作成する必要があります。そして、そのリポジトリに対してプッシュします。
+現時点では、これらを自動的に行うようにはなっていません。将来的には、それほど難しいことではなくなるでしょう [3]_。
+一度、これらのことを実施すれば、自身のコードを他の人に使ってもらうことは、公開リポジトリのURLを送付するのと同様に簡単なことです。
+::
 
     git://github.com/StefanKarpinski/FooBar.jl.git
 
 For your package, it will be your GitHub user name and the name of your package, but you get the idea.
-People you send this URL to can use :func:`Pkg.clone` to install the package and try it out::
+People you send this URL to can use :func:`Pkg.clone` to install the package and try it out
+
+パッケージのURLは、GitHubのユーザー名とパッケージの組み合わせになっています。
+このURLを送付した他の人は、 :func:`Pkg.clone` にてパッケージをインストールし、パッケージを使うことができるようになります。
+::
 
     julia> Pkg.clone("git://github.com/StefanKarpinski/FooBar.jl.git")
     INFO: Cloning FooBar from git@github.com:StefanKarpinski/FooBar.jl.git
 
 .. [3] Installing and using GitHub's `"hub" tool <https://github.com/github/hub>`_ is highly recommended. It allows you to do things like run ``hub create`` in the package repo and have it automatically created via GitHub's API.
 
+.. [3] GitHubの `"hub" ツール <https://github.com/github/hub>`_ をインストールし、使うことを強くお勧めします。パッケージのリポジトリにて ``hub create`` を実行することや、GitHubのAPIを通じて自動的にリポジトリを作成することができるようになります。
+
 Publishing Your Package
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Once you've decided that ``FooBar`` is ready to be registered as an official package, you can add it to your local copy of ``METADATA`` using :func:`Pkg.register`::
+パッケージを公開する
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Once you've decided that ``FooBar`` is ready to be registered as an official package, you can add it to your local copy of ``METADATA`` using :func:`Pkg.register`
+
+``FooBar`` を公式パッケージとして登録する準備ができたならば、 :func:`Pkg.register` にて ``METADATA`` のローカルコピーに追加することができます。
+::
 
     julia> Pkg.register("FooBar")
     INFO: Registering FooBar at git://github.com/StefanKarpinski/FooBar.jl.git
     INFO: Committing METADATA for FooBar
 
-This creates a commit in the ``~/.julia/v0.4/METADATA`` repo::
+This creates a commit in the ``~/.julia/v0.4/METADATA`` repo
+
+この手順は、 ``~/.julia/v0.4/METADATA`` リポジトリにコミットします。
+::
 
     $ cd ~/.julia/v0.4/METADATA && git show
 
@@ -878,7 +1026,14 @@ This creates a commit in the ``~/.julia/v0.4/METADATA`` repo::
 This commit is only locally visible, however.  In order to make it visible to
 the world, you need to merge your local ``METADATA`` upstream into the official
 repo.  The :func:`Pkg.publish` command will fork the ``METADATA`` repository on
-GitHub, push your changes to your fork, and open a pull request::
+GitHub, push your changes to your fork, and open a pull request
+
+しかしながら、このコミットは、ローカルリポジトリに対するものです。
+世界中に公開するためには、ローカルの ``METADATA`` を公式リポジトリにマージする必要があります。
+:func:`Pkg.publish` コマンドは、GitHub上の ``METADATA`` リポジトリをフォークします。
+フォークしたリポジトリに対して変更箇所をプッシュしてください。
+そして、プルリクエストを作成してください。
+::
 
     julia> Pkg.publish()
     INFO: Validating METADATA
@@ -892,8 +1047,10 @@ GitHub, push your changes to your fork, and open a pull request::
 
 .. tip::
 
-    If :func:`Pkg.publish` fails with error::
+    If :func:`Pkg.publish` fails with error
 
+    :func:`Pkg.publish` でエラーが発生し、失敗した場合
+    ::
         ERROR: key not found: "token"
 
     then you may have encountered an issue from using the GitHub API on
@@ -901,10 +1058,16 @@ GitHub, push your changes to your fork, and open a pull request::
     personal access token `from your Github account
     <https://github.com/settings/applications>`_ and try again.
 
+    複数のシステム上でGitHubのAPIを使ったため、問題に遭遇したのかもしれません。
+    解決策は、`GitHubアカウントから <https://github.com/settings/applications>`_ "Juliaパッケージマネージャー"のパーソナルアクセストークン(personal access token)を削除することです。その後、再度、試してみてください。
+
     Other failures may require you to circumvent :func:`Pkg.publish` by
     `creating a pull request on GitHub
     <https://help.github.com/articles/creating-a-pull-request>`_.
     See: :ref:`man-manual-publish` below.
+
+    他のエラーによって失敗した場合、 `GitHub上でプルリクエストを作成すること <https://help.github.com/articles/creating-a-pull-request>`_ によって、 :func:`Pkg.publish` を回避することが求められるかもしれません。
+    下記の :ref:`man-manual-publish` を参照してください。
 
 Once the package URL for ``FooBar`` is registered in the official ``METADATA`` repo, people know where to clone the package from, but there still aren't any registered versions available.
 This means that :func:`Pkg.add("FooBar") <Pkg.add>` won't work yet since it only installs official versions.
@@ -912,53 +1075,89 @@ This means that :func:`Pkg.add("FooBar") <Pkg.add>` won't work yet since it only
 Moreover, when they run :func:`Pkg.update`, they will get the latest version of ``FooBar`` that you've pushed to the repo.
 This is a good way to have people test out your packages as you work on them, before they're ready for an official release.
 
+一度、 ``FooBar`` のパッケージURLが公式 ``METADATA`` リポジトリに登録されれば、他の人は、どこからパッケージをクローンすれば良いかわかるようになります。
+しかし、登録済みバージョンは利用できないままです。
+公式バージョンがインストールされただけなので、 :func:`Pkg.add("FooBar") <Pkg.add>` が、まだ動作していないということです。
+これは、特定のURLを設定せずに、 :func:`Pkg.clone("FooBar") <Pkg.clone>` を実行したからです。
+さらに、 :func:`Pkg.update` を実行したときに、プッシュしたリポジトリにある ``FooBar`` の最新版を取得したためでもあります。
+これは、パッケージが公式リリースされる前に、自身がパッケージを動作させているように、他の人がそのパッケージを試してみるためには良い方法だからです。
+
 .. _man-manual-publish:
 
 Publishing METADATA manually
 ============================
 
+手動でMETADATAを公開する
+============================
+
 If :func:`Pkg.publish` fails you can follow these instructions to
 manually publish your package.
+
+:func:`Pkg.publish` が失敗した場合、手動でパッケージを公開するために、以下の手順にしたがってください。
 
 By "forking" the main METADATA repository, you can create a
 personal copy (of METADATA.jl) under your GitHub account. Once
 that copy exists, you can push your local changes to your copy
 (just like any other GitHub project).
 
+メインのMETADATAリポジトリを "フォークする" ことによって、自身のGitHubアカウントに、(METADATA.jlの)コピーリポジトリを作成することができます。
+コピーリポジトリが存在すれば、ローカル環境での変更を(他のGitHubのプロジェクトと同様に)コピーリポジトリにプッシュすることができます。
 
 1. go to `<https://github.com/JuliaLang/METADATA.jl/fork>`_ and create your own
 fork.
 
+1. `<https://github.com/JuliaLang/METADATA.jl/fork>`_ に行ってください。自身のフォークを作成してください。
+
 2. add your fork as a remote repository for the METADATA
 repository on your local computer (in the terminal where USERNAME is
-your github username)::
+your github username)
+
+2. (端末内ではUSERNAMEが自身のGitHubのユーザ名である)自身のローカルコンピュータ上にあるMETADATAリポジトリに対するリモートリポジトリとして、自身のフォークを追加してください。
+::
 
     cd ~/.julia/v0.4/METADATA
     git remote add USERNAME https://github.com/USERNAME/METADATA.jl.git
 
-3. push your changes to your fork::
+3. push your changes to your fork
+
+3. 自身の変更をフォークに対してプッシュしてください。
+::
 
     git push USERNAME metadata-v2
 
 4. If all of that works, then go back to the GitHub page for your
 fork, and click the "pull request" link.
 
+4. すべてがうまく行った場合、GitHubのフォークのページに行ってください。そして、 "プルリクエスト" のリンクをクリックしてください。
+
 
 Tagging Package Versions
 ------------------------
 
-Once you are ready to make an official version your package---or release a new version of an established package---you can tag and register it with the :func:`Pkg.tag` command::
+パッケージバージョンのタグ付け
+----------------------------------
+
+Once you are ready to make an official version your package---or release a new version of an established package---you can tag and register it with the :func:`Pkg.tag` command
+
+自身のパッケージの公式バージョンを作成する準備が整った、もしくは公開済みのパッケージの新バージョンをリリースする準備が整った場合、 :func:`Pkg.tag` コマンドを使ってタグ付けや登録することが可能です。
+::
 
     julia> Pkg.tag("FooBar")
     INFO: Tagging FooBar v0.0.1
     INFO: Committing METADATA for FooBar
 
-This tags ``v0.0.1`` in the ``FooBar`` repo::
+This tags ``v0.0.1`` in the ``FooBar`` repo
+
+ここでは、 ``FooBar`` リポジトリに、 ``v0.0.1`` というタグ付けが行われています。
+::
 
     $ cd ~/.julia/v0.4/FooBar && git tag
     v0.0.1
 
-It also creates a new version entry in your local ``METADATA`` repo for ``FooBar``::
+It also creates a new version entry in your local ``METADATA`` repo for ``FooBar``
+
+また、 ``FooBar``に対するローカル環境の ``METADATA`` リポジトリにも、新しいバージョンが作成されています。
+::
 
     $ cd ~/.julia/v0.4/FooBar && git show
     commit de77ee4dc0689b12c5e8b574aef7f70e8b311b0e
@@ -979,14 +1178,27 @@ If there is a ``REQUIRE`` file in your package repo, it will be copied into the 
 Package developers should make sure that the ``REQUIRE`` file in their package correctly reflects the requirements of their package, which will automatically flow into the official metadata if you're using :func:`Pkg.tag`.
 See the `Requirements Specification <#man-package-requirements>`_ for the full format of ``REQUIRE``.
 
+パッケージリポジトリ内に ``REQUIRE`` ファイルが存在するのであれば、バージョンがタグ付けされた時に ``METADATA`` 内の適切な場所にバージョンがコピーされます。
+パッケージ開発者は、パッケージ内の ``REQUIRE`` ファイルがパッケージの要求事項を正しく反映されているかどうか確認すべきです。
+というのも、 :func:`Pkg.tag` を実行してしまうと、それらの内容が自動的に公式メタデータに反映されてしまうからです。
+``REQUIRE`` の全フォーマットに関しては、 `Requirements Specification <#man-package-requirements>`_ を参照してください。
+
 The :func:`Pkg.tag` command takes an optional second argument that is either an explicit version number object like ``v"0.0.1"`` or one of the symbols ``:patch``, ``:minor`` or ``:major``.
 These increment the patch, minor or major version number of your package intelligently.
+
+:func:`Pkg.tag` コマンドは、オプションの第2引数に ``v"0.0.1"`` のような明示的なバージョン番号オブジェクト、もしくは ``:patch`` または ``:minor`` または ``:major`` の3つのうちの1つのシンボルのいずれかを設定することが可能です。
+パッケージのpatchやminorやmajorバージョン番号は、適切に管理してください。
 
 As with :func:`Pkg.register`, these changes to ``METADATA`` aren't
 available to anyone else until they've been included upstream.  Again,
 use the :func:`Pkg.publish` command, which first makes sure that
 individual package repos have been tagged, pushes them if they haven't
-already been, and then opens a pull request to ``METADATA``::
+already been, and then opens a pull request to ``METADATA``
+
+:func:`Pkg.register` のように、 ``METADATA`` に対する変更が上流のリポジトリにマージされるまで、他の人に反映されることはありません。
+再度、 :func:`Pkg.publish` コマンドを使ってみましょう。
+コマンドは、最初に個々のパッケージのリポジトリにバージョンのタグ付けを行い、プッシュが行われていないのであればプッシュし、 ``METADATA`` に関するプルリクエストを作成します。
+::
 
     julia> Pkg.publish()
     INFO: Validating METADATA
@@ -1001,7 +1213,13 @@ already been, and then opens a pull request to ``METADATA``::
 Fixing Package Requirements
 ---------------------------
 
-If you need to fix the registered requirements of an already-published package version, you can do so just by editing the metadata for that version, which will still have the same commit hash – the hash associated with a version is permanent::
+パッケージ要件を修正する
+---------------------------
+
+If you need to fix the registered requirements of an already-published package version, you can do so just by editing the metadata for that version, which will still have the same commit hash – the hash associated with a version is permanent
+
+公開済みパッケージバージョンの登録済み要件を修正する必要がある場合、そのバージョンのメタデータを編集するだけで対応できます。同一コミットハッシュのまま行われます。バージョンに関連付けられたハッシュは、永続的なものです。
+::
 
     $ cd ~/.julia/v0.4/METADATA/FooBar/versions/0.0.1 && cat requires
     julia 0.3-
@@ -1011,20 +1229,38 @@ Since the commit hash stays the same, the contents of the ``REQUIRE`` file that 
 this is unavoidable.
 When you fix the requirements in ``METADATA`` for a previous version of a package, however, you should also fix the ``REQUIRE`` file in the current version of the package.
 
+コミットハッシュが同一なので、リポジトリにチェックアウトされている ``REQUIRE`` ファイルの変更後の内容は、 ``METADATA`` の要件と一致 **しません** 。
+これは、避けようがありません。
+パッケージの前バージョンに対する ``METADATA`` の要件を修正した場合、パッケージの現バージョンの ``REQUIRE`` も修正すべきです。
+
 .. _man-package-requirements:
 
 Requirements Specification
 --------------------------
 
+要件仕様
+--------------------------
+
 The ``~/.julia/v0.4/REQUIRE`` file, the ``REQUIRE`` file inside packages, and the ``METADATA`` package ``requires`` files use a simple line-based format to express the ranges of package versions which need to be installed.  Package ``REQUIRE`` and ``METADATA requires`` files should also include the range of versions of ``julia`` the package is expected to work with.
+
+``~/.julia/v0.4/REQUIRE`` ファイル、パッケージ内部の ``REQUIRE`` ファイル、 ``METADATA`` パッケージの ``要件`` ファイルは、インストールすべきパッケージバージョンの範囲を1行で表すフォーマットになっています。
+パッケージ ``REQUIRE`` や ``METADATA requires`` ファイルは、パッケージが正しく動作する ``julia`` のバージョンの範囲も含まれているべきです。
 
 Here's how these files are parsed and interpreted.
 
-* Everything after a ``#`` mark is stripped from each line as a comment.
-* If nothing but whitespace is left, the line is ignored.
-* If there are non-whitespace characters remaining, the line is a requirement and the is split on whitespace into words.
+ここには、これらファイルがどのように解析・解釈されるのかを示します。
 
-The simplest possible requirement is just the name of a package name on a line by itself::
+* Everything after a ``#`` mark is stripped from each line as a comment.
+* 各行の ``#`` 記号のあとのすべてはコメントとして無視されます。
+* If nothing but whitespace is left, the line is ignored.
+* 空白文字のみの行は無視されます。
+* If there are non-whitespace characters remaining, the line is a requirement and the is split on whitespace into words.
+* 空白文字ではない文字が存在する場合、その行は要件となります。行の文字列は、空白文字で分割されます。
+
+The simplest possible requirement is just the name of a package name on a line by itself
+
+一番簡単な要件は、単に行にパッケージ名を書くことです。
+::
 
     Distributions
 
@@ -1033,38 +1269,69 @@ The package name can be followed by zero or more version numbers in ascending or
 One version opens an interval, while the next closes it, and the next opens a new interval, and so on;
 if an odd number of version numbers are given, then arbitrarily large versions will satisfy;
 if an even number of version numbers are given, the last one is an upper limit on acceptable version numbers.
-For example, the line::
+For example, the line
+
+この要件は、 ``Distributions`` パッケージのいずれかのバージョンを要求しています。
+パッケージ名の後に、ゼロもしくは昇順のバージョン番号が続きます。それらは、パッケージの許容しているバージョン番号の範囲を表しています。
+あるバージョン番号がバージョン番号の範囲を開始します。次バージョン番号がその範囲を終了します。そして、次の新しいバージョン番号の範囲を開始します。などなど。
+例えば、下記の行は、
+::
 
     Distributions 0.1
 
 is satisfied by any version of ``Distributions`` greater than or equal to ``0.1.0``.
-Suffixing a version with `-` allows any pre-release versions as well. For example::
+Suffixing a version with `-` allows any pre-release versions as well. For example
+
+``0.1.0`` より新しいもしくは同じバージョン番号の ``Distributions`` を要求しています。
+`-` という接尾辞を使ったバージョンは、プレリリースバージョンも含めます。例えば、
+::
 
     Distributions 0.1-
 
 is satisfied by pre-release versions such as ``0.1-dev`` or ``0.1-rc1``, or by any version greater than or equal to ``0.1.0``.
 
-This requirement entry::
+は、 ``0.1-dev`` や ``0.1-rc1`` のようなプレリリースバージョン番号、もしくは ``0.1.0`` より新しいもしくは同じバージョン番号を要求しています。
+
+This requirement entry
+
+この要求
+::
 
     Distributions 0.1 0.2.5
 
 is satisfied by versions from ``0.1.0`` up to, but not including ``0.2.5``.
-If you want to indicate that any ``0.1.x`` version will do, you will want to write::
+If you want to indicate that any ``0.1.x`` version will do, you will want to write
+
+は、 ``0.1.0`` 以上のバージョン番号で、 ``0.2.5`` を含まないことを意味します。
+すべての、 ``0.1.x`` バージョンを記述したい場合は、以下のように書いてください。
+::
 
     Distributions 0.1 0.2-
 
-If you want to start accepting versions after ``0.2.7``, you can write::
+If you want to start accepting versions after ``0.2.7``, you can write
+
+``0.2.7`` 以降のバージョンを許容する場合、以下のように書いてください。
+::
 
     Distributions 0.1 0.2- 0.2.7
 
 If a requirement line has leading words that begin with ``@``, it is a system-dependent requirement.
 If your system matches these system conditionals, the requirement is included, if not, the requirement is ignored.
-For example::
+For example
+
+要件行が ``@`` から始まる場合、システム依存要件を表します。
+自身のシステムがシステム条件に該当する場合には、このような要件を含めてください。そうでない場合、要件行は無視されます。
+例えば、
+::
 
     @osx Homebrew
 
 will require the ``Homebrew`` package only on systems where the operating system is OS X.
-The system conditions that are currently supported are::
+The system conditions that are currently supported are
+
+は ``Homebrew`` パッケージを要求します。これは、OS X 固有のものです。
+現時点でサポートされているシステム条件は、以下の通りです。
+::
 
     @windows
     @unix
@@ -1073,17 +1340,30 @@ The system conditions that are currently supported are::
 
 The ``@unix`` condition is satisfied on all UNIX systems, including OS X, Linux and FreeBSD.
 Negated system conditionals are also supported by adding a ``!`` after the leading ``@``.
-Examples::
+Examples
+
+``@unix`` 条件は、すべてのUNIXシステムに対応します。OS X、LinuxおよびFreeBSDを含みます。
+システム条件の否定もサポートしています。 ``@`` の前に、 ``!`` を加えるだけです。
+例えば、以下の通りです。
+::
 
     @!windows
     @unix @!osx
 
 The first condition applies to any system but Windows and the second condition applies to any UNIX system besides OS X.
 
+最初の条件は、Windowsを除くシステムに適用されます。2番目の条件は、OS X を除くUNIXシステムに適用されます。
+
 Runtime checks for the current version of Julia can be made using the built-in
 ``VERSION`` variable, which is of type :class:`VersionNumber`. Such code is
 occasionally necessary to keep track of new or deprecated functionality between
-various releases of Julia. Examples of runtime checks::
+various releases of Julia. Examples of runtime checks
+
+Juliaの現バージョンにおけるランタイム時の確認処理は、ビルドインされた ``VERSION`` 変数を使って行われます。
+その変数は、 :class:`VersionNumber` タイプです。
+そのようなコードは、時折、Juliaの複数のリリース間で新しいもしくは古くなった機能を追跡するのに必要になります。
+ランタイム時の確認処理の例は、以下の通りです。
+::
 
     VERSION < v"0.3-" #exclude all pre-release versions of 0.3
 
@@ -1094,3 +1374,6 @@ various releases of Julia. Examples of runtime checks::
     VERSION >= v"0.2.1" #get at least version 0.2.1
 
 See the section on :ref:`version number literals <man-version-number-literals>` for a more complete description.
+
+より詳細な記述に関しては、 :ref:`version number literals <man-version-number-literals>` のセクションを参照してください。
+
