@@ -1,7 +1,7 @@
 .. _man-getting-started:
 
 *****************
- Getting Started
+始めよう
 *****************
 
 Julia installation is straightforward, whether using precompiled
@@ -9,10 +9,16 @@ binaries or compiling from source. Download and install Julia by
 following the instructions at
 `http://julialang.org/downloads/ <http://julialang.org/downloads/>`_.
 
+コンパイル済のバイナリ使うのであれであれ、ソースからコンパイルするのであれ、Juliaのインストールは単純です。
+`http://julialang.org/downloads/ <http://julialang.org/downloads/>`_ のインストラクションにしたがって、Juliaをダウンロードしてインストールしてください。
+
 The easiest way to learn and experiment with Julia is by starting an
 interactive session (also known as a read-eval-print loop or "repl")
 by double-clicking the Julia executable or running ``julia`` from the
 command line::
+
+Juliaを学んだり試したりする一番簡単な方法は、インタラクティブなセッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。
+セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します::
 
     $ julia
                    _
@@ -30,6 +36,7 @@ command line::
     julia> ans
     3
 
+
 To exit the interactive session, type ``^D`` — the control key
 together with the ``d`` key or type ``quit()``. When run in interactive
 mode, ``julia`` displays a banner and prompts the user for input. Once
@@ -41,13 +48,25 @@ with a trailing semicolon, its value is not shown. The variable
 it is shown or not. The ``ans`` variable is only bound in interactive
 sessions, not when Julia code is run in other ways.
 
+インタラクティブ・セッションを終了するには、``^D`` - コントロール・キーと ``d`` キーを同時押すか、 ``quit()`` と入力してください。
+インタラクティブ・モードで起動すると、 ``julia`` のバナーが表示され、プロンプトがユーザーの入力を待ちます。
+ユーザーが完全な式、例えば ``1 + 2`` を入力し、エンターキーを押すと、その式が評価され、値が表示されます。
+式の後ろにセミコロンをつけて入力すると、値は表示されません。
+``ans`` という変数は、最後に評価された式の値（それが表示されたか否かに関わらず）に束縛されています。
+変数 ``ans`` は、インタラクティブ・セッションでのみ利用可能で、他の方法でJuliaのコードが実行された際には使うことができません。
+
 To evaluate expressions written in a source file ``file.jl``, write
 ``include("file.jl")``.
+
+``file.jl`` というソース・ファイルにかかれた式を評価するには、 ``include("file.jl")`` と書きます。
 
 To run code in a file non-interactively, you can give it as the first
 argument to the julia command::
 
+インタラクティブではない方法でファイルに書かれたコードを実行するには、以下のようにファイル名をjuliaコマンドの第1引数とします::
+
     $ julia script.jl arg1 arg2...
+
 
 As the example implies, the following command-line arguments to julia
 are taken as command-line arguments to the program ``script.jl``, passed
@@ -56,11 +75,17 @@ is given using the ``-e`` option on the command line (see the ``julia``
 help output below). For example, to just print the arguments given to a
 script, you could do this::
 
+上の例が示すように、後ろの引数は ``script.jl`` というプログラムのコマンドライン引数として取られ、 グローバル定数 ``ARGS`` に渡されます。
+コマンドラインで ``-e`` オプションが設定された際にも ``ARGS`` は設定されます（下の ``julia`` ヘルプ出力を参照してください）。
+例えば以下のようにすることで、スクリプトに渡された引数を単純に出力することができます::
+
     $ julia -e 'for x in ARGS; println(x); end' foo bar
     foo
     bar
 
 Or you could put that code into a script and run it::
+
+もしくは、上のコードをスクリプトに書いて実行することもできます::
 
     $ echo 'for x in ARGS; println(x); end' > script.jl
     $ julia script.jl foo bar
@@ -79,9 +104,18 @@ on the node, and defaults to 1. The optional ``bind-to bind_addr[:port]``
 specifies the ip-address and port that other workers should use to
 connect to this worker.
 
+``-p`` もしくは ``--machinefile`` オプションを設定することで、Juliaをパラレル・モードで開始することが出来ます。
+``-p n`` で追加の ``n`` ワーカーを起動することができ、 ``--machinefile file`` では ``file`` ファイルの各行ごとのワーカーが起動されます。
+``file`` で定義されたマシンはパスワード無しで ``ssh`` アクセスでき、現在のホストと同じ場所にJuliaがインストールされている必要があります。
+各マシンの定義は ``[count*][user@]host[:port] [bind_addr[:port]]`` という形式で書かれます。
+デフォルトでは、``user`` は現在のユーザー、 ``port`` は標準のsshポートになります。
+``count`` はノードで作成されるワーカーの数で、デフォルトでは1です。
+オプションとして ``bind-to bind_addr[:port]`` は他のワーカーがそのワーカーと接続する際に使うIPアドレスとポートを設定することもできます。
 
 If you have code that you want executed whenever julia is run, you can
 put it in ``~/.juliarc.jl``:
+
+Juliaを実行祭に際に必ず実行されるコードは ``~/.juliarc.jl`` に書きます:
 
 .. raw:: latex
 
@@ -101,6 +135,10 @@ put it in ``~/.juliarc.jl``:
 
 There are various ways to run Julia code and provide options, similar to
 those available for the ``perl`` and ``ruby`` programs::
+
+他の言語、``perl`` や ``ruby`` と似たように、Juliaを実行するには様々な方法やオプションがあります::
+
+
 
     julia [options] [program] [args...]
      -v, --version             Display version information
@@ -148,13 +186,23 @@ those available for the ``perl`` and ``ruby`` programs::
 Resources
 ---------
 
+関連資料
+------
+
 In addition to this manual, there are various other resources that may
 help new users get started with Julia:
 
-- `Julia and IJulia cheatsheet <http://math.mit.edu/~stevenj/Julia-cheatsheet.pdf>`_
-- `Learn Julia in a few minutes <http://learnxinyminutes.com/docs/julia/>`_
-- `Tutorial for Homer Reid's numerical analysis class <http://homerreid.dyndns.org/teaching/18.330/JuliaProgramming.shtml>`_
-- `An introductory presentation <https://raw.githubusercontent.com/ViralBShah/julia-presentations/master/Fifth-Elephant-2013/Fifth-Elephant-2013.pdf>`_
-- `Videos from the Julia tutorial at MIT <http://julialang.org/blog/2013/03/julia-tutorial-MIT/>`_
-- `Forio Julia Tutorials <http://forio.com/labs/julia-studio/tutorials/>`_
+新しいユーザーがJuliaを始めるにあたって、このマニュアルの他にも様々なリソースがあります:
 
+日本語
+^^^^^
+
+英語
+^^^^
+
+ - `Julia and IJulia cheatsheet <http://math.mit.edu/~stevenj/Julia-cheatsheet.pdf>`_
+ - `Learn Julia in a few minutes <http://learnxinyminutes.com/docs/julia/>`_
+ - `Tutorial for Homer Reid's numerical analysis class <http://homerreid.dyndns.org/teaching/18.330/JuliaProgramming.shtml>`_
+ - `An introductory presentation <https://raw.githubusercontent.com/ViralBShah/julia-presentations/master/Fifth-Elephant-2013/Fifth-Elephant-2013.pdf>`_
+ - `Videos from the Julia tutorial at MIT <http://julialang.org/blog/2013/03/julia-tutorial-MIT/>`_
+ - `Forio Julia Tutorials <http://forio.com/labs/julia-studio/tutorials/>`_
