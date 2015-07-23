@@ -3,9 +3,11 @@
 .. currentmodule:: Base
 
 **************************
+ 多次元配列
  Multi-dimensional Arrays
 **************************
 
+Julia は
 Julia, like most technical computing languages, provides a first-class
 array implementation. Most technical computing languages pay a lot of
 attention to their array implementation at the expense of other
