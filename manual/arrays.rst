@@ -7,7 +7,13 @@
  Multi-dimensional Arrays
 **************************
 
-Julia は
+他の技術計算言語と同様に、 Julia はファーストクラスの配列実装を提供している。
+殆どの技術計算言語が他のコンテナを犠牲にしてまで配列の実装に注力している。
+Julia は配列について特別な取り扱いをしない。
+配列ライブラリは殆ど全て Julia 自身で実装されており、
+Julia で描かれている他のコードと同じように、
+コンパイラによってパフォーマンスが引き出されている。
+
 Julia, like most technical computing languages, provides a first-class
 array implementation. Most technical computing languages pay a lot of
 attention to their array implementation at the expense of other
@@ -16,10 +22,23 @@ library is implemented almost completely in Julia itself, and derives
 its performance from the compiler, just like any other code written in
 Julia.
 
+配列は多次元の格子状に保存されているオブジェクトの集まりである。
+最も一般化には、 配列は ``Any`` 型のオブジェクトを含む可能性がある。
+計算目的には、配列は、 ``Float64`` や ``Int32`` など、より明確に指定された型の
+オブジェクトを持つべきである。
+
 An array is a collection of objects stored in a multi-dimensional
 grid.  In the most general case, an array may contain objects of type
 ``Any``.  For most computational purposes, arrays should contain
 objects of a more specific type, such as ``Float64`` or ``Int32``.
+
+一般に、他の多くの技術計算言語と違い、 
+Julia はパフォーマンスを引き出すためにプログラムがベクトル化形式で記述されることを期待しない。
+Julia のコンパイラは型インターフェイスを用いて、
+配列にスカラ値のインデックスでアクセスするのに最適なコードを生成するので、
+パフォーマンスを犠牲にすることなく、
+同時使用メモリを抑えつつ、より簡単で読みやすいスタイルで、
+プログラムを書くことができる。
 
 In general, unlike many other technical computing languages, Julia does
 not expect programs to be written in a vectorized style for performance.
@@ -27,6 +46,14 @@ Julia's compiler uses type inference and generates optimized code for
 scalar array indexing, allowing programs to be written in a style that
 is convenient and readable, without sacrificing performance, and using
 less memory at times.
+
+
+Julida では、関数の引数は全て参照渡しである。
+技術計算言語の中には、配列を値で渡すものもあり、それはそれで、いろいろな場面で便利である。
+Julida では、引数の配列に対する関数内部での変更が、親関数から見えてしまう。
+Juliaの配列ライブラリは全て、引数に指定された配列はライブラリの関数内で変更されないことを保証している。
+ユーザーコードでも同様の挙動が必要な場合は、
+引数が修正される可能性のある箇所より前にコピーを生成しておくことに注意すべきだ。
 
 In Julia, all arguments to functions are passed by reference. Some
 technical computing languages pass arrays by value, and this is
@@ -36,11 +63,27 @@ Julia array library ensures that inputs are not modified by library
 functions. User code, if it needs to exhibit similar behavior, should
 take care to create a copy of inputs that it may modify.
 
+
+配列
 Arrays
 ======
 
+基本関数
 Basic Functions
 ---------------
+
+============================ ==============================================================================
+関数                         説明
+============================ ==============================================================================
+:func:`eltype(A) <eltype>`   A に含まれる要素の型
+:func:`length(A) <length>`   A の要素数
+:func:`ndims(A) <ndims>`     A の次元数
+:func:`size(A) <size>`       A の各次元を保持するタプル
+:func:`size(A,n) <size>`     A の特定の次元のサイズ
+:func:`stride(A,k) <stride>` 次元 k に沿ったストライド (共役要素間の線形インデックス距離??)
+:func:`strides(A) <strides>` それぞれの次元のストライドのタプル
+============================ ==============================================================================
+
 
 ============================ ==============================================================================
 Function                     Description
@@ -54,8 +97,14 @@ Function                     Description
 :func:`strides(A) <strides>` a tuple of the strides in each dimension
 ============================ ==============================================================================
 
+構築と初期化
 Construction and Initialization
 -------------------------------
+
+配列を構築・初期化するのに、多くの関数が提供されている。
+以下の表にまとめた、そのような関数において、
+``dims...`` 引数は各次元のサイズを要素とする単一のタプルか、
+可変長引数として与えられる各次元のサイズのシリーズである。
 
 Many functions for constructing and initializing arrays are provided. In
 the following list of such functions, calls with a ``dims...`` argument
