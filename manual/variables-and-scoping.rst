@@ -2,8 +2,6 @@
 
 .. currentmodule:: Base
 
-edit naoya_jp
-
 ********************
  Scope of Variables
 ********************
