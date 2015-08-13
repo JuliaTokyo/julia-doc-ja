@@ -214,7 +214,7 @@ This error indicates that the conditional was of the wrong type:
 長いコードブロックの条件表現とは対照的に、単一式の値の間で、
 条件選択を表現するものとして使用されています。
 3つのオペランドを取るほとんどの言語で、唯一の演算子があることから、
-三項演算子という名称を解釈しています。
+三項演算子という名称が使用されています。
 The so-called "ternary operator", ``?:``, is closely related to the
 ``if``-``elseif``-``else`` syntax, but is used where a conditional
 choice between single expression values is required, as opposed to
@@ -223,13 +223,18 @@ being the only operator in most languages taking three operands::
 
     a ? b : c
 
-(***1)
+``?``の前の式``a``が条件式となり、三項演算子は、条件``a``が``true``であれば
+``:``の前の式``b``を評価し、``false``であれば、``:``の後の式``c``を評価します。
 The expression ``a``, before the ``?``, is a condition expression, and
 the ternary operation evaluates the expression ``b``, before the ``:``,
 if the condition ``a`` is ``true`` or the expression ``c``, after the
 ``:``, if it is ``false``.
 
-(***2)
+この動作を理解する最も簡単な方法は、例を見ることです。
+前の例では、``println`` コールは、3つのブロックの中にあります。
+文字列リテラルを出力するのに、唯一の現実的な選択です。
+これは、三項演算子を使用して、より簡潔に書くことができます。
+明確にするために、相互の例を試してみましょう。
 The easiest way to understand this behavior is to see an example. In the
 previous example, the ``println`` call is shared by all three branches:
 the only real choice is which literal string to print. This could be
@@ -248,7 +253,9 @@ clarity, let's try a two-way version first:
     julia> println(x < y ? "less than" : "not less than")
     not less than
 
-(***3)
+条件式``x < y``が真ならば、三項演算子の中で、文字列``"less than"``が評価されます。
+逆の場合、文字列``"not less than"``が評価されます。
+オリジナルの3つの例では、コロンでつなぐ複数の使用法を三項演算子に要求しています。
 If the expression ``x < y`` is true, the entire ternary operator
 expression evaluates to the string ``"less than"`` and otherwise it
 evaluates to the string ``"not less than"``. The original three-way
@@ -270,13 +277,13 @@ together:
     julia> test(1, 1)
     x is equal to y
 
-(***4)
+つなぐことを容易にするために、オペレータは右から左へと結合させます。
+それは、`if``-``elseif``-``else``のように重要であり、
+条件式が``true`` または ``false``それぞれを評価したら、
+``:``の前と後ろの式のどちらかが評価されます。
 To facilitate chaining, the operator associates from right to left.
-
 It is significant that like ``if``-``elseif``-``else``, the expressions
-
 before and after the ``:`` are only evaluated if the condition
-
 expression evaluates to ``true`` or ``false``, respectively:
 
 .. doctest::
@@ -295,28 +302,45 @@ expression evaluates to ``true`` or ``false``, respectively:
 
 .. _man-short-circuit-evaluation:
 
+短絡評価
 Short-Circuit Evaluation
 ------------------------
-(***5)
+
+短絡評価は、条件評価と、とても似ています。
+その振る舞いは、論理演算子``&&`` と ``||``を持つ、
+多くの必須プログラミング言語に見受けられます。
+これらの演算子で接続された一連の論理式では、
+チェーン全体の最終的な真偽値を決定するために、
+ただ１つの式の値がチェーン全体を評価されます。
+明示的に以下を意味します。
+
 Short-circuit evaluation is quite similar to conditional evaluation. The
 behavior is found in most imperative programming languages having the
 ``&&`` and ``||`` boolean operators: in a series of boolean expressions
 connected by these operators, only the minimum number of expressions are
 evaluated as are necessary to determine the final boolean value of the
 entire chain. Explicitly, this means that:
+
+``a && b``式では、``a`` が真である場合、部分式``b``が評価されます。
+``a || b``式では、``a`` が偽である場合、部分式``b``が評価されます。
+
 -  In the expression ``a && b``, the subexpression ``b`` is only
    evaluated if ``a`` evaluates to ``true``.
 
 -  In the expression ``a || b``, the subexpression ``b`` is only
    evaluated if ``a`` evaluates to ``false``.
 
-(***6)
+もし、``a``が``false``であれば、``b``の値に関わらず、
+``a && b``は、``false``になります。
+同じように、もし、``a``が``true``であれば、``b``の値に関わらず、
+``a && b``は、``true``になります。
+``&&`` と ``||`` とも、右側に関連がありますが、``&&`` は、``||``より
+優先度が高いです。この動作を試すことは簡単です。
+
 The reasoning is that ``a && b`` must be ``false`` if ``a`` is
 ``false``, regardless of the value of ``b``, and likewise, the value of
 ``a || b`` must be true if ``a`` is ``true``, regardless of the value of
-
 ``b``. Both ``&&`` and ``||`` associate to the right, but ``&&`` has
-
 higher precedence than ``||`` does. It's easy to experiment with
 this behavior:
 
@@ -364,16 +388,23 @@ this behavior:
     2
     false
 
-(***7)
+``&&``演算子 と ``||``演算子の様々な組み合わせで、同じ方法で、
+容易に結合性と優位性の実験をすることができます。
 You can easily experiment in the same way with the associativity and
 precedence of various combinations of ``&&`` and ``||`` operators.
 
+次の振る舞いは、とても短い``if``文として、Juliaでは代替物としてよく使われます。
+``if <cond> <statement> end``の代わりに、``<cond> && <statement>``を
+書くことができます。(<cond> *and then* <statement>と読み変えることができます。)
+``if ! <cond> <statement> end``の代わりに、``<cond> && <statement>``を
+書くことができます。(<cond> *or else* <statement>と読み変えることができます。)
 This behavior is frequently used in Julia to form an alternative to very short
 ``if`` statements. Instead of ``if <cond> <statement> end``, one can write
 ``<cond> && <statement>`` (which could be read as: <cond> *and then* <statement>).
 Similarly, instead of ``if ! <cond> <statement> end``, one can write
 ``<cond> || <statement>`` (which could be read as: <cond> *or else* <statement>).
 
+例えば、再帰的な階乗ルーチンは次のように定義することができます。
 For example, a recursive factorial routine could be defined like this:
 
 .. doctest::
@@ -395,7 +426,10 @@ For example, a recursive factorial routine could be defined like this:
     ERROR: n must be non-negative
      in factorial at none:2
 
-(***8)
+短絡評価なしの論理演算は、"数学演算と初等関数"で紹介されたビット単位の論理演算子、
+``&`` と ``|``で式を終わらせることができます。
+これらは、中置演算子の構文をサポートしていますが、
+常に引数を評価する正常な機能を持っています。
 Boolean operations *without* short-circuit evaluation can be done with the
 bitwise boolean operators introduced in :ref:`man-mathematical-operations`:
 ``&`` and ``|``. These are normal functions, which happen to support
@@ -413,7 +447,11 @@ infix operator syntax, but always evaluate their arguments:
     2
     true
 
-(***9)
+``if``, ``elseif``または三項演算子で使われる条件式のように、
+``&&`` または ``||``のオペランドは、ブール値、つまり``true`` または ``false``に
+しなければならないです。
+条件付きチェーンでの最後の登場を除いて、
+非ブール値を使用するとエラーになります。
 Just like condition expressions used in ``if``, ``elseif`` or the
 ternary operator, the operands of ``&&`` or ``||`` must be boolean
 values (``true`` or ``false``). Using a non-boolean value anywhere
@@ -424,7 +462,9 @@ except for the last entry in a conditional chain is an error:
     julia> 1 && true
     ERROR: type: non-boolean (Int64) used in boolean context
 
-(***10)
+他方、どんな種類の式でも、条件つきのチェーンの終わりで、使用されるでしょう。
+それは、先行する条件式に応じて、評価されたりリターンされたりするでしょう。
+
 On the other hand, any type of expression can be used at the end of a conditional chain.
 It will be evaluated and returned depending on the preceding conditionals:
 
@@ -444,9 +484,12 @@ It will be evaluated and returned depending on the preceding conditionals:
 
 .. _man-loops:
 
+繰り返し評価：ループ
 Repeated Evaluation: Loops
 --------------------------
-(***11)
+
+繰り返しを評価する式の構文は２つあります。``while``文と``for``文が該当します。
+以下に、 ``while``の例があります。
 There are two constructs for repeated evaluation of expressions: the
 ``while`` loop and the ``for`` loop. Here is an example of a ``while``
 loop:
@@ -465,13 +508,19 @@ loop:
     4
     5
 
-(***12)
+``while``文は、条件式を評価します。(上記例ですと、``i <= 5``になります。)
+条件式が、``true``であり続ける限り、プログラム本文を評価し続けます。
+条件式が``false``になったら、``while``文に到達しても、
+プログラム本文は決して評価されません。
 The ``while`` loop evaluates the condition expression (``i <= 5`` in this
 case), and as long it remains ``true``, keeps also evaluating the body
 of the ``while`` loop. If the condition expression is ``false`` when the
 ``while`` loop is first reached, the body is never evaluated.
 
-(***13)
+``for``文は、共通の繰り返し評価イディオムを書きやすくします。 
+数をカウントアップ・カウントダウンするため、
+上記のようなwhile文を使用することは一般的ではありません。
+``for``文で簡潔に表現することができます。：
 The ``for`` loop makes common repeated evaluation idioms easier to
 write. Since counting up and down like the above ``while`` loop does is
 so common, it can be expressed more concisely with a ``for`` loop:
