@@ -694,7 +694,7 @@ forming the cartesian product of its iterables:
     (2,4)
 
 
-ループの中での``break``文は、内部のネストではなく、ループ全体のネストに存在します。
+ループの中での``break``文は、内部のネストではなく、ループ全体のネストを抜けます。
 A ``break`` statement inside such a loop exits the entire nest of loops,
 not just the inner one.
 
@@ -804,7 +804,8 @@ if the argument is negative:
     ERROR: DomainError
      in f at none:1
 
-(***30)
+括弧なしの`DomainError`は例外ではありませんが、例外の一種であることに注意してください。
+これは、`Exception`オブジェクトを取得するために呼び出す必要があります。
 Note that :exc:`DomainError` without parentheses is not an exception, but a type of
 exception. It needs to be called to obtain an :exc:`Exception` object:
 
@@ -816,7 +817,7 @@ exception. It needs to be called to obtain an :exc:`Exception` object:
     julia> typeof(DomainError) <: Exception
     false
 
-(***31)
+さらに、いくつかの例外では、エラー報告のために使用される、1つ以上の引数を取ります。
 Additionally, some exception types take one or more arguments that are used for
 error reporting:
 
@@ -825,7 +826,8 @@ error reporting:
     julia> throw(UndefVarError(:x))
     ERROR: x not defined
 
-(***32)
+このメカニズムは、次の`UndefVarError`で書かれた方法のように、
+カスタムされた例外によって、容易に実現できます。
 This mechanism can be implemented easily by custom exception types following
 the way :exc:`UndefVarError` is written:
 
@@ -836,6 +838,7 @@ the way :exc:`UndefVarError` is written:
            end
     julia> Base.showerror(io::IO, e::MyUndefVarError) = print(io, e.var, " not defined");
 
+エラー
 Errors
 ~~~~~~
 
@@ -886,6 +889,7 @@ session:
     ERROR: negative x not allowed
      in verbose_fussy_sqrt at none:3
 
+警告や情報メッセージ
 Warnings and informational messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (***36)
@@ -908,6 +912,7 @@ execution.:
      in error at error.jl:21
 
 
+`try/catch`文
 The ``try/catch`` statement
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (***37)
