@@ -842,11 +842,13 @@ the way :exc:`UndefVarError` is written:
 Errors
 ~~~~~~
 
-(***33)
+`error`関数は、正常なフローの制御を中断する、`ErrorException`を引き起こすために使われます。
 The :func:`error` function is used to produce an :exc:`ErrorException` that
 interrupts the normal flow of control.
 
-(***34)
+負の数の平方根を取った場合、直ちに実行を停止するとします。
+これを行うためには、`sqrt`関数の引数が負の場合、エラーを引き起こす、
+``fussy``バージョンの`sqrt`関数を定義することができます。
 Suppose we want to stop execution immediately if the square root of a
 negative number is taken. To do this, we can define a fussy version of
 the :func:`sqrt` function that raises an error if its argument is negative:
@@ -863,7 +865,9 @@ the :func:`sqrt` function that raises an error if its argument is negative:
     ERROR: negative x not allowed
      in fussy_sqrt at none:1
 
-(***35)
+``fussy_sqrt``関数は、関数呼び出しの実行を続けようとする代わりに、
+他の関数から負の数を呼び出したら、直ちに返し、
+対話セッションでエラーメッセージを表示します。
 If ``fussy_sqrt`` is called with a negative value from another function,
 instead of trying to continue execution of the calling function, it
 returns immediately, displaying the error message in the interactive
