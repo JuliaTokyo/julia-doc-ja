@@ -3,8 +3,16 @@
 .. currentmodule:: Base
 
 **************************
+ 多次元配列
  Multi-dimensional Arrays
 **************************
+
+他の技術計算言語と同様に、 Julia はファーストクラスの配列実装を提供している。
+殆どの技術計算言語が他のコンテナを犠牲にしてまで配列の実装に注力している。
+Julia は配列について特別な取り扱いをしない。
+配列ライブラリは殆ど全て Julia 自身で実装されており、
+Julia で描かれている他のコードと同じように、
+コンパイラによってパフォーマンスが引き出されている。
 
 Julia, like most technical computing languages, provides a first-class
 array implementation. Most technical computing languages pay a lot of
@@ -14,10 +22,23 @@ library is implemented almost completely in Julia itself, and derives
 its performance from the compiler, just like any other code written in
 Julia.
 
+配列は多次元の格子状に保存されているオブジェクトの集まりである。
+最も一般化には、 配列は ``Any`` 型のオブジェクトを含む可能性がある。
+計算目的には、配列は、 ``Float64`` や ``Int32`` など、より明確に指定された型の
+オブジェクトを持つべきである。
+
 An array is a collection of objects stored in a multi-dimensional
 grid.  In the most general case, an array may contain objects of type
 ``Any``.  For most computational purposes, arrays should contain
 objects of a more specific type, such as ``Float64`` or ``Int32``.
+
+一般に、他の多くの技術計算言語と違い、 
+Julia はパフォーマンスを引き出すためにプログラムがベクトル化形式で記述されることを期待しない。
+Julia のコンパイラは型インターフェイスを用いて、
+配列にスカラ値のインデックスでアクセスするのに最適なコードを生成するので、
+パフォーマンスを犠牲にすることなく、
+同時使用メモリを抑えつつ、より簡単で読みやすいスタイルで、
+プログラムを書くことができる。
 
 In general, unlike many other technical computing languages, Julia does
 not expect programs to be written in a vectorized style for performance.
@@ -25,6 +46,14 @@ Julia's compiler uses type inference and generates optimized code for
 scalar array indexing, allowing programs to be written in a style that
 is convenient and readable, without sacrificing performance, and using
 less memory at times.
+
+
+Julida では、関数の引数は全て参照渡しである。
+技術計算言語の中には、配列を値で渡すものもあり、それはそれで、いろいろな場面で便利である。
+Julida では、引数の配列に対する関数内部での変更が、親関数から見えてしまう。
+Juliaの配列ライブラリは全て、引数に指定された配列はライブラリの関数内で変更されないことを保証している。
+ユーザーコードでも同様の挙動が必要な場合は、
+引数が修正される可能性のある箇所より前にコピーを生成しておくことに注意すべきだ。
 
 In Julia, all arguments to functions are passed by reference. Some
 technical computing languages pass arrays by value, and this is
@@ -34,11 +63,27 @@ Julia array library ensures that inputs are not modified by library
 functions. User code, if it needs to exhibit similar behavior, should
 take care to create a copy of inputs that it may modify.
 
+
+配列
 Arrays
 ======
 
+基本関数
 Basic Functions
 ---------------
+
+============================ ==============================================================================
+関数                         説明
+============================ ==============================================================================
+:func:`eltype(A) <eltype>`   A に含まれる要素の型
+:func:`length(A) <length>`   A の要素数
+:func:`ndims(A) <ndims>`     A の次元数
+:func:`size(A) <size>`       A の各次元を保持するタプル
+:func:`size(A,n) <size>`     A の特定の次元のサイズ
+:func:`stride(A,k) <stride>` 次元 k に沿ったストライド (共役要素間の線形インデックス距離??)
+:func:`strides(A) <strides>` それぞれの次元のストライドのタプル
+============================ ==============================================================================
+
 
 ============================ ==============================================================================
 Function                     Description
@@ -52,13 +97,53 @@ Function                     Description
 :func:`strides(A) <strides>` a tuple of the strides in each dimension
 ============================ ==============================================================================
 
+構築と初期化
 Construction and Initialization
 -------------------------------
+
+配列を構築・初期化するのに、多くの関数が提供されている。
+以下の表にまとめた、そのような関数において、
+``dims...`` 引数は各次元のサイズを要素とする単一のタプルか、
+可変長引数として与えられる各次元のサイズのシリーズである。
 
 Many functions for constructing and initializing arrays are provided. In
 the following list of such functions, calls with a ``dims...`` argument
 can either take a single tuple of dimension sizes or a series of
 dimension sizes passed as a variable number of arguments.
+
+=================================================== =====================================================================
+関数                                                説明
+=================================================== =====================================================================
+:func:`Array(type, dims...) <Array>`                未初期化の密行列
+:func:`cell(dims...) <cell>`                        an uninitialized cell array (heterogeneous array)
+:func:`zeros(type, dims...) <zeros>`                an array of all zeros of specified type, defaults to ``Float64`` if
+                                                    ``type`` not specified
+:func:`zeros(A) <zeros>`                            ``A`` と要素型と次元が同じで、全て1で埋められた配列
+:func:`ones(type, dims...) <ones>`                  全ての要素が 1 で特定の型をもつ配列。 ``type`` が指定されていない場合のデフォルトは ``Float64``
+:func:`ones(A) <ones>`                              ``A`` と要素型と次元が同じで、全て1で埋められた配列
+:func:`trues(dims...) <trues>`                      全てが ``true`` の ``Bool`` 値配列
+:func:`falses(dims...) <falses>`                    全てが ``false`` の ``Bool`` 値配列
+:func:`reshape(A, dims...) <reshape>`               an array with the same data as the given array, but with
+                                                    different dimensions.
+:func:`copy(A) <copy>`                              ``A`` を複製する
+:func:`deepcopy(A) <deepcopy>`                      要素を回想的に複製しながら、``A`` を複製する
+:func:`similar(A, element_type, dims...) <similar>` 与えられた配列と同種の未初期化の配列で、an uninitialized array of the same type as the given array
+                                                    (dense, sparse, etc.), but with the specified element type and
+                                                    dimensions. The second and third arguments are both optional,
+                                                    defaulting to the element type and dimensions of ``A`` if omitted.
+:func:`reinterpret(type, A) <reinterpret>`          an array with the same binary data as the given array, but with the
+                                                    specified element type
+:func:`rand(dims) <rand>`                           ``Array`` of ``Float64`` のwith random, iid[#]_ and uniformly
+                                                    distributed values in the half-open interval [0, 1)
+:func:`randn(dims) <randn>`                         独立同分布で標準正規分布にしたがるランダムな ``Float64`` の ``Array``
+                                                    distributed random values
+:func:`eye(n) <eye>`                                ``n`` x ``n`` の単位行列
+:func:`eye(m, n) <eye>`                             ``m`` x ``n`` の単位行列
+:func:`linspace(start, stop, n) <linspace>`         ``start`` から ``stop`` を等分した ``n`` 要素のベクトル
+:func:`fill!(A, x) <fill!>`                         配列 ``A`` を ``x`` で埋める
+:func:`fill(x, dims) <fill>`                        ``x`` で埋められた行列を作成する
+=================================================== =====================================================================
+
 
 =================================================== =====================================================================
 Function                                            Description
@@ -650,8 +735,10 @@ You can go in the other direction using the :func:`full` function. The
     julia> issparse(speye(5))
     true
 
+疎行列演算
 Sparse matrix operations
 ------------------------
+
 
 Arithmetic operations on sparse matrices also work as they do on dense
 matrices. Indexing of, assignment into, and concatenation of sparse
@@ -673,6 +760,46 @@ matrix element has a probability ``d`` of being non-zero.
 
 Details can be found in the :ref:`stdlib-sparse` section of the standard library
 reference.
+
+.. tabularcolumns:: |l|l|L|
+
++----------------------------------------+----------------------------------+--------------------------------------------+
+| 疎行列                                 | 密行列                           | 内容                                       |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`spzeros(m,n) <spzeros>`         | :func:`zeros(m,n) <zeros>`       | *m* x *n* のゼロ行列を生成する.            |
+|                                        |                                  | (:func:`spzeros(m,n) <spzeros>` は空である.) |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`spones(S) <spones>`             | :func:`ones(m,n) <ones>`         | 1 で埋められた行列を生成する.              |
+|                                        |                                  | 密行列のものと違い、 :func:`spones` は     |
+|                                        |                                  | *S* と同じスパーシティを持つ.              |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`speye(n) <speye>`               | :func:`eye(n) <eye>`             | *n* x *n* の単位行列を生成する.            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`full(S) <full>`                 | :func:`sparse(A) <sparse>`       | 密フォーマットと疎フォーマットを           |
+|                                        |                                  | 相互変換する.                              |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprand(m,n,d) <sprand>`         | :func:`rand(m,n) <rand>`         | 非ゼロ要素が半開区間 [0, 1) 上の一様分布に |
+|                                        |                                  | 従う iid であるような、                    |
+|                                        |                                  | *m* x *n* のランダム行列(密度 *d*) を      |
+|                                        |                                  | 生成する                                   |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandn(m,n,d) <sprandn>`       | :func:`randn(m,n) <randn>`       | 非ゼロ要素が標準正規分布に従う iid であるような、 |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する                                   |
+|                                        |                                  |                                            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandn(m,n,d,X) <sprandn>`     | :func:`randn(m,n,X) <randn>`     | 非ゼロ要素が分布 *X* に従う iid であるような、 |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する                                   |
+|                                        |                                  | (``Distributions`` パッケージが必要)       |
+|                                        |                                  |                                            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandbool(m,n,d) <sprandbool>` | :func:`rand(Bool,m,n) <rand>`    | kakuritu *d* の非ゼロ ``Bool`` 要素を持つ  |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する (:func:`rand(Bool) <rand>` に     |
+|                                        |                                  | 対して *d*=0.5.)                           |
++----------------------------------------+----------------------------------+--------------------------------------------+
+
 
 .. tabularcolumns:: |l|l|L|
 
