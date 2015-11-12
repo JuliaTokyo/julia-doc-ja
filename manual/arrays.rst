@@ -112,6 +112,40 @@ can either take a single tuple of dimension sizes or a series of
 dimension sizes passed as a variable number of arguments.
 
 =================================================== =====================================================================
+関数                                                説明
+=================================================== =====================================================================
+:func:`Array(type, dims...) <Array>`                未初期化の密行列
+:func:`cell(dims...) <cell>`                        an uninitialized cell array (heterogeneous array)
+:func:`zeros(type, dims...) <zeros>`                an array of all zeros of specified type, defaults to ``Float64`` if
+                                                    ``type`` not specified
+:func:`zeros(A) <zeros>`                            ``A`` と要素型と次元が同じで、全て1で埋められた配列
+:func:`ones(type, dims...) <ones>`                  全ての要素が 1 で特定の型をもつ配列。 ``type`` が指定されていない場合のデフォルトは ``Float64``
+:func:`ones(A) <ones>`                              ``A`` と要素型と次元が同じで、全て1で埋められた配列
+:func:`trues(dims...) <trues>`                      全てが ``true`` の ``Bool`` 値配列
+:func:`falses(dims...) <falses>`                    全てが ``false`` の ``Bool`` 値配列
+:func:`reshape(A, dims...) <reshape>`               an array with the same data as the given array, but with
+                                                    different dimensions.
+:func:`copy(A) <copy>`                              ``A`` を複製する
+:func:`deepcopy(A) <deepcopy>`                      要素を回想的に複製しながら、``A`` を複製する
+:func:`similar(A, element_type, dims...) <similar>` 与えられた配列と同種の未初期化の配列で、an uninitialized array of the same type as the given array
+                                                    (dense, sparse, etc.), but with the specified element type and
+                                                    dimensions. The second and third arguments are both optional,
+                                                    defaulting to the element type and dimensions of ``A`` if omitted.
+:func:`reinterpret(type, A) <reinterpret>`          an array with the same binary data as the given array, but with the
+                                                    specified element type
+:func:`rand(dims) <rand>`                           ``Array`` of ``Float64`` のwith random, iid[#]_ and uniformly
+                                                    distributed values in the half-open interval [0, 1)
+:func:`randn(dims) <randn>`                         独立同分布で標準正規分布にしたがるランダムな ``Float64`` の ``Array``
+                                                    distributed random values
+:func:`eye(n) <eye>`                                ``n`` x ``n`` の単位行列
+:func:`eye(m, n) <eye>`                             ``m`` x ``n`` の単位行列
+:func:`linspace(start, stop, n) <linspace>`         ``start`` から ``stop`` を等分した ``n`` 要素のベクトル
+:func:`fill!(A, x) <fill!>`                         配列 ``A`` を ``x`` で埋める
+:func:`fill(x, dims) <fill>`                        ``x`` で埋められた行列を作成する
+=================================================== =====================================================================
+
+
+=================================================== =====================================================================
 Function                                            Description
 =================================================== =====================================================================
 :func:`Array(type, dims...) <Array>`                an uninitialized dense array
@@ -701,8 +735,10 @@ You can go in the other direction using the :func:`full` function. The
     julia> issparse(speye(5))
     true
 
+疎行列演算
 Sparse matrix operations
 ------------------------
+
 
 Arithmetic operations on sparse matrices also work as they do on dense
 matrices. Indexing of, assignment into, and concatenation of sparse
@@ -724,6 +760,46 @@ matrix element has a probability ``d`` of being non-zero.
 
 Details can be found in the :ref:`stdlib-sparse` section of the standard library
 reference.
+
+.. tabularcolumns:: |l|l|L|
+
++----------------------------------------+----------------------------------+--------------------------------------------+
+| 疎行列                                 | 密行列                           | 内容                                       |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`spzeros(m,n) <spzeros>`         | :func:`zeros(m,n) <zeros>`       | *m* x *n* のゼロ行列を生成する.            |
+|                                        |                                  | (:func:`spzeros(m,n) <spzeros>` は空である.) |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`spones(S) <spones>`             | :func:`ones(m,n) <ones>`         | 1 で埋められた行列を生成する.              |
+|                                        |                                  | 密行列のものと違い、 :func:`spones` は     |
+|                                        |                                  | *S* と同じスパーシティを持つ.              |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`speye(n) <speye>`               | :func:`eye(n) <eye>`             | *n* x *n* の単位行列を生成する.            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`full(S) <full>`                 | :func:`sparse(A) <sparse>`       | 密フォーマットと疎フォーマットを           |
+|                                        |                                  | 相互変換する.                              |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprand(m,n,d) <sprand>`         | :func:`rand(m,n) <rand>`         | 非ゼロ要素が半開区間 [0, 1) 上の一様分布に |
+|                                        |                                  | 従う iid であるような、                    |
+|                                        |                                  | *m* x *n* のランダム行列(密度 *d*) を      |
+|                                        |                                  | 生成する                                   |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandn(m,n,d) <sprandn>`       | :func:`randn(m,n) <randn>`       | 非ゼロ要素が標準正規分布に従う iid であるような、 |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する                                   |
+|                                        |                                  |                                            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandn(m,n,d,X) <sprandn>`     | :func:`randn(m,n,X) <randn>`     | 非ゼロ要素が分布 *X* に従う iid であるような、 |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する                                   |
+|                                        |                                  | (``Distributions`` パッケージが必要)       |
+|                                        |                                  |                                            |
++----------------------------------------+----------------------------------+--------------------------------------------+
+| :func:`sprandbool(m,n,d) <sprandbool>` | :func:`rand(Bool,m,n) <rand>`    | kakuritu *d* の非ゼロ ``Bool`` 要素を持つ  |
+|                                        |                                  | *m* x *n* のランダム行列 (密度 *d*) を     |
+|                                        |                                  | 生成する (:func:`rand(Bool) <rand>` に     |
+|                                        |                                  | 対して *d*=0.5.)                           |
++----------------------------------------+----------------------------------+--------------------------------------------+
+
 
 .. tabularcolumns:: |l|l|L|
 
