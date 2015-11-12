@@ -462,8 +462,8 @@ except for the last entry in a conditional chain is an error:
     julia> 1 && true
     ERROR: type: non-boolean (Int64) used in boolean context
 
-他方、どんな種類の式でも、条件つきのチェーンの終わりで、使用されるでしょう。
-それは、先行する条件式に応じて、評価されたりリターンされたりするでしょう。
+他方、条件つきのチェーンの終わりでは、どんな種類の式でも使用されるでしょう。
+それは、先行する条件式に応じて、評価されたり、リターンされたりするでしょう。
 
 On the other hand, any type of expression can be used at the end of a conditional chain.
 It will be evaluated and returned depending on the preceding conditionals:
@@ -518,7 +518,7 @@ of the ``while`` loop. If the condition expression is ``false`` when the
 ``while`` loop is first reached, the body is never evaluated.
 
 ``for``文は、共通の繰り返し評価イディオムを書きやすくします。 
-数をカウントアップ・カウントダウンするため、
+数をカウントアップ・カウントダウンするのに、
 上記のようなwhile文を使用することは一般的ではありません。
 ``for``文で簡潔に表現することができます。：
 The ``for`` loop makes common repeated evaluation idioms easier to
@@ -536,7 +536,16 @@ so common, it can be expressed more concisely with a ``for`` loop:
     4
     5
 
-(***14, 15)
+ここにある``1:5`` は、``Range``オブジェクトを表し、1, 2, 3, 4, 5という数字の続きを
+表します。
+``for``ループは、それぞれの数字を変数``i``に順番に割り当てることで、
+値を繰り返します。
+先の``while`` ループと``for``ループは変数のスコープで区別できます。
+繰り返し文であっても、``for`` ループ内で使用できた変数が、ループ外では
+使用できません。
+これをテストするためには、新しいインタラクティブセッション・インスタンス
+または別の変数名のどちらかが必要になります。
+
 Here the ``1:5`` is a ``Range`` object, representing the sequence of
 numbers 1, 2, 3, 4, 5. The ``for`` loop iterates through these values,
 assigning each one in turn to the variable ``i``. One rather important
@@ -561,11 +570,14 @@ different variable name to test this:
     julia> j
     ERROR: j not defined
 
-(***16)
+変数スコープの詳細な説明とJuliaでの動作については、
+`man-variables-and-scoping`をご覧ください。
 See :ref:`man-variables-and-scoping` for a detailed
 explanation of variable scope and how it works in Julia.
 
-(***17)
+一般的に、``for``ループ構文は、配列コンテナを繰り返します。
+これらの場合、コードをより読みやすくするため、 ``in``キーワード が、``=``の代わりに、
+同等のものとして、使われています。
 In general, the ``for`` loop construct can iterate over any container.
 In these cases, the alternative (but fully equivalent) keyword ``in`` is
 typically used instead of ``=``, since it makes the code read more
@@ -587,11 +599,14 @@ clearly:
     bar
     baz
 
-(***18)
+繰り返し構文の様々なタイプが紹介されました。後半のmanulセクション、
+`man-arrays`で説明します。
 Various types of iterable containers will be introduced and discussed in
 later sections of the manual (see, e.g., :ref:`man-arrays`).
 
-(***19)
+テスト条件を偽造するる前に``while``繰り返しを止めたり、
+繰り返し文の最後に到達する前に、``for``繰り返しを止めたりする時にしばしば便利です。
+これは、``break`` で実現できます。
 It is sometimes convenient to terminate the repetition of a ``while``
 before the test condition is falsified or stop iterating in a ``for``
 loop before the end of the iterable object is reached. This can be
@@ -626,12 +641,15 @@ accomplished with the ``break`` keyword:
     4
     5
 
-(***20)
+上部の``while`` ループは、自分自身で決して停止しません。
+``for`` ループは、1000回繰り返すまで停止しません。
+これらのループを早期に停止するため、``break``を使用します。
 The above ``while`` loop would never terminate on its own, and the
 ``for`` loop would iterate up to 1000. These loops are both exited early
 by using the ``break`` keyword.
 
-(***21)
+他のケースでは、繰り返しを停止するのに便利な、``continue``を使って、
+直ちに次の回数に移動することができます。
 In other circumstances, it is handy to be able to stop an iteration and
 move on to the next one immediately. The ``continue`` keyword
 accomplishes this:
@@ -648,16 +666,22 @@ accomplishes this:
     6
     9
 
-(***22)
+これは、条件を否定し、``if``ブロックの中に``println``コールを置くことによって、
+同じ振る舞いを明らかにしているため、やや不自然な例である。
+現実的な使用法では、``continue``の後に、多くのコードを評価し、
+``continue``を呼ぶ複数のポイントがあります。
 This is a somewhat contrived example since we could produce the same
 behavior more clearly by negating the condition and placing the
 ``println`` call inside the ``if`` block. In realistic usage there is
 more code to be evaluated after the ``continue``, and often there are
 multiple points from which one calls ``continue``.
 
-(***23)
+
+ネストされた多重``for`` ループは、デカルト積を形成し、単一の外部ループに
+組み合わせることができます。
 Multiple nested ``for`` loops can be combined into a single outer loop,
 forming the cartesian product of its iterables:
+
 
 .. doctest::
 
@@ -669,15 +693,20 @@ forming the cartesian product of its iterables:
     (2,3)
     (2,4)
 
-(***24)
+
+ループの中での``break``文は、内部のネストではなく、ループ全体のネストに存在します。
 A ``break`` statement inside such a loop exits the entire nest of loops,
 not just the inner one.
 
 .. _man-exception-handling:
 
+例外処理
 Exception Handling
 ------------------
-(***25, 26)
+予期しない状況が発生した場合、関数は、呼び出し元に適切な値を返すことができない場合があります。
+そのような場合は、例外処理が最も適切です。
+診断的なエラーメッセージを出力してプログラムを停止するか、
+プログラマがコードに例外的な状況を作って、適切なアクションを取るかです。
 When an unexpected condition occurs, a function may be unable to return
 a reasonable value to its caller. In such cases, it may be best for the
 exceptional condition to either terminate the program, printing a
@@ -688,7 +717,8 @@ appropriate action.
 Built-in :exc:`Exception`\ s
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(***27)
+予期しない条件が発生したとき、`Exception`がスローされます。
+下記一覧の`Exception`は通常の制御の流れを遮断します。
 :exc:`Exception`\ s are thrown when an unexpected condition has occurred. The
 built-in :exc:`Exception`\ s listed below all interrupt the normal flow of control.
 
@@ -733,7 +763,7 @@ built-in :exc:`Exception`\ s listed below all interrupt the normal flow of contr
 +---------------------------+
 
 
-(***28)
+例えば、`sqrt`関数は、負の値を適用すると、`DomainError`がスローされます。
 For example, the :func:`sqrt` function throws a :exc:`DomainError` if applied to a
 negative real value:
 
@@ -745,15 +775,19 @@ negative real value:
     try sqrt(complex(x))
      in sqrt at math.jl:132
 
+次のように独自の例外を定義することができます。
 You may define your own exceptions in the following way:
 
 .. doctest::
 
     julia> type MyCustomException <: Exception end
 
+`throw`関数
 The :func:`throw` function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-(***29)
+`throw`を使って、例外を明示的に作成することができます。
+例えば、負ではない数を定義された関数が、引数が負の場合、`throw`の引数である`DomainError`を
+呼び出します。
 Exceptions can be created explicitly with :func:`throw`. For example, a function
 defined only for nonnegative numbers could be written to :func:`throw` a :exc:`DomainError`
 if the argument is negative:
