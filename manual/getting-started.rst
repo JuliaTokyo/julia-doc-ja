@@ -9,14 +9,14 @@ binaries or compiling from source. Download and install Julia by
 following the instructions at
 `http://julialang.org/downloads/ <http://julialang.org/downloads/>`_.
 
-コンパイル済のバイナリ使うのであれであれ、ソースからコンパイルするのであれ、Juliaのインストールは簡単です。`http://julialang.org/downloads/ <http://julialang.org/downloads/>`_ にある手順に従い、Juliaをダウンロードしてインストールしてください。
+コンパイル済のバイナリを使うのであれ、ソースからコンパイルするのであれ、Juliaのインストールは簡単です。`http://julialang.org/downloads/ <http://julialang.org/downloads/>`_ にある手順に従い、Juliaをダウンロードしてインストールしてください。
 
 The easiest way to learn and experiment with Julia is by starting an
 interactive session (also known as a read-eval-print loop or "repl")
 by double-clicking the Julia executable or running ``julia`` from the
 command line::
 
-Juliaを学んだり試したりする一番簡単な方法は、インタラクティブなセッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します::
+Juliaを学んだり試したりする一番簡単な方法は、インタラクティブ・セッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します::
 
     $ julia
                    _
@@ -46,17 +46,17 @@ with a trailing semicolon, its value is not shown. The variable
 it is shown or not. The ``ans`` variable is only bound in interactive
 sessions, not when Julia code is run in other ways.
 
-インタラクティブ・セッションを終了するには、``^D`` - コントロール・キーと ``d`` キーを同時に押す - か、 ``quit()`` と入力してください。インタラクティブ・モードで起動すると、 ``julia`` のバナーが表示され、プロンプトがユーザーの入力を待ちます。ユーザーが完全な式、例えば ``1 + 2`` を入力し、エンターキーを押すと、その式が評価され、値が表示されます。式の後ろにセミコロンをつけて入力すると、値は表示されません。``ans`` という変数は、最後に評価された式の値（それが表示されたか否かに関わらず）に束縛されています。``ans`` はインタラクティブ・セッションでのみ利用可能で、他の方法でJuliaのコードが実行された際には使うことができません。
+インタラクティブ・セッションを終了するには、``^D`` — コントロールキーと ``d`` キーを同時に押す — もしくは、 ``quit()`` と入力してください。インタラクティブ・モードで起動すると、 ``julia`` のバナーが表示され、プロンプトがユーザーの入力を待ちます。ユーザーが完全な式、例えば ``1 + 2`` を入力し、エンターキーを押すと、その式が評価され、値が表示されます。式の後ろにセミコロンをつけて入力すると、値は表示されません。``ans`` という変数は、最後に評価された式の値（それが表示されたか否かに関わらず）に束縛されています。``ans`` はインタラクティブ・セッションでのみ利用可能で、他の方法でJuliaのコードが実行された際には使うことができません。
 
 To evaluate expressions written in a source file ``file.jl``, write
 ``include("file.jl")``.
 
-``file.jl`` というソース・ファイルにかかれた式を評価するには、 ``include("file.jl")`` と書きます。
+``file.jl`` というソースファイルにかかれた式を評価するには、 ``include("file.jl")`` と書きます。
 
 To run code in a file non-interactively, you can give it as the first
 argument to the julia command::
 
-インタラクティブではない方法でファイルに書かれたコードを実行するには、以下のようにファイル名をjuliaコマンドの第1引数とします::
+ファイルに書かれたコードをインタラクティブではない方法で実行するには、以下のようにファイル名をjuliaコマンドの第1引数とします::
 
     $ julia script.jl arg1 arg2...
 
@@ -95,7 +95,7 @@ on the node, and defaults to 1. The optional ``bind-to bind_addr[:port]``
 specifies the ip-address and port that other workers should use to
 connect to this worker.
 
-``-p`` もしくは ``--machinefile`` オプションを設定することで、Juliaを並列モードで開始することが出来ます。``-p n`` で追加の ``n`` ワーカーを起動することができ、 ``--machinefile file`` では ``file`` ファイルの各行ごとのワーカーが起動されます。``file`` で定義されたマシンはパスワード無しで ``ssh`` アクセスでき、現在のホストと同じ場所にJuliaがインストールされている必要があります。各マシンの定義は ``[count*][user@]host[:port] [bind_addr[:port]]`` という形式で書かれます。デフォルトでは、``user`` は現在のユーザー、 ``port`` は標準のsshポートになります。``count`` はノードで作成されるワーカーの数で、デフォルトは1です。``bind-to bind_addr[:port]`` オプションを指定すると、他のワーカーがそのワーカーと接続する際に使うIPアドレスとポートを設定することもできます。
+``-p`` もしくは ``--machinefile`` オプションを設定することで、Juliaを並列モードで開始することが出来ます。``-p n`` でn個のワーカーを追加で起動することができ、 ``--machinefile file`` では ``file`` ファイルの各行ごとにワーカーが起動されます。``file`` で定義されたマシンは、パスワード無しで ``ssh`` アクセスでき、現在のホストと同じ場所にJuliaがインストールされている必要があります。各マシンの定義は ``[count*][user@]host[:port] [bind_addr[:port]]`` という形式で書かれます。デフォルトでは、``user`` は現在のユーザー、 ``port`` は標準のsshポートになります。``count`` はノードで作成されるワーカーの数で、デフォルトは1です。``bind-to bind_addr[:port]`` オプションを指定すると、他のワーカーがそのワーカーと接続する際に使うIPアドレスとポートを設定することもできます。
 
 If you have code that you want executed whenever julia is run, you can
 put it in ``~/.juliarc.jl``:
@@ -121,7 +121,7 @@ Juliaを起動する際に必ず実行されるコードは ``~/.juliarc.jl`` �
 There are various ways to run Julia code and provide options, similar to
 those available for the ``perl`` and ``ruby`` programs::
 
-他の言語、``perl`` や ``ruby`` と似たように、Juliaを実行するには様々な方法やオプションがあります::
+他の言語（``perl`` や ``ruby`` など）のように、Juliaを実行するには様々な方法やオプションがあります::
 
 
 
@@ -177,7 +177,7 @@ Resources
 In addition to this manual, there are various other resources that may
 help new users get started with Julia:
 
-新しいユーザーがJuliaを始めるにあたって、このマニュアルの他にも助けになるであろう様々なリソースがあります:
+新しいユーザーがJuliaを始めるにあたり、このマニュアルの他にも以下のリソースが参考になるでしょう。
 
 英語
 ^^^^
@@ -189,6 +189,16 @@ help new users get started with Julia:
  - `Videos from the Julia tutorial at MIT <http://julialang.org/blog/2013/03/julia-tutorial-MIT/>`_
  - `Forio Julia Tutorials <http://forio.com/labs/julia-studio/tutorials/>`_
 
+
 日本語
 ^^^^^
 
+  - `Julia高速チュートリアル - bicycle1885 <https://github.com/bicycle1885/Julia-Tutorial>`_
+  - `Julia Advent Calendar 2014 - Qiita <http://qiita.com/advent-calendar/2014/julialang>`_
+  - `Julia Advent Calendar 2015 - Qiita <http://qiita.com/advent-calendar/2015/julialang>`_
+  - `JuliaTokyo 発表資料 <http://juliatokyo.connpass.com/>`_
+  - `今Juliaを入門するのに良いチュートリアルは？ · Issue #3 · JuliaTokyo/julia-wakalang <https://github.com/JuliaTokyo/julia-wakalang/issues/3>`_
+  - `JuliaTokyo/julia-wakalang <https://github.com/JuliaTokyo/julia-wakalang>`_ [#julia-wakalang]_
+
+
+.. [#julia-wakalang] Juliaに関する質問を日本語で出来る場所。`チャットルーム（Slack） <https://julia-tokyo-inviter.herokuapp.com/>`_ もあります。
