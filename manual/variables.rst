@@ -1,9 +1,11 @@
 
 ***********
- Variables
+ 変数
 ***********
 
 A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to store a value (that you obtained after some math, for example) for later use. For example:
+
+Juliaでは、変数は値に結び付けられた（束縛された）名前です。これは、（例えば計算して得た）値を後で使うためにしまっておくのに便利です。以下の例を見てみてください。
 
 .. doctest::
 
@@ -23,9 +25,30 @@ A variable, in Julia, is a name associated (or bound) to a value. It's useful wh
     julia> x = "Hello World!"
     "Hello World!"
 
+    .. doctest::
+
+        # 10という値を変数xに割り当てる
+        julia> x = 10
+        10
+
+        # xの値を計算する
+        julia> x + 1
+        11
+
+        # xの値を再度割り当てる
+        julia> x = 1 + 1
+        2
+
+        # 別の型の値、例えば文字列を割り当てることも出来ます
+        julia> x = "Hello World!"
+        "Hello World!"
+
 Julia provides an extremely flexible system for naming variables.
 Variable names are case-sensitive, and have no semantic meaning (that is,
 the language will not treat variables differently based on their names).
+
+Juliaの変数に名前をつけるシステムは、とても融通の利くものです。
+変数名の大文字と小文字は区別されますが、セマンティクスでの意味を持つわけではありません（言語は名前によって変数の扱いを変えない、ということです）。
 
 .. raw:: latex
 
@@ -54,6 +77,8 @@ the language will not treat variables differently based on their names).
 
 Unicode names (in UTF-8 encoding) are allowed:
 
+（UTF-8エンコーディングの）ユニコードでの名前を使うことも出来ます。
+
 .. raw:: latex
 
     \begin{CJK*}{UTF8}{mj}
@@ -72,11 +97,15 @@ name followed by tab.  For example, the variable name ``δ`` can be
 entered by typing ``\delta``-*tab*, or even ``α̂₂`` by
 ``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab*.
 
+JuliaのREPLや、その他いくつかの編集環境では、バックスラッシュから始まるLaTeX記号名、そしてその後にタブを入力することで、様々なユニコード数学記号を入力することができます。 例えば、　変数名 ``δ`` は ``\delta``-*タブ* 、``α̂₂`` は ``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab* とすることで入力することができます。
+
 .. raw:: latex
 
     \end{CJK*}
 
 Julia will even let you redefine built-in constants and functions if needed:
+
+もし必要であれば、Juliaでは、ビルトインの定数や関数を再定義することすら出来ます。
 
 .. doctest::
 
@@ -99,7 +128,12 @@ Julia will even let you redefine built-in constants and functions if needed:
 
 However, this is obviously not recommended to avoid potential confusion.
 
+とはいえ、潜在的な混乱を避けるため、これはもちろん推奨されません。
+
 Allowed Variable Names
+======================
+
+許可される変数名
 ======================
 
 Variable names must begin with a letter (A-Z or a-z), underscore, or a
