@@ -5,7 +5,7 @@
 
 A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to store a value (that you obtained after some math, for example) for later use. For example:
 
-Juliaでは、変数は値に結び付けられた（束縛された）名前です。これは、（例えば計算して得た）値を後で使うためにしまっておくのに便利です。以下の例を見てみてください。
+Juliaでは、変数は値に結び付けられた（束縛された）名前です。これは、（例えば計算結果などの）値を後で使うためにしまっておくのに便利です。以下に例を示します。
 
 .. doctest::
 
@@ -25,29 +25,29 @@ Juliaでは、変数は値に結び付けられた（束縛された）名前で
     julia> x = "Hello World!"
     "Hello World!"
 
-    .. doctest::
+.. doctest::
 
-        # 10という値を変数xに割り当てる
-        julia> x = 10
-        10
+    # 10という値を変数xに割り当てる
+    julia> x = 10
+    10
 
-        # xの値を計算する
-        julia> x + 1
-        11
+    # xの値を使って計算する
+    julia> x + 1
+    11
 
-        # xの値を再度割り当てる
-        julia> x = 1 + 1
-        2
+    # xに値を再度割り当てる
+    julia> x = 1 + 1
+    2
 
-        # 別の型の値、例えば文字列を割り当てることも出来ます
-        julia> x = "Hello World!"
-        "Hello World!"
+    # 別の型の値、例えば文字列を割り当てることもできる
+    julia> x = "Hello World!"
+    "Hello World!"
 
 Julia provides an extremely flexible system for naming variables.
 Variable names are case-sensitive, and have no semantic meaning (that is,
 the language will not treat variables differently based on their names).
 
-Juliaの変数に名前をつけるシステムは、とても融通の利くものです。
+Juliaでは、非常に柔軟に変数を命名することができます。
 変数名の大文字と小文字は区別されますが、セマンティクスでの意味を持つわけではありません（言語は名前によって変数の扱いを変えない、ということです）。
 
 .. raw:: latex
@@ -77,7 +77,7 @@ Juliaの変数に名前をつけるシステムは、とても融通の利くも
 
 Unicode names (in UTF-8 encoding) are allowed:
 
-（UTF-8エンコーディングの）ユニコードでの名前を使うことも出来ます。
+（UTF-8エンコーディングの）ユニコードでの名前を使うこともできます。
 
 .. raw:: latex
 
@@ -105,7 +105,7 @@ JuliaのREPLや、その他いくつかの編集環境では、バックスラ�
 
 Julia will even let you redefine built-in constants and functions if needed:
 
-もし必要であれば、Juliaでは、ビルトインの定数や関数を再定義することすら出来ます。
+もし必要であれば、Juliaでは、ビルトインの定数や関数を再定義することすらできます。
 
 .. doctest::
 
