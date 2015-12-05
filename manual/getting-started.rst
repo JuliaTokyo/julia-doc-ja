@@ -16,23 +16,26 @@ interactive session (also known as a read-eval-print loop or "repl")
 by double-clicking the Julia executable or running ``julia`` from the
 command line::
 
-Juliaを学んだり試したりする一番簡単な方法は、インタラクティブ・セッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します::
+Juliaを学んだり試したりする一番簡単な方法は、インタラクティブ・セッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します。
+
+::
 
     $ julia
                    _
        _       _ _(_)_     |  A fresh approach to technical computing
       (_)     | (_) (_)    |  Documentation: http://docs.julialang.org
-       _ _   _| |_  __ _   |  Type "help()" to list help topics
+       _ _   _| |_  __ _   |  Type "?help" for help.
       | | | | | | |/ _` |  |
-      | | |_| | | | (_| |  |  Version 0.3.0-prerelease+3690 (2014-06-16 05:11 UTC)
-     _/ |\__'_|_|_|\__'_|  |  Commit 1b73f04* (0 days old master)
-    |__/                   |  x86_64-apple-darwin13.1.0
+      | | |_| | | | (_| |  |  Version 0.4.1 (2015-11-08 10:33 UTC)
+     _/ |\__'_|_|_|\__'_|  |  Official http://julialang.org/ release
+    |__/                   |  x86_64-apple-darwin13.4.0
 
     julia> 1 + 2
     3
 
     julia> ans
     3
+
 
 
 To exit the interactive session, type ``^D`` — the control key
