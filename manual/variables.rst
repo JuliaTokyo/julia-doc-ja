@@ -145,6 +145,12 @@ as well as other Unicode code points: diacritics and other modifying
 marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category
 Pc), primes, and a few other characters.
 
+変数名の最初は、アルファベット（A-Zとa-z）、アンダースコア、そして00A0より大きい場所を指し示すユニコードから始まる必要があります。
+ユニコードは特に、`Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl（文字）、Sc/So （通貨とその他の記号）、そしていくつかの文字（letter）のような字（character）（例：Sm数学記号の一部）を使うことができます。
+最初の文字以降は、!や数字（0-9とNd/Noカテゴリにあるその他の文字）、そしてその他のユニコードも使うことができます。
+使用可能なユニコードとしては、　
+発音区別記号（訳注: ``´`` や `````、 ``^`` など）やその他の修飾記号（Mn/Mc/Me/Skカテゴリ）、いくつかの句読点（punctuation connectors）（Pcカテゴリ）、プライム記号（訳注: xxx）、そしてその他いくつかの文字があります。
+
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
 Operators like ``+`` are also valid identifiers, but are parsed specially. In
