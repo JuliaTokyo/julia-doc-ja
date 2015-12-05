@@ -4,6 +4,7 @@
 
 *************************************
  Integers and Floating-Point Numbers
+ 整数と浮動小数点
 *************************************
 
 Integers and floating-point values are the basic building blocks of
@@ -14,6 +15,13 @@ literals. For example, ``1`` is an integer literal, while ``1.0`` is a
 floating-point literal; their binary in-memory representations as
 objects are numeric primitives.
 
+整数と浮動小数点の値は、計算処理のbuidling blocksとなるものです。
+そのような値の組み込み表現（Built-in represenation）は数値プリミティブ（numeric primitives）と呼ばれます。
+一方、整数と浮動小数点がコード内で直接の値となっているものは、数値リテラル（numeric literals）と呼ばれています。
+例えば、 ``1`` は整数リテラルで、 ``1.0`` は浮動小数点リテラルです。
+これらの、オブジェクトとしてのバイナリでのメモリ内表現（binary in-memory representations as
+objects）が数値プリミティブです。
+
 Julia provides a broad range of primitive numeric types, and a full complement
 of arithmetic and bitwise operators as well as standard mathematical functions
 are defined over them. These map directly onto numeric types and operations
@@ -23,6 +31,14 @@ software support for :ref:`man-arbitrary-precision-arithmetic`, which can
 handle operations on numeric values that cannot be represented effectively in
 native hardware representations, but at the cost of relatively slower
 performance.
+
+Juliaは幅広い種類のプリミティブな数値型を用意しています。
+これらの型には、完全な計算・ビット演算子、そして標準的な数学関数が定義されています。
+これらの数値型と演算は、現代のコンピュータでネイティブにサポートされているものと直接対応しています。
+これにより、Juliaは計算リソースを最大限に活用すること（to take
+full advantage of computational resources）ができるのです。
+加えて、Juliaは任意の精度での計算 :ref:`man-arbitrary-precision-arithmetic` をソフトウェアとしてサポートしています。
+これは、ハードウェアでのネイティブ表現では効率的に表現できない値の演算を可能にしますが、処理は比較的遅くなります。
 
 The following are Julia's primitive numeric types:
 
@@ -760,4 +776,3 @@ Examples:
 
     julia> one(BigFloat)
     1e+00 with 256 bits of precision
-
