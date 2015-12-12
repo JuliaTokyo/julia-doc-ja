@@ -5,8 +5,7 @@ default: html
 # You can set these variables from the command line.
 SPHINXOPTS       =
 PAPER            =
-JULIAHOME        = $(abspath ..)
-JULIA_EXECUTABLE = $(JULIAHOME)/usr/bin/julia
+DEPS             = $(abspath ./_deps)
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -15,12 +14,12 @@ ALLSPHINXOPTS   = -d _build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-JULIA_ENV     = $(JULIAHOME)/deps/julia-env
+JULIA_ENV     = $(DEPS)/julia-env
 ACTIVATE      = $(JULIA_ENV)/bin/activate
 SPHINX_BUILD  = $(JULIA_ENV)/bin/sphinx-build
 
 $(ACTIVATE):
-	$(MAKE) -C $(JULIAHOME)/deps install-virtualenv
+	$(MAKE) -C $(DEPS) install-virtualenv
 	touch -c $@
 
 $(SPHINX_BUILD): $(ACTIVATE) requirements.txt
@@ -170,9 +169,4 @@ doctest: $(SPHINX_BUILD)
 	PATH="$(PATH):$(build_bindir)" $(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) _build/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in _build/doctest/output.txt."
-
-manual/unicode-input-table.rst: $(JULIAHOME)/base/latex_symbols.jl
-	$(JULIA_EXECUTABLE) tabcomplete.jl > manual/unicode-input-table.rst
-
-unicode: manual/unicode-input-table.rst
 

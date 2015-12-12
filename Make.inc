@@ -193,8 +193,8 @@ $(error "unknown XC_HOST variable set")
 endif
 endif
 
-JLDOWNLOAD = $(JULIAHOME)/deps/jldownload
-JLCHECKSUM = $(JULIAHOME)/deps/jlchecksum
+JLDOWNLOAD = $(JULIAHOME)/_deps/jldownload
+JLCHECKSUM = $(JULIAHOME)/_deps/jlchecksum
 
 # Figure out OS and architecture
 OS := $(BUILD_OS)
