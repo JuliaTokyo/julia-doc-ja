@@ -3,7 +3,7 @@ Julia 公式ドキュメント翻訳
 
 プログラミング言語「Julia」公式ドキュメントの日本語翻訳プロジェクトです。
 
-原文は [docs.julialang.org](http://docs.julialang.org) 、邦訳は [docs.julia.tokyo](http://docs.julia.tokyo) で見ることが出来ます。翻訳は現在、 *release-0.4* のものを元に行っています。翻訳文と直接対応する原文は `_original/` にあります。
+原文は [docs.julialang.org](http://docs.julialang.org) 、邦訳は [docs.julia.tokyo](http://docs.julia.tokyo) で見ることができます。翻訳は現在、 *release-0.4* のものを元に行っています。翻訳文と直接対応する原文は `_original/` にあります。
 
 ドキュメントは、Read The Docsを使って公開されています （[プロジェクトページ](https://readthedocs.org/projects/julia-doc-ja)）。
 
@@ -19,7 +19,7 @@ Julia 公式ドキュメント翻訳
 
 まずこのレポジトリを「Fork」し、自分のレポジトリ上で「編集・翻訳」、そしてそれを「Pull Request」として送っていただければ、こちらでチェックをして取り込みます。
 
-現在進行中の翻訳作業については、[Pull Requests](https://github.com/JuliaTokyo/julia-doc-ja/pulls)で確認することが出来ます。
+現在進行中の翻訳作業については、[Pull Requests](https://github.com/JuliaTokyo/julia-doc-ja/pulls)で確認することができます。
 
 ドキュメントはreStructuredText（rST）形式で書かれています。rSTについては、[Python開発者ガイドのドキュメンテーションに関する章](https://docs.python.org/devguide/documenting.html)（英語）が参考になるでしょう。
 
