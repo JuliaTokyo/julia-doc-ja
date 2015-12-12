@@ -141,6 +141,7 @@ Juliaの起動時に毎回実行したいコードがあれば、 ``~/.juliarc.j
 ^^^^^
 
   - `Julia高速チュートリアル - bicycle1885 <https://github.com/bicycle1885/Julia-Tutorial>`_
+  - `実例で学ぶ Julia-0.4.1 - yomichi <http://yomichi.hateblo.jp/entry/2015/12/01/022544>`_
   - `Julia Advent Calendar 2014 - Qiita <http://qiita.com/advent-calendar/2014/julialang>`_
   - `Julia Advent Calendar 2015 - Qiita <http://qiita.com/advent-calendar/2015/julialang>`_
   - `JuliaTokyo 発表資料 <http://juliatokyo.connpass.com/>`_
