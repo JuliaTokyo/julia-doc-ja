@@ -30,6 +30,7 @@
    manual/methods
    manual/constructors
    manual/conversion-and-promotion
+   manual/interfaces
    manual/modules
    manual/documentation
    manual/metaprogramming
@@ -82,7 +83,7 @@
 .. _devdocs:
 
 #######################
- 開発者向けドキュメント
+開発者向けドキュメント
 #######################
 
 .. toctree::

@@ -11,7 +11,7 @@ Juliaはこのような目的のために開発されています。つまり、
 
 JuliaのコンパイラはPythonやRで使われるようなインタプリタとは異なるので、もしかしたら最初はその性能に気づかないかもしれません。
 遅いと感じたら、何かを試す前に `Performance Tips <http://docs.julialang.org/en/latest/manual/performance-tips>`_ を参照することをお勧めします。
-Juliaがどのように動作するかを理解すれば、C言語と同等の速さで動くコードを簡単に書くことが出来るでしょう。
+Juliaがどのように動作するかを理解すれば、C言語と同等の速さで動くコードを簡単に書くことができるでしょう。
 
 Juliaは任意の型付け、多重ディスパッチ、そして優れた性能を提供します。
 これは型推論と、 `LLVM <http://ja.wikipedia.org/wiki/LLVM>`_ によって実装された `just-in-time (JIT) コンパイラ <http://ja.wikipedia.org/wiki/実行時コンパイラ>`_ によって実現されるものです。

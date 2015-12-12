@@ -16,7 +16,7 @@ Juliaを学んだり試したりする一番簡単な方法は、インタラク
       (_)     | (_) (_)    |  Documentation: http://docs.julialang.org
        _ _   _| |_  __ _   |  Type "?help" for help.
       | | | | | | |/ _` |  |
-      | | |_| | | | (_| |  |  Version 0.4.1 (2015-11-08 10:33 UTC)
+      | | |_| | | | (_| |  |  Version 0.4.2 (2015-12-06 21:47 UTC)
      _/ |\__'_|_|_|\__'_|  |  Official http://julialang.org/ release
     |__/                   |  x86_64-apple-darwin13.4.0
 
@@ -54,7 +54,7 @@ Juliaを学んだり試したりする一番簡単な方法は、インタラク
     foo
     bar
 
-``-p`` もしくは ``--machinefile`` オプションを設定することで、Juliaを並列モードで開始することが出来ます。``-p n`` でn個のワーカーを追加で起動することができ、 ``--machinefile file`` では ``file`` ファイルの各行ごとにワーカーが起動されます。``file`` で定義されたマシンは、パスワード無しで ``ssh`` アクセスでき、現在のホストと同じ場所にJuliaがインストールされている必要があります。各マシンの定義は ``[count*][user@]host[:port] [bind_addr[:port]]`` という形式で書かれます。デフォルトでは、``user`` は現在のユーザー、 ``port`` は標準のsshポートになります。``count`` はノードで作成されるワーカーの数で、デフォルトは1です。``bind-to bind_addr[:port]`` オプションを指定すると、他のワーカーがそのワーカーと接続する際に使うIPアドレスとポートを設定することもできます。
+``-p`` もしくは ``--machinefile`` オプションを設定することで、Juliaを並列モードで開始することができます。``-p n`` でn個のワーカーを追加で起動することができ、 ``--machinefile file`` では ``file`` ファイルの各行ごとにワーカーが起動されます。``file`` で定義されたマシンは、パスワード無しで ``ssh`` アクセスでき、現在のホストと同じ場所にJuliaがインストールされている必要があります。各マシンの定義は ``[count*][user@]host[:port] [bind_addr[:port]]`` という形式で書かれます。デフォルトでは、``user`` は現在のユーザー、 ``port`` は標準のsshポートになります。``count`` はノードで作成されるワーカーの数で、デフォルトは1です。``bind-to bind_addr[:port]`` オプションを指定すると、他のワーカーがそのワーカーと接続する際に使うIPアドレスとポートを設定することもできます。
 
 Juliaの起動時に毎回実行したいコードがあれば、 ``~/.juliarc.jl`` に書いておくことができます。
 
@@ -141,6 +141,7 @@ Juliaの起動時に毎回実行したいコードがあれば、 ``~/.juliarc.j
 ^^^^^
 
   - `Julia高速チュートリアル - bicycle1885 <https://github.com/bicycle1885/Julia-Tutorial>`_
+  - `実例で学ぶ Julia-0.4.1 - yomichi <http://yomichi.hateblo.jp/entry/2015/12/01/022544>`_
   - `Julia Advent Calendar 2014 - Qiita <http://qiita.com/advent-calendar/2014/julialang>`_
   - `Julia Advent Calendar 2015 - Qiita <http://qiita.com/advent-calendar/2015/julialang>`_
   - `JuliaTokyo 発表資料 <http://juliatokyo.connpass.com/>`_
