@@ -16,7 +16,7 @@ Juliaを学んだり試したりする一番簡単な方法は、インタラク
       (_)     | (_) (_)    |  Documentation: http://docs.julialang.org
        _ _   _| |_  __ _   |  Type "?help" for help.
       | | | | | | |/ _` |  |
-      | | |_| | | | (_| |  |  Version 0.4.1 (2015-11-08 10:33 UTC)
+      | | |_| | | | (_| |  |  Version 0.4.2 (2015-12-06 21:47 UTC)
      _/ |\__'_|_|_|\__'_|  |  Official http://julialang.org/ release
     |__/                   |  x86_64-apple-darwin13.4.0
 
