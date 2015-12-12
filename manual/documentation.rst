@@ -6,27 +6,27 @@
 
 Julia enables package developers and users to document functions, types and
 other objects easily, either via the built-in documentation system in Julia 0.4
-or the `Docile.jl <http://github.com/MichaelHatherly/Docile.jl>`_ package in
+or the `Docile.jl <https://github.com/MichaelHatherly/Docile.jl>`_ package in
 Julia 0.3.
+
+In 0.4:
 
 .. doctest::
 
-    VERSION < v"0.4-" && using Docile
-
-    @doc doc"Tells you if there are too foo items in the array." ->
+    "Tells you if there are too foo items in the array."
     foo(xs::Array) = ...
 
-Documentation is interpreted as `Markdown <http://en.wikipedia.org/wiki/Markdown>`_,
+Documentation is interpreted as `Markdown <https://en.wikipedia.org/wiki/Markdown>`_,
 so you can use indentation and code fences to delimit code examples from text.
 
 .. doctest::
 
-    @doc doc"""
-      The `@bar` macro will probably make your code 2x faster or something. Use
-      it like this:
+    """
+    The `@bar` macro will probably make your code 2x faster or something. Use
+    it like this:
 
-          @bar buy_drink_for("Jiahao")
-      """ ->
+        @bar buy_drink_for("Jiahao")
+    """
     macro bar(ex) ...
 
 Documentation is very free-form; there are no set formatting
@@ -65,18 +65,16 @@ example:
 
 .. doctest::
 
-    @doc doc"""
-      Multiplication operator. `x*y*z*...` calls this function with multiple
-      arguments, i.e. `*(x,y,z...)`.
-      """ ->
+    """
+    Multiplication operator. `x*y*z*...` calls this function with multiple
+    arguments, i.e. `*(x,y,z...)`.
+    """
     function *(x, y)
-      # ... [implementation sold seperately] ...
+      # ... [implementation sold separately] ...
     end
 
-    @doc doc"""
-      When applied to strings, concatenates them.
-      """
-    function *(x::String, y::String)
+    "When applied to strings, concatenates them."
+    function *(x::AbstractString, y::AbstractString)
       # ... [insert secret sauce here] ...
     end
 
@@ -125,6 +123,264 @@ Or for use with Julia's metaprogramming functionality:
     @doc "`add(a,b)` adds `a` and `b` together" add
     @doc "`subtract(a,b)` subtracts `b` from `a`" subtract
 
+Documentation written in non-toplevel blocks, such as ``if``, ``for``, and ``let``, are not
+automatically added to the documentation system. ``@doc`` must be used in these cases. For
+example:
+
+.. code-block:: julia
+
+    if VERSION > v"0.4"
+        "..."
+        f(x) = x
+    end
+
+will not add any documentation to ``f`` even when the condition is ``true`` and must instead
+be written as:
+
+.. code-block:: julia
+
+    if VERSION > v"0.4"
+        @doc "..." ->
+        f(x) = x
+    end
+
+Syntax Guide
+------------
+
+A comprehensive overview of all documentable Julia syntax.
+
+In the following examples ``"..."`` is used to illustrate an arbitrary docstring which may
+be one of the follow four variants and contain arbitrary text:
+
+.. code-block:: julia
+
+    "..."
+
+    doc"..."
+
+    """
+    ...
+    """
+
+    doc"""
+    ...
+    """
+
+``@doc_str`` should only be used when the docstring contains ``$`` or ``\`` characters that
+should not be parsed by Julia such as LaTeX syntax or Julia source code examples containing
+interpolation.
+
+Functions and Methods
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    function f end
+
+    "..."
+    f
+
+Adds docstring ``"..."`` to ``Function`` ``f``. The first version is the preferred syntax,
+however both are equivalent.
+
+.. code-block:: julia
+
+    "..."
+    f(x) = x
+
+    "..."
+    function f(x)
+        x
+    end
+
+    "..."
+    f(x)
+
+Adds docstring ``"..."`` to ``Method`` ``f(::Any)``.
+
+.. code-block:: julia
+
+    "..."
+    f(x, y = 1) = x + y
+
+Adds docstring ``"..."`` to two ``Method``\ s, namely ``f(::Any)`` and ``f(::Any, ::Any)``.
+
+Types
+~~~~~
+
+.. code-block:: julia
+
+    "..."
+    abstract T
+
+    "..."
+    type T end
+
+    "..."
+    immutable T end
+
+Adds the docstring ``"..."`` to type ``T``.
+
+.. code-block:: julia
+
+    "..."
+    type T
+        "x"
+        x
+        "y"
+        y
+    end
+
+Adds docstring ``"..."`` to type ``T``, ``"x"`` to field ``T.x`` and ``"y"`` to field
+``T.y``. Also applicable to ``immutable`` types.
+
+.. code-block:: julia
+
+    "..."
+    typealias A T
+
+Adds docstring ``"..."`` to the ``Binding`` ``A``.
+
+``Binding``\ s are used to store a reference to a particular ``Symbol`` in a ``Module``
+without storing the referenced value itself.
+
+Macros
+~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    macro m() end
+
+    "..."
+    :(@m)
+
+Adds docstring ``"..."`` to the ``Binding`` ``@m``. Adding documentation at the definition
+is the preferred approach.
+
+Modules
+~~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    module M end
+
+    module M
+
+    "..."
+    M
+
+    end
+
+Adds docstring ``"..."`` to the ``Module`` ``M``. Adding the docstring above the ``Module``
+is the preferred syntax, however both are equivalent.
+
+.. code-block:: julia
+
+    "..."
+    baremodule M
+    # ...
+    end
+
+    baremodule M
+
+    import Base: call, @doc
+
+    "..."
+    f(x) = x
+
+    end
+
+Documenting a ``baremodule`` by placing a docstring above the expression automatically
+imports ``call`` and ``@doc`` into the module. These imports must be done manually when the
+module expression is not documented. Empty ``baremodule``\ s cannot be documented.
+
+Global Variables
+~~~~~~~~~~~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    const a = 1
+
+    "..."
+    b = 2
+
+    "..."
+    global c = 3
+
+Adds docstring ``"..."`` to the ``Binding``\ s ``a``, ``b``, and ``c``.
+
+.. code-block:: julia
+
+    "..."
+    sym
+
+Adds docstring ``"..."`` to the value associated with ``sym``. Users should prefer
+documenting ``sym`` at it's definition.
+
+Multiple Objects
+~~~~~~~~~~~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    a, b
+
+Adds docstring ``"..."`` to ``a`` and ``b`` each of which should be a documentable
+expression. This syntax is equivalent to
+
+.. code-block:: julia
+
+    "..."
+    a
+
+    "..."
+    b
+
+Any number of expressions many be documented together in this way. This syntax can be useful
+when two functions are related, such as non-mutating and mutating versions ``f`` and ``f!``.
+
+Macro-generated code
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: julia
+
+    "..."
+    @m expression
+
+Adds docstring ``"..."`` to expression generated by expanding ``@m expression``. This allows
+for expressions decorated with ``@inline``, ``@noinline``, ``@generated``, or any other
+macro to be documented in the same way as undecorated expressions.
+
+Macro authors should take note that only macros that generate a single expression will
+automatically support docstrings. If a macro returns a block containing multiple
+subexpressions then the subexpression that should be documented must be marked using the
+:func:`@__doc__` macro.
+
+The ``@enum`` macro makes use of ``@__doc__`` to allow for documenting ``Enum``\ s.
+Examining it's definition should serve as an example of how to use ``@__doc__`` correctly.
+
+.. function:: @__doc__(ex)
+
+   .. Docstring generated from Julia source
+
+   Low-level macro used to mark expressions returned by a macro that should be documented. If more than one expression is marked then the same docstring is applied to each expression.
+
+   .. code-block:: julia
+
+       macro example(f)
+           quote
+               $(f)() = 0
+               @__doc__ $(f)(x) = 1
+               $(f)(x, y) = 2
+           end |> esc
+       end
+
+   ``@__doc__`` has no effect when a macro that uses it is not documented.
+
 Markdown Syntax Notes
 ---------------------
 
@@ -144,15 +400,3 @@ references) without cluttering the basic syntax.
 In principle, the Markdown parser itself can also be arbitrarily
 extended by packages, or an entirely custom flavour of Markdown can be
 used, but this should generally be unnecessary.
-
-Other Notes
------------
-
-Julia 0.4 will introduce the more convenient syntax
-
-.. doctest::
-
-    "..."
-    f(x) = ...
-
-but this is not yet implemented.

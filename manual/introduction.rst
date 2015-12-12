@@ -1,66 +1,111 @@
 .. _man-introduction:
 
 **************
-はじめに
+ Introduction
 **************
 
-科学技術計算には常に最高の性能が求められますが、この分野のエキスパートたちはより低速な動的言語を使って仕事をしています。
-私達はこの分野で動的言語を用いることにたくさんの利点があることを理解していますし、動的言語が使われないようにしたいわけでもありません。
-幸い、最近の言語設計やコンパイラの進歩によって、性能の低下を避けつつ、「生産的なプロトタイピング」と「高性能なアプリケーションの効率的なデプロイ」の両方をひとつの環境で提供することが可能になりました。
-Juliaはこのような目的のために開発されています。つまり、Juliaは柔軟な動的言語であると同時に、古くからの静的型付け言語と同等の性能を実現することで科学計算や数値計算に適してたものになっています。
+Scientific computing has traditionally required the highest performance,
+yet domain experts have largely moved to slower dynamic languages for
+daily work. We believe there are many good reasons to prefer dynamic
+languages for these applications, and we do not expect their use to
+diminish. Fortunately, modern language design and compiler techniques
+make it possible to mostly eliminate the performance trade-off and
+provide a single environment productive enough for prototyping and
+efficient enough for deploying performance-intensive applications. The
+Julia programming language fills this role: it is a flexible dynamic
+language, appropriate for scientific and numerical computing, with
+performance comparable to traditional statically-typed languages.
 
-JuliaのコンパイラはPythonやRで使われるようなインタプリタとは異なるので、もしかしたら最初はその性能に気づかないかもしれません。
-遅いと感じたら、何かを試す前に `Performance Tips <http://docs.julialang.org/en/latest/manual/performance-tips>`_ を参照することをお勧めします。
-Juliaがどのように動作するかを理解すれば、C言語と同等の速さで動くコードを簡単に書くことが出来るでしょう。
+Because Julia's compiler is different from the interpreters used
+for languages like Python or R, you may find that Julia's performance
+is unintuitive at first. If you find that something is slow, we highly
+recommend reading through the :ref:`man-performance-tips`
+section before trying anything else. Once you understand how Julia
+works, it's easy to write code that's nearly as fast as C.
 
-Juliaは任意の型付け、多重ディスパッチ、そして優れた性能を提供します。
-これは型推論と、 `LLVM <http://ja.wikipedia.org/wiki/LLVM>`_ によって実装された `just-in-time (JIT) コンパイラ <http://ja.wikipedia.org/wiki/実行時コンパイラ>`_ によって実現されるものです。
-Juliaは命令型プログラミング・関数型プログラミング・オブジェクト指向プログラミングの機能を組み合わせたマルチパラダイム言語です。
-JuliaはR、MATLAB、Pythonなどと同様に高度な数値計算のための簡単で高い表現力を持つ記法を提供しつつ、一般的なプログラミングもサポートします。
-このことを実現するために、Juliaは数値計算言語の系譜を踏まえつつも、 `Lisp <http://ja.wikipedia.org/wiki/LISP>`_ 、
-`Perl <http://ja.wikipedia.org/wiki/Perl>`_ 、 `Python <http://ja.wikipedia.org/wiki/Python>`_ 、 `Lua <http://ja.wikipedia.org/wiki/Lua>`_ 、そして
-`Ruby <http://ja.wikipedia.org/wiki/Ruby>`_ などの広く使われている動的言語からも多くのアイデアを得ています。
+Julia features optional typing, multiple dispatch, and good
+performance, achieved using type inference and `just-in-time (JIT)
+compilation <https://en.wikipedia.org/wiki/Just-in-time_compilation>`_,
+implemented using `LLVM
+<https://en.wikipedia.org/wiki/Low_Level_Virtual_Machine>`_. It is
+multi-paradigm, combining features of imperative, functional, and
+object-oriented programming. Julia provides ease and expressiveness
+for high-level numerical computing, in the same way as languages such
+as R, MATLAB, and Python, but also supports general programming. To
+achieve this, Julia builds upon the lineage of
+mathematical programming languages, but also borrows much from popular
+dynamic languages, including `Lisp
+<https://en.wikipedia.org/wiki/Lisp_(programming_language)>`_, `Perl
+<https://en.wikipedia.org/wiki/Perl_(programming_language)>`_, `Python
+<https://en.wikipedia.org/wiki/Python_(programming_language)>`_, `Lua
+<https://en.wikipedia.org/wiki/Lua_(programming_language)>`_, and `Ruby
+<https://en.wikipedia.org/wiki/Ruby_(programming_language)>`_.
 
-一般の動的言語と比べてJuliaが特に優れている点としては以下のようなものが挙げられます。
+The most significant departures of Julia from typical dynamic languages
+are:
 
-- 言語のコア部分は最小限の機能しか提供しません。整数の四則演算のような初等演算を含む標準ライブラリはJulia自身で書かれています
-- オブジェクトを作成したり説明したりするのに使うことができる、型に関する豊富な機能を提供します。プログラマ自身で型を宣言することもできます
-- `多重ディスパッチ <http://ja.wikipedia.org/wiki/多重ディスパッチ>`_ によってさまざまな引数の組み合わせごとに関数の振る舞いを定義できます
-- それぞれの引数の型ごとに最適化されたコードを自動生成します
-- Cのような静的コンパイル言語に迫る性能を実現します
+-  The core language imposes very little; the standard library is
+   written in Julia itself, including primitive operations like integer
+   arithmetic
+-  A rich language of types for constructing and describing objects,
+   that can also optionally be used to make type declarations
+-  The ability to define function behavior across many combinations of
+   argument types via `multiple
+   dispatch <https://en.wikipedia.org/wiki/Multiple_dispatch>`_
+-  Automatic generation of efficient, specialized code for different
+   argument types
+-  Good performance, approaching that of statically-compiled languages
+   like C
 
-動的言語は「型がない」と言われることがありますが、そんなことはありません。
-プリミティブであれユーザー定義であれ、全てのオブジェクトは何らかの型を持ちます。
-多くの動的言語における型宣言の欠落は、コンパイラに対して値の型を伝えられない、または型について何ら触れることができないということを意味します。
-一方静的言語においては、コンパイラのために型注釈をつけることができます（ほぼ必須でしょう）が、型の情報はコンパイル時にのみ存在し、実行時には操作したり取得したりすることができません。
-Juliaでは、型そのものが実行時オブジェクトとなり、同時にコンパイラに対して情報を伝えるために利用できます。
+Although one sometimes speaks of dynamic languages as being "typeless",
+they are definitely not: every object, whether primitive or
+user-defined, has a type. The lack of type declarations in most dynamic
+languages, however, means that one cannot instruct the compiler about
+the types of values, and often cannot explicitly talk about types at
+all. In static languages, on the other hand, while one can — and usually
+must — annotate types for the compiler, types exist only at compile time
+and cannot be manipulated or expressed at run time. In Julia, types are
+themselves run-time objects, and can also be used to convey information
+to the compiler.
 
-カジュアルプログラマは型や多重ディスパッチを明示的に使う必要はありませんが、これらはJuliaの基礎となる機能です。
-関数はさまざまな引数の組み合わせに対して定義され、実行時には最も当てはまる定義が適用されます。
-このモデルは数値計算にとても適しています。
-従来のオブジェクト指向ディスパッチのように、第一引数が演算子を「所有」するのは不自然です。
-これに対してJuliaの演算子は（特殊な記法を持った）単なる関数に過ぎません。
-ユーザーが定義したデータ型に対して加算処理を追加したい場合は、 ``+`` 関数に対して新たなメソッドを定義します。
-こうすることで、既存のコードをシームレスに新たなデータ型対応させることができます。
+While the casual programmer need not explicitly use types or multiple
+dispatch, they are the core unifying features of Julia: functions are
+defined on different combinations of argument types, and applied by
+dispatching to the most specific matching definition. This model is a
+good fit for mathematical programming, where it is unnatural for the
+first argument to "own" an operation as in traditional object-oriented
+dispatch. Operators are just functions with special notation — to extend
+addition to new user-defined data types, you define new methods for the
+``+`` function. Existing code then seamlessly applies to the new data
+types.
 
-実行時型推論（任意の型注釈で補うこともできます）によって、またプロジェクト発足時からの性能に対する強い欲求によって、Juliaの計算効率は他の動的言語を圧倒し、静的コンパイル言語と競うレベルにあります。
-大規模数値計算問題では計算速度はこれまでもこれからも、常に重大な問題です。
-処理されるデータ量は過去数十年にわたってムーアの法則にしたがって増え続けています。
+Partly because of run-time type inference (augmented by optional type
+annotations), and partly because of a strong focus on performance from
+the inception of the project, Julia's computational efficiency exceeds
+that of other dynamic languages, and even rivals that of
+statically-compiled languages. For large scale numerical problems, speed
+always has been, continues to be, and probably always will be crucial:
+the amount of data being processed has easily kept pace with Moore's Law
+over the past decades.
 
-Juliaは、扱いやすさ・強力さ・効率性の前例のない組み合わせを1つの言語で実現しようとしています。これに加え、Juliaは以下のような長所を持ちます。
+Julia aims to create an unprecedented combination of ease-of-use, power,
+and efficiency in a single language. In addition to the above, some
+advantages of Julia over comparable systems include:
 
-- フリーかつオープンソース（ `MITライセンス <https://github.com/JuliaLang/julia/blob/master/LICENSE.md>`_ ）
-- コンパクトで組み込み型と同等の速度を持つユーザー定義型
-- 性能のためにコードをベクトル化する必要がありません。ベクトル化されていないコードも高速に動作します
-- 並列コンピューティング・分散コンピューティングを意図した設計
-- 軽量で"greenな"スレッドシステム [#green-threads]_ （ `コルーチン <http://ja.wikipedia.org/wiki/コルーチン>`_ ）
-- 控えめかつ強力な型システム
-- 数値型他の型の、エレガントで拡張性のある変換やプロモーション [#promotion]_
-- `Unicode <http://ja.wikipedia.org/wiki/Unicode>`_ の効率的なサポート。 `UTF-8 <http://ja.wikipedia.org/wiki/UTF-8>`_ も含みますが、これに限定しません
-- ラッパーや特別なAPIを必要としない、Cの関数の直接の呼び出し
-- シェルのような強力なプロセス管理
-- Lispライクなマクロやその他のメタプログラミング機構
+-  Free and open source (`MIT
+   licensed <https://github.com/JuliaLang/julia/blob/master/LICENSE.md>`_)
+-  User-defined types are as fast and compact as built-ins
+-  No need to vectorize code for performance; devectorized code is fast
+-  Designed for parallelism and distributed computation
+-  Lightweight "green" threading
+   (`coroutines <https://en.wikipedia.org/wiki/Coroutine>`_)
+-  Unobtrusive yet powerful type system
+-  Elegant and extensible conversions and promotions for numeric and
+   other types
+-  Efficient support for
+   `Unicode <https://en.wikipedia.org/wiki/Unicode>`_, including but not
+   limited to `UTF-8 <https://en.wikipedia.org/wiki/UTF-8>`_
+-  Call C functions directly (no wrappers or special APIs needed)
+-  Powerful shell-like capabilities for managing other processes
+-  Lisp-like macros and other metaprogramming facilities
 
-
-.. [#green-threads] 訳注: グリーン・スレッド（Green Threads）とは、OSではなくランタイムライブラリによってスケジュールされるスレッドのこと。対義として「ネイティブ・スレッド」がある。
-.. [#promotion] 訳注: プロモーションの詳細については `変換とプロモーション <./conversion-and-promotion.html>`_ を参照のこと。

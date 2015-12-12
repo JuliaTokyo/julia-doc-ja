@@ -117,6 +117,7 @@ process that owns ``r``, so the :func:`fetch` will be a no-op.
 as a :ref:`macro <man-macros>`. It is possible to define your
 own such constructs.)
 
+.. _man-parallel-computing-code-availability:
 
 Code Availability and Loading Packages
 --------------------------------------
@@ -174,11 +175,7 @@ Starting julia with ``julia -p 2``, you can use this to verify the following:
   allow you to store an object of type ``MyType`` on process 2 even if ``DummyModule`` is not in scope on process 2.
 
 You can force a command to run on all processes using the :obj:`@everywhere` macro.
-Consequently, an easy way to load *and* use a package on all processes is::
-
-    @everywhere using DummyModule
-
-:obj:`@everywhere` can also be used to directly define a function on all processes::
+For example, :obj:`@everywhere` can also be used to directly define a function on all processes::
 
     julia> @everywhere id = myid()
 
@@ -198,14 +195,17 @@ considered to be all processes other than process 1.
 
 The base Julia installation has in-built support for two types of clusters:
 
-    - A local cluster specified with the ``-p`` option as shown above.
+- A local cluster specified with the ``-p`` option as shown above.
 
-    - A cluster spanning machines using the ``--machinefile`` option. This uses a passwordless
-      ``ssh`` login to start julia worker processes (from the same path as the current host)
-      on the specified machines.
+- A cluster spanning machines using the ``--machinefile`` option. This uses a passwordless
+  ``ssh`` login to start julia worker processes (from the same path as the current host)
+  on the specified machines.
 
 Functions :func:`addprocs`, :func:`rmprocs`, :func:`workers`, and others are available as a programmatic means of
 adding, removing and querying the processes in a cluster.
+
+Note that workers do not run a ``.juliarc.jl`` startup script, nor do they synchronize their global state
+(such as global variables, new method definitions, and loaded modules) with any of the other running processes.
 
 Other types of clusters can be supported by writing your own custom
 :class:`ClusterManager`, as described below in the :ref:`man-clustermanagers`
@@ -444,12 +444,54 @@ preemptively. This means context switches only occur at well-defined
 points: in this case, when :func:`remotecall_fetch` is called.
 
 
-Shared Arrays (Experimental)
------------------------------------------------
+Channels
+--------
+Channels provide for a fast means of inter-task communication. A
+``Channel(T::Type, n::Int)`` is a shared queue of maximum length ``n``
+holding objects of type ``T``. Multiple readers can read off the channel
+via ``fetch`` and ``take!``. Multiple writers can add to the channel via
+``put!``. ``isready`` tests for the presence of any object in
+the channel, while ``wait`` waits for an object to become available.
+``close`` closes a Channel. On a closed channel, ``put!`` will fail,
+while ``take!`` and ``fetch`` successfully return any existing values
+till it is emptied.
+
+A Channel can be used as an iterable object in a ``for`` loop, in which
+case the loop runs as long as the channel has data or is open. The loop
+variable takes on all values added to the channel. An empty, closed channel
+causes the ``for`` loop to terminate.
+
+
+RemoteRefs and AbstractChannels
+-------------------------------
+
+A ``RemoteRef`` is a proxy for an implementation of an ``AbstractChannel``
+
+A concrete implementation of an ``AbstractChannel`` (like ``Channel``), is required
+to implement ``put!``, ``take!``, ``fetch``, ``isready`` and ``wait``. The remote object
+referred to by a ``RemoteRef()`` or ``RemoteRef(pid)`` is stored in a ``Channel{Any}(1)``,
+i.e., a channel of size 1 capable of holding objects of ``Any`` type.
+
+Methods ``put!``, ``take!``, ``fetch``, ``isready`` and ``wait`` on a ``RemoteRef`` are proxied onto
+the backing store on the remote process.
+
+The constructor ``RemoteRef(f::Function, pid)`` allows us to construct references to channels holding
+more than one value of a specific type. ``f()`` is a function executed on ``pid`` and it must return
+an ``AbstractChannel``.
+
+For example, ``RemoteRef(()->Channel{Int}(10), pid)``, will return a reference to a channel of type ``Int``
+and size 10.
+
+``RemoteRef`` can thus be used to refer to user implemented ``AbstractChannel`` objects. A simple
+example of this is provided in ``examples/dictchannel.jl`` which uses a dictionary as its remote store.
+
+
+Shared Arrays
+-------------
 
 Shared Arrays use system shared memory to map the same array across
-many processes.  While there are some similarities to a :class:`DArray`,
-the behavior of a :class:`SharedArray` is quite different. In a :class:`DArray`,
+many processes.  While there are some similarities to a `DArray`_,
+the behavior of a :class:`SharedArray` is quite different. In a `DArray`_,
 each process has local access to just a chunk of the data, and no two
 processes share the same chunk; in contrast, in a :class:`SharedArray` each
 "participating" process has access to the entire array.  A
@@ -480,15 +522,17 @@ specified, it is called on all the participating workers.  You can
 arrange it so that each worker runs the ``init`` function on a
 distinct portion of the array, thereby parallelizing initialization.
 
-Here's a brief example::
+Here's a brief example:
+
+.. doctest::
 
   julia> addprocs(3)
-  3-element Array{Any,1}:
+  3-element Array{Int64,1}:
    2
    3
    4
 
-  julia> S = SharedArray(Int, (3,4), init = S -> S[localindexes(S)] = myid())
+  julia> S = SharedArray(Int, (3,4), init = S -> S[Base.localindexes(S)] = myid())
   3x4 SharedArray{Int64,2}:
    2  2  3  4
    2  3  3  4
@@ -503,9 +547,11 @@ Here's a brief example::
    2  3  3  4
    2  7  4  4
 
-:func:`localindexes` provides disjoint one-dimensional ranges of indexes,
+:func:`Base.localindexes` provides disjoint one-dimensional ranges of indexes,
 and is sometimes convenient for splitting up tasks among processes.
-You can, of course, divide the work any way you wish::
+You can, of course, divide the work any way you wish:
+
+.. doctest::
 
   julia> S = SharedArray(Int, (3,4), init = S -> S[indexpids(S):length(procs(S)):length(S)] = myid())
   3x4 SharedArray{Int64,2}:
@@ -529,6 +575,99 @@ would result in undefined behavior: because each process fills the
 execute (for any particular element of ``S``) will have its ``pid``
 retained.
 
+As a more extended and complex example, consider running the following
+"kernel" in parallel::
+
+    q[i,j,t+1] = q[i,j,t] + u[i,j,t]
+
+In this case, if we try to split up the work using a one-dimensional
+index, we are likely to run into trouble: if ``q[i,j,t]`` is near the
+end of the block assigned to one worker and ``q[i,j,t+1]`` is near the
+beginning of the block assigned to another, it's very likely that
+``q[i,j,t]`` will not be ready at the time it's needed for computing
+``q[i,j,t+1]``.  In such cases, one is better off chunking the array
+manually.  Let's split along the second dimension::
+
+   # This function retuns the (irange,jrange) indexes assigned to this worker
+   @everywhere function myrange(q::SharedArray)
+       idx = indexpids(q)
+       if idx == 0
+           # This worker is not assigned a piece
+           return 1:0, 1:0
+       end
+       nchunks = length(procs(q))
+       splits = [round(Int, s) for s in linspace(0,size(q,2),nchunks+1)]
+       1:size(q,1), splits[idx]+1:splits[idx+1]
+   end
+
+   # Here's the kernel
+   @everywhere function advection_chunk!(q, u, irange, jrange, trange)
+       @show (irange, jrange, trange)  # display so we can see what's happening
+       for t in trange, j in jrange, i in irange
+           q[i,j,t+1] = q[i,j,t] +  u[i,j,t]
+       end
+       q
+   end
+
+   # Here's a convenience wrapper for a SharedArray implementation
+   @everywhere advection_shared_chunk!(q, u) = advection_chunk!(q, u, myrange(q)..., 1:size(q,3)-1)
+
+Now let's compare three different versions, one that runs in a single process::
+
+   advection_serial!(q, u) = advection_chunk!(q, u, 1:size(q,1), 1:size(q,2), 1:size(q,3)-1)
+
+one that uses ``@parallel``::
+
+   function advection_parallel!(q, u)
+       for t = 1:size(q,3)-1
+           @sync @parallel for j = 1:size(q,2)
+               for i = 1:size(q,1)
+                   q[i,j,t+1]= q[i,j,t] + u[i,j,t]
+               end
+           end
+       end
+       q
+   end
+
+and one that delegates in chunks::
+
+   function advection_shared!(q, u)
+       @sync begin
+           for p in procs(q)
+               @async remotecall_wait(p, advection_shared_chunk!, q, u)
+           end
+       end
+       q
+   end
+
+If we create SharedArrays and time these functions, we get the following results (with ``julia -p 4``)::
+
+   q = SharedArray(Float64, (500,500,500))
+   u = SharedArray(Float64, (500,500,500))
+
+   # Run once to JIT-compile
+   advection_serial!(q, u)
+   advection_parallel!(q, u)
+   advection_shared!(q,u)
+
+   # Now the real results:
+   julia> @time advection_serial!(q, u);
+   (irange,jrange,trange) = (1:500,1:500,1:499)
+    830.220 milliseconds (216 allocations: 13820 bytes)
+
+   julia> @time advection_parallel!(q, u);
+      2.495 seconds      (3999 k allocations: 289 MB, 2.09% gc time)
+
+   julia> @time advection_shared!(q,u);
+           From worker 2:	(irange,jrange,trange) = (1:500,1:125,1:499)
+           From worker 4:	(irange,jrange,trange) = (1:500,251:375,1:499)
+           From worker 3:	(irange,jrange,trange) = (1:500,126:250,1:499)
+           From worker 5:	(irange,jrange,trange) = (1:500,376:500,1:499)
+    238.119 milliseconds (2264 allocations: 169 KB)
+
+The biggest advantage of ``advection_shared!`` is that it minimizes traffic
+among the workers, allowing each to compute for an extended time on the
+assigned piece.
 
 .. _man-clustermanagers:
 
@@ -548,9 +687,10 @@ A julia cluster has the following characteristics:
 - All processes can directly communicate with each other.
 
 Connections between workers (using the in-built TCP/IP transport) is established in the following manner:
+
 - :func:`addprocs` is called on the master process with a :obj:`ClusterManager` object
 - :func:`addprocs` calls the appropriate :func:`launch` method which spawns
-required number of worker processes on appropriate machines
+  required number of worker processes on appropriate machines
 - Each worker starts listening on a free port and writes out its host, port information to :const:`STDOUT`
 - The cluster manager captures the stdout's of each worker and makes it available to the master process
 - The master process parses this information and sets up TCP/IP connections to each worker
@@ -586,7 +726,6 @@ Thus, a minimal cluster manager would need to:
         ...
     end
 
-
 As an example let us see how the :class:`LocalManager`, the manager responsible for
 starting workers on the same host, is implemented::
 
@@ -604,10 +743,10 @@ starting workers on the same host, is implemented::
 
 The :func:`launch` method takes the following arguments:
 
-    - ``manager::ClusterManager`` - the cluster manager :func:`addprocs` is called with
-    - ``params::Dict`` - all the keyword arguments passed to :func:`addprocs`
-    - ``launched::Array`` - the array to append one or more ``WorkerConfig`` objects to
-    - ``c::Condition`` - the condition variable to be notified as and when workers are launched
+- ``manager::ClusterManager`` - the cluster manager :func:`addprocs` is called with
+- ``params::Dict`` - all the keyword arguments passed to :func:`addprocs`
+- ``launched::Array`` - the array to append one or more ``WorkerConfig`` objects to
+- ``c::Condition`` - the condition variable to be notified as and when workers are launched
 
 The :func:`launch` method is called asynchronously in a separate task. The termination of this task
 signals that all requested workers have been launched. Hence the :func:`launch` function MUST exit as soon
@@ -626,31 +765,31 @@ before using any of the parallel constructs
 For every worker launched, the :func:`launch` method must add a :class:`WorkerConfig`
 object (with appropriate fields initialized) to ``launched`` ::
 
- type WorkerConfig
-     # Common fields relevant to all cluster managers
-     io::Nullable{IO}
-     host::Nullable{AbstractString}
-     port::Nullable{Integer}
+    type WorkerConfig
+        # Common fields relevant to all cluster managers
+        io::Nullable{IO}
+        host::Nullable{AbstractString}
+        port::Nullable{Integer}
 
-     # Used when launching additional workers at a host
-     count::Nullable{Union(Int, Symbol)}
-     exename::Nullable{AbstractString}
-     exeflags::Nullable{Cmd}
+        # Used when launching additional workers at a host
+        count::Nullable{Union{Int, Symbol}}
+        exename::Nullable{AbstractString}
+        exeflags::Nullable{Cmd}
 
-     # External cluster managers can use this to store information at a per-worker level
-     # Can be a dict if multiple fields need to be stored.
-     userdata::Nullable{Any}
+        # External cluster managers can use this to store information at a per-worker level
+        # Can be a dict if multiple fields need to be stored.
+        userdata::Nullable{Any}
 
-     # SSHManager / SSH tunnel connections to workers
-     tunnel::Nullable{Bool}
-     bind_addr::Nullable{AbstractString}
-     sshflags::Nullable{Cmd}
-     max_parallel::Nullable{Integer}
+        # SSHManager / SSH tunnel connections to workers
+        tunnel::Nullable{Bool}
+        bind_addr::Nullable{AbstractString}
+        sshflags::Nullable{Cmd}
+        max_parallel::Nullable{Integer}
 
-     connect_at::Nullable{Any}
+        connect_at::Nullable{Any}
 
-     .....
- end
+        .....
+    end
 
 Most of the fields in :class:`WorkerConfig` are used by the inbuilt managers.
 Custom cluster managers would typically specify only ``io`` or ``host`` / ``port``:
@@ -678,12 +817,12 @@ required to connect to the workers from the master process.
 ``manage(manager::FooManager, id::Integer, config::WorkerConfig, op::Symbol)`` is called at different
 times during the worker's lifetime with appropriate ``op`` values:
 
-      - with ``:register``/``:deregister`` when a worker is added / removed
-        from the Julia worker pool.
-      - with ``:interrupt`` when ``interrupt(workers)`` is called. The
-        :class:`ClusterManager` should signal the appropriate worker with an
-        interrupt signal.
-      - with ``:finalize`` for cleanup purposes.
+- with ``:register``/``:deregister`` when a worker is added / removed
+  from the Julia worker pool.
+- with ``:interrupt`` when ``interrupt(workers)`` is called. The
+  :class:`ClusterManager` should signal the appropriate worker with an
+  interrupt signal.
+- with ``:finalize`` for cleanup purposes.
 
 
 Cluster Managers with custom transports
@@ -693,12 +832,12 @@ Replacing the default TCP/IP all-to-all socket connections with a custom transpo
 Each julia process has as many communication tasks as the workers it is connected to. For example, consider a julia cluster of
 32 processes in a all-to-all mesh network:
 
-    - Each julia process thus has 31 communication tasks
-    - Each task handles all incoming messages from a single remote worker in a message processing loop
-    - The message processing loop waits on an ``AsyncStream`` object - for example, a TCP socket in the default implementation, reads an entire
-      message, processes it and waits for the next one
-    - Sending messages to a process is done directly from any julia task - not just communication tasks - again, via the appropriate
-      ``AsyncStream`` object
+- Each julia process thus has 31 communication tasks
+- Each task handles all incoming messages from a single remote worker in a message processing loop
+- The message processing loop waits on an ``AsyncStream`` object - for example, a TCP socket in the default implementation, reads an entire
+  message, processes it and waits for the next one
+- Sending messages to a process is done directly from any julia task - not just communication tasks - again, via the appropriate
+  ``AsyncStream`` object
 
 Replacing the default transport involves the new implementation to setup connections to remote workers, and to provide appropriate
 ``AsyncStream`` objects that the message processing loops can wait on. The manager specific callbacks to be implemented are::
@@ -719,15 +858,15 @@ Note: The julia processes are still all *logically* connected to each other - an
 awareness of 0MQ being used as the transport layer.
 
 When using custom transports:
-    - julia workers must NOT be started with ``--worker``. Starting with ``--worker`` will result in the newly launched
-      workers defaulting to the TCP/IP socket transport implementation
-    - For every incoming logical connection with a worker, ``Base.process_messages(rd::AsyncStream, wr::AsyncStream)`` must be called.
-      This launches a new task that handles reading and writing of messages from/to the worker represented by the ``AsyncStream`` objects
-    - ``init_worker(manager::FooManager)`` MUST be called as part of worker process initializaton
-    - Field ``connect_at::Any`` in :class:`WorkerConfig` can be set by the cluster manager when ``launch`` is called. The value of
-      this field is passed in in all ``connect`` callbacks. Typically, it carries information on *how to connect* to a worker. For example,
-      the TCP/IP socket transport uses this field to specify the ``(host, port)`` tuple at which to connect to a worker
 
+- julia workers must NOT be started with ``--worker``. Starting with ``--worker`` will result in the newly launched
+  workers defaulting to the TCP/IP socket transport implementation
+- For every incoming logical connection with a worker, ``Base.process_messages(rd::AsyncStream, wr::AsyncStream)`` must be called.
+  This launches a new task that handles reading and writing of messages from/to the worker represented by the ``AsyncStream`` objects
+- ``init_worker(manager::FooManager)`` MUST be called as part of worker process initializaton
+- Field ``connect_at::Any`` in :class:`WorkerConfig` can be set by the cluster manager when ``launch`` is called. The value of
+  this field is passed in in all ``connect`` callbacks. Typically, it carries information on *how to connect* to a worker. For example,
+  the TCP/IP socket transport uses this field to specify the ``(host, port)`` tuple at which to connect to a worker
 
 ``kill(manager, pid, config)`` is called to remove a worker from the cluster.
 On the master process, the corresponding ``AsyncStream`` objects must be closed by the implementation to ensure proper cleanup. The default
@@ -736,8 +875,25 @@ implementation simply executes an ``exit()`` call on the specified remote worker
 ``examples/clustermanager/simple`` is an example that shows a simple implementation using unix domain sockets for cluster setup
 
 
+Specifying network topology (Experimental)
+-------------------------------------------
 
+Keyword argument ``topology`` to ``addprocs`` is used to specify how the workers must be connected to each other:
+
+- ``:all_to_all`` : is the default, where all workers are connected to each other.
+
+- ``:master_slave`` : only the driver process, i.e. pid 1 has connections to the workers.
+
+- ``:custom`` : the ``launch`` method of the cluster manager specifes the connection topology.
+  Fields ``ident`` and ``connect_idents`` in ``WorkerConfig`` are used to specify the  same.
+  ``connect_idents`` is a list of ``ClusterManager`` provided identifiers to workers that worker
+  with identified by ``ident`` must connect to.
+
+Currently sending a message between unconnected workers results in an error. This behaviour, as also the
+functionality and interface should be considered experimental in nature and may change in future releases.
 
 .. rubric:: Footnotes
 
 .. [#mpi2rma] In this context, MPI refers to the MPI-1 standard. Beginning with MPI-2, the MPI standards committee introduced a new set of communication mechanisms, collectively referred to as Remote Memory Access (RMA). The motivation for adding RMA to the MPI standard was to facilitate one-sided communication patterns. For additional information on the latest MPI standard, see http://www.mpi-forum.org/docs.
+
+.. _DArray: https://github.com/JuliaParallel/DistributedArrays.jl

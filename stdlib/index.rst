@@ -1,4 +1,3 @@
-
 .. _stdlib-index:
 
 ############################
@@ -22,7 +21,6 @@
    punctuation
    sort
    pkg
-   collections
    test
    c
    libc
