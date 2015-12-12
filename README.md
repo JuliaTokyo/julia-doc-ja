@@ -3,7 +3,7 @@ Julia 公式ドキュメント翻訳
 
 プログラミング言語「Julia」公式ドキュメントの日本語翻訳プロジェクトです。
 
-原文は [docs.julialang.org](http://docs.julialang.org) 、邦訳は [docs.julia.tokyo](http://docs.julia.tokyo) で見ることが出来ます。翻訳は現在、 *release-0.4* のものを元に行っています。翻訳文と直接対応する原文は `original/` にあります。
+原文は [docs.julialang.org](http://docs.julialang.org) 、邦訳は [docs.julia.tokyo](http://docs.julia.tokyo) で見ることが出来ます。翻訳は現在、 *release-0.4* のものを元に行っています。翻訳文と直接対応する原文は `_original/` にあります。
 
 ドキュメントは、Read The Docsを使って公開されています （[プロジェクトページ](https://readthedocs.org/projects/julia-doc-ja)）。
 
