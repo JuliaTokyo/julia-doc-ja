@@ -33,9 +33,8 @@ performance.
 Juliaは様々なプリミティブ数値型を用意しています。
 これらの型には、完全な計算・ビット演算子、そして標準的な数学関数が定義されています。
 これらの数値型と演算は、現代のコンピュータでネイティブにサポートされているものと直接対応しています。
-これにより、Juliaは計算リソースを最大限に活用すること（to take
-full advantage of computational resources）ができるのです。
-加えて、Juliaは任意の精度での計算 :ref:`man-arbitrary-precision-arithmetic` をソフトウェアとしてサポートしています。
+これにより、Juliaは計算リソースを最大限に活用することができるのです。
+加えて、Juliaは :ref:`man-arbitrary-precision-arithmetic` をソフトウェアとしてサポートしています。
 これは、ハードウェアでのネイティブ表現では効率的に表せない数値の演算を可能にしますが、処理は相対的に遅くなります。
 
 The following are Julia's primitive numeric types:
@@ -525,11 +524,13 @@ be seen using the ``bits`` function: :
 Special floating-point values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-特別な浮動小数点数
+特別な浮動小数点の値
 ~~~~~~~~~~~~~~~~~~~~
 
 There are three specified standard floating-point values that do not
 correspond to any point on the real number line:
+
+以下の明確な3つの標準的な浮動小数点の値は、実際の数直線上とは対応しないものです。
 
 =========== =========== ===========  ================= =================================================================
 Special value                        Name              Description
@@ -540,6 +541,18 @@ Special value                        Name              Description
 ``-Inf16``  ``-Inf32``   ``-Inf``    negative infinity a value less than all finite floating-point values
 ``NaN16``   ``NaN32``    ``NaN``     not a number      a value not ``==`` to any floating-point value (including itself)
 =========== =========== ===========  ================= =================================================================
+
+
+=========== =========== ===========  ================= =================================================================
+特別な値                               名前               説明
+-----------------------------------  ----------------- -----------------------------------------------------------------
+``Float16`` ``Float32`` ``Float64``
+=========== =========== ===========  ================= =================================================================
+``Inf16``   ``Inf32``    ``Inf``     positive infinity a value greater than all finite floating-point values
+``-Inf16``  ``-Inf32``   ``-Inf``    negative infinity a value less than all finite floating-point values
+``NaN16``   ``NaN32``    ``NaN``     not a number      a value not ``==`` to any floating-point value (including itself)
+=========== =========== ===========  ================= =================================================================
+
 
 For further discussion of how these non-finite floating-point values are
 ordered with respect to each other and other floats, see
@@ -601,6 +614,9 @@ types:
 
 
 Machine epsilon
+~~~~~~~~~~~~~~~
+
+計算機イプシロン
 ~~~~~~~~~~~~~~~
 
 Most real numbers cannot be represented exactly with floating-point numbers,
@@ -681,6 +697,9 @@ floating-point numbers also have adjacent binary integer representations.
 Rounding modes
 ~~~~~~~~~~~~~~
 
+端数処理
+~~~~~~~~~~
+
 If a number doesn't have an exact floating-point representation, it must be
 rounded to an appropriate representable value, however, if wanted, the manner
 in which this rounding is done can be changed according to the rounding modes
@@ -707,6 +726,9 @@ least significant bit.
 
 Background and References
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+背景と参考文献
+~~~~~~~~~~~~~~~~
 
 Floating-point arithmetic entails many subtleties which can be surprising to
 users who are unfamiliar with the low-level implementation details. However,
@@ -743,6 +765,9 @@ computation, and also in the following references:
 
 Arbitrary Precision Arithmetic
 ------------------------------
+
+任意精度演算
+----------------
 
 To allow computations with arbitrary-precision integers and floating point numbers,
 Julia wraps the `GNU Multiple Precision Arithmetic Library (GMP) <https://gmplib.org>`_ and the `GNU MPFR Library <http://www.mpfr.org>`_, respectively.
@@ -827,6 +852,9 @@ block of code by :func:`with_bigfloat_precision` or
 Numeric Literal Coefficients
 ----------------------------
 
+数のリテラルな係数
+-------------------
+
 To make common numeric formulas and expressions clearer, Julia allows
 variables to be immediately preceded by a numeric literal, implying
 multiplication. This makes writing polynomial expressions much cleaner:
@@ -906,6 +934,9 @@ identifier or parenthesized expression which it multiplies.
 Syntax Conflicts
 ~~~~~~~~~~~~~~~~
 
+シンタックスの衝突
+~~~~~~~~~~~~~~~~~
+
 Juxtaposed literal coefficient syntax may conflict with two numeric literal
 syntaxes: hexadecimal integer literals and engineering notation for
 floating-point literals. Here are some situations where syntactic
@@ -927,6 +958,9 @@ numeric literals:
 
 Literal zero and one
 --------------------
+
+リテラルなゼロと1
+----------------
 
 Julia provides functions which return literal 0 and 1 corresponding to a
 specified type or the type of a given variable.
