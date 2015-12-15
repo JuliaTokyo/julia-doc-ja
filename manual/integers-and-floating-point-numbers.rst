@@ -548,8 +548,8 @@ Special value                        Name              Description
 -----------------------------------  ----------------- -----------------------------------------------------------------
 ``Float16`` ``Float32`` ``Float64``
 =========== =========== ===========  ================= =================================================================
-``Inf16``   ``Inf32``    ``Inf``     positive infinity a value greater than all finite floating-point values
-``-Inf16``  ``-Inf32``   ``-Inf``    negative infinity a value less than all finite floating-point values
+``Inf16``   ``Inf32``    ``Inf``     正の無限大         全ての有限な浮動小数点の値より大きい値
+``-Inf16``  ``-Inf32``   ``-Inf``    負の無限大 　　　　全ての有限な浮動小数点の値より小さい値　
 ``NaN16``   ``NaN32``    ``NaN``     not a number      a value not ``==`` to any floating-point value (including itself)
 =========== =========== ===========  ================= =================================================================
 
