@@ -959,17 +959,26 @@ numeric literals:
 Literal zero and one
 --------------------
 
-リテラルなゼロと1
+リテラルな0と1
 ----------------
 
 Julia provides functions which return literal 0 and 1 corresponding to a
 specified type or the type of a given variable.
+
+Juliaには、リテラルな0と1を返す関数があります。この関数は、指定された型、もしくは与えられた変数に対応するリテラルな0と1を返します。
 
 ====================== =====================================================
 Function               Description
 ====================== =====================================================
 :func:`zero(x) <zero>` Literal zero of type ``x`` or type of variable ``x``
 :func:`one(x) <one>`   Literal one of type ``x`` or type of variable ``x``
+====================== =====================================================
+
+====================== =====================================================
+関数                    説明
+====================== =====================================================
+:func:`zero(x) <zero>` 型``x``、もしくは変数``x``の型でのリテラルな0
+:func:`one(x) <one>`   型``x``、もしくは変数``x``の型でのリテラルな1
 ====================== =====================================================
 
 These functions are useful in :ref:`man-numeric-comparisons` to avoid overhead
