@@ -859,6 +859,9 @@ To make common numeric formulas and expressions clearer, Julia allows
 variables to be immediately preceded by a numeric literal, implying
 multiplication. This makes writing polynomial expressions much cleaner:
 
+よくある数方程式や数式をよりクリーンにするため、Juliaでは変数の直後に数値リテラルを書くと、掛け算を表すようになっています。
+これにより、多項式の数式をとてもクリーンに書くことができます。
+
 .. doctest::
 
     julia> x = 3
@@ -871,6 +874,8 @@ multiplication. This makes writing polynomial expressions much cleaner:
     13.0
 
 It also makes writing exponential functions more elegant:
+
+これにより、指数関数もいっそうエレガントに書くことができます。
 
 .. doctest::
 
