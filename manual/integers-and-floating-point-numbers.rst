@@ -550,7 +550,7 @@ Special value                        Name              Description
 =========== =========== ===========  ================= =================================================================
 ``Inf16``   ``Inf32``    ``Inf``     正の無限大         全ての有限な浮動小数点の値より大きい値
 ``-Inf16``  ``-Inf32``   ``-Inf``    負の無限大 　　　　全ての有限な浮動小数点の値より小さい値　
-``NaN16``   ``NaN32``    ``NaN``     not a number      a value not ``==`` to any floating-point value (including itself)
+``NaN16``   ``NaN32``    ``NaN``     非数、ナン          a value not ``==`` to any floating-point value (including itself)
 =========== =========== ===========  ================= =================================================================
 
 
