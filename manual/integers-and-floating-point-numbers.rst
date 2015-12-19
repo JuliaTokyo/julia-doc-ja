@@ -601,6 +601,9 @@ floating-point values are the results of certain arithmetic operations:
 The :func:`typemin` and :func:`typemax` functions also apply to floating-point
 types:
 
+関数 :func:`typemin` と :func:`typemax` は、浮動小数点型に使うこともできます。
+
+
 .. doctest::
 
     julia> (typemin(Float16),typemax(Float16))
