@@ -994,6 +994,8 @@ from unnecessary :ref:`type conversion <man-conversion-and-promotion>`.
 
 Examples:
 
+例：
+
 .. doctest::
 
     julia> zero(Float32)
