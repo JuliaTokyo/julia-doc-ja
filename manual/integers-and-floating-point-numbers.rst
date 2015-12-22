@@ -803,6 +803,8 @@ Julia's
 However, type promotion between the primitive types above and
 :class:`BigInt`/:class:`BigFloat` is not automatic and must be explicitly stated.
 
+しかし、上のプリミティブな型と :class:`BigInt`/:class:`BigFloat` の型プロモーションは自動的には行われず、明示的に示す必要があります。
+
 .. doctest::
 
     julia> x = typemin(Int64)
