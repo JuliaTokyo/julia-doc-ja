@@ -965,6 +965,8 @@ numeric literals:
 -  Expressions starting with ``0x`` are always hexadecimal literals.
 -  Expressions starting with a numeric literal followed by ``e`` or
    ``E`` are always floating-point literals.
+   
+- ``0x`` から始まる式は常に16進法リテラル
 
 Literal zero and one
 --------------------
