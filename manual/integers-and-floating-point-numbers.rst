@@ -857,7 +857,7 @@ block of code by :func:`with_bigfloat_precision` or
 Numeric Literal Coefficients
 ----------------------------
 
-数のリテラルな係数
+数値リテラルの係数
 -------------------
 
 To make common numeric formulas and expressions clearer, Julia allows
