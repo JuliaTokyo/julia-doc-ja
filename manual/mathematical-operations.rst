@@ -137,24 +137,23 @@ Julia の昇格システムは引数の型が混合であっても算術演算�
 
 .. _man-numeric-comparisons:
 
-Numeric Comparisons
+数値比較
 -------------------
 
-Standard comparison operations are defined for all the primitive numeric
-types:
+標準比較演算子はすべてのプリミティブ数値型について定義されています:
 
 =================== ========================
-Operator            Name
+演算子               名称
 =================== ========================
-:obj:`==`           equality
-:obj:`\!=` :obj:`≠` inequality
-:obj:`<`            less than
-:obj:`<=` :obj:`≤`  less than or equal to
-:obj:`>`            greater than
-:obj:`>=` :obj:`≥`  greater than or equal to
+:obj:`==`           等しい
+:obj:`\!=` :obj:`≠` 不しくない
+:obj:`<`            より小さい
+:obj:`<=` :obj:`≤`  より小さいまたは等しい
+:obj:`>`            より大きい
+:obj:`>=` :obj:`≥`  より大きいまたは等しい
 =================== ========================
 
-Here are some simple examples:
+いくつかの簡単な例を示します:
 
 .. doctest::
 
@@ -191,18 +190,16 @@ Here are some simple examples:
     julia> 3 < -0.5
     false
 
-Integers are compared in the standard manner — by comparison of bits.
-Floating-point numbers are compared according to the `IEEE 754
-standard <https://en.wikipedia.org/wiki/IEEE_754-2008>`_:
+整数はビットの比較という標準的な方法で比較されます。
+浮動小数点数は `IEEE 754 (英語) <https://en.wikipedia.org/wiki/IEEE_754-2008>`_ に従って比較されます:
 
--  Finite numbers are ordered in the usual manner.
--  Positive zero is equal but not greater than negative zero.
--  ``Inf`` is equal to itself and greater than everything else except ``NaN``.
--  ``-Inf`` is equal to itself and less then everything else except ``NaN``.
--  ``NaN`` is not equal to, not less than, and not greater than anything,
-   including itself.
+-  有限な数は通常の方法で順序付けられます。
+-  正のゼロは負のゼロと等しく、それより大きくはありません。
+-  ``Inf`` はそれそのものと等しく、 ``NaN`` 以外のあらゆるものより大きいです。
+-  ``-Inf`` はそれそのものと等しく、 ``NaN`` 以外のあらゆるものより小さいです。
+-  ``NaN`` はそれそのものを含むあらゆるものに対して等しくなく、小さくもなく、大きくもありません。
 
-The last point is potentially surprising and thus worth noting:
+最後の点は潜在的に驚くべきことであり、注目に値します:
 
 .. doctest::
 
@@ -218,26 +215,26 @@ The last point is potentially surprising and thus worth noting:
     julia> NaN > NaN
     false
 
-and can cause especial headaches with :ref:`Arrays <man-arrays>`:
+最後の点はさらに :ref:`Arrays <man-arrays>` において特有の頭痛の種となりえます:
 
 .. doctest::
 
     julia> [1 NaN] == [1 NaN]
     false
 
-Julia provides additional functions to test numbers for special values,
-which can be useful in situations like hash key comparisons:
+Julia は特殊な値について数をテストする追加的な関数を提供しています。
+これはハッシュキーの比較のような状況で役に立つことがあります:
 
 =============================== ==================================
-Function                        Tests if
+関数                             テストする内容
 =============================== ==================================
-:func:`isequal(x, y) <isequal>` ``x`` and ``y`` are identical
-:func:`isfinite(x) <isfinite>`  ``x`` is a finite number
-:func:`isinf(x) <isinf>`        ``x`` is infinite
-:func:`isnan(x) <isnan>`        ``x`` is not a number
+:func:`isequal(x, y) <isequal>` ``x`` と ``y`` が等しいか
+:func:`isfinite(x) <isfinite>`  ``x`` が有限な数か
+:func:`isinf(x) <isinf>`        ``x`` が無限大か
+:func:`isnan(x) <isnan>`        ``x`` が数ではないか
 =============================== ==================================
 
-:func:`isequal` considers ``NaN``\ s equal to each other:
+:func:`isequal` は複数の ``NaN`` をお互いに等しいとみなします:
 
 .. doctest::
 
@@ -250,7 +247,7 @@ Function                        Tests if
     julia> isequal(NaN,NaN32)
     true
 
-:func:`isequal` can also be used to distinguish signed zeros:
+:func:`isequal` は符号付きゼロを区別するためにも使えます:
 
 .. doctest::
 
@@ -260,15 +257,13 @@ Function                        Tests if
     julia> isequal(-0.0, 0.0)
     false
 
-Mixed-type comparisons between signed integers, unsigned integers, and
-floats can be tricky. A great deal of care has been taken to ensure
-that Julia does them correctly.
+符号付き整数、符号無し整数、浮動小数点数間の混合型比較は時として難しいことです。
+Julia がそれを確実に正しく行うよう多大な注意が払われてきました。
 
-For other types, :func:`isequal` defaults to calling :func:`==`, so if you want to
-define equality for your own types then you only need to add a :func:`==`
-method.  If you define your own equality function, you should probably
-define a corresponding :func:`hash` method to ensure that ``isequal(x,y)``
-implies ``hash(x) == hash(y)``.
+他の型については、 :func:`isequal` はデフォルトで :func:`==` を呼び出すので, 
+独自の型について等価を定義したい場合は、 :func:`==` メソッドを追加するだけです。
+独自の等価関数を定義するとき、多くの場合は対応する :func:`hash` メソッドを定義して
+``isequal(x,y)`` が ``hash(x) == hash(y)`` を包含するようにすべきです。
 
 Chaining comparisons
 ~~~~~~~~~~~~~~~~~~~~
