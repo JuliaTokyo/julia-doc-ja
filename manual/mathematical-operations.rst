@@ -59,26 +59,25 @@ Julia の昇格システムは引数の型が混合であっても算術演算�
 (慣例として、我々は結びつきがあまりきつくない演算子はあまりきつくなく間を空けることが
 多いですが、統語論的制約はありません。)
 
-Bitwise Operators
+ビット演算子
 -----------------
 
-The following `bitwise
-operators <https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators>`_
-are supported on all primitive integer types:
+以下の `ビット演算子 (英語) <https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators>`_
+はすべてのプリミティブ整数型でサポートされています:
 
 ===========  =========================================================================
-Expression   Name
+表現   名称
 ===========  =========================================================================
-``~x``       bitwise not
-``x & y``    bitwise and
-``x | y``    bitwise or
-``x $ y``    bitwise xor (exclusive or)
-``x >>> y``  `logical shift <https://en.wikipedia.org/wiki/Logical_shift>`_ right
-``x >> y``   `arithmetic shift <https://en.wikipedia.org/wiki/Arithmetic_shift>`_ right
-``x << y``   logical/arithmetic shift left
+``~x``       ビット単位 not
+``x & y``    ビット単位 and
+``x | y``    ビット単位 or
+``x $ y``    ビット単位 xor (排他的 or)
+``x >>> y``  `論理シフト (英語) <https://en.wikipedia.org/wiki/Logical_shift>`_ 右
+``x >> y``   `算術シフト (英語) <https://en.wikipedia.org/wiki/Arithmetic_shift>`_ 右
+``x << y``   論理/算術シフト 左
 ===========  =========================================================================
 
-Here are some examples with bitwise operators:
+ビット演算子を用いたいくつかの例を示します:
 
 .. doctest::
 
