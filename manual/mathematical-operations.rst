@@ -3,48 +3,47 @@
 .. currentmodule:: Base
 
 **************************************************
- Mathematical Operations and Elementary Functions
+ 数学的演算と初歩的関数
 **************************************************
 
-Julia provides a complete collection of basic arithmetic and bitwise
-operators across all of its numeric primitive types, as well as
-providing portable, efficient implementations of a comprehensive
-collection of standard mathematical functions.
+Julia はその数値的プリミティブ型すべてについての基本的算術演算子とビット演算子の
+完全なコレクションを備えており、加えて標準的数学関数の包括的なコレクションの
+可搬的・効率的な実装を提供しています。
 
-Arithmetic Operators
+算術演算子
 --------------------
 
-The following `arithmetic operators
+以下の `算術演算子 (英語)
 <https://en.wikipedia.org/wiki/Arithmetic#Arithmetic_operations>`_
-are supported on all primitive numeric types:
+はすべてのプリミティブ数値型でサポートされています:
 
 ==========  ============== ======================================
-Expression  Name           Description
+表現         名称            概要
 ==========  ============== ======================================
-``+x``      unary plus     the identity operation
-``-x``      unary minus    maps values to their additive inverses
-``x + y``   binary plus    performs addition
-``x - y``   binary minus   performs subtraction
-``x * y``   times          performs multiplication
-``x / y``   divide         performs division
-``x \ y``   inverse divide equivalent to ``y / x``
-``x ^ y``   power          raises ``x`` to the ``y``\ th power
-``x % y``   remainder      equivalent to ``rem(x,y)``
+``+x``      単項プラス       恒等演算
+``-x``      単項マイナス     値をその加法逆元に対応させる
+``x + y``   二項プラス       加算する
+``x - y``   二項マイナス     減算する
+``x * y``   かける          乗算する
+``x / y``   わる            除算する
+``x \ y``   逆にわる         ``y / x`` と同値
+``x ^ y``   累乗            ``x`` を ``y``\ 乗する
+``x % y``   剰余            ``rem(x,y)`` と同値
 ==========  ============== ======================================
 
-as well as the negation on ``Bool`` types:
+さらに ``Bool`` 型における否定もサポートされています:
 
 ==========  ============== ============================================
-Expression  Name           Description
+表現         名称            概要
 ==========  ============== ============================================
-``!x``      negation       changes ``true`` to ``false`` and vice versa
+``!x``      否定            ``true`` を ``false`` にし、逆もまた同様
 ==========  ============== ============================================
 
-Julia's promotion system makes arithmetic operations on mixtures of argument
-types "just work" naturally and automatically. See :ref:`man-conversion-and-promotion`
-for details of the promotion system.
+Julia の昇格システムは引数の型が混合であっても算術演算子が自然かつ自動的に
+「ちゃんと動く」ようになっています。 昇格システムの詳細については
+:ref:`man-conversion-and-promotion` をご覧ください。
 
-Here are some simple examples using arithmetic operators:
+算術演算子を用いたいくつかの単純な例を示します:
 
 .. doctest::
 
@@ -57,8 +56,8 @@ Here are some simple examples using arithmetic operators:
     julia> 3*2/12
     0.5
 
-(By convention, we tend to space less tightly binding operators less
-tightly, but there are no syntactic constraints.)
+(慣例として、我々は結びつきがあまりきつくない演算子はあまりきつくなく間を空けることが
+多いですが、統語論的制約はありません。)
 
 Bitwise Operators
 -----------------
