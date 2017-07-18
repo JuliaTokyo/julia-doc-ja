@@ -99,13 +99,12 @@ Julia の昇格システムは引数の型が混合であっても算術演算�
     julia> ~UInt8(123)
     0x84
 
-Updating operators
+更新演算子
 ------------------
-Every binary arithmetic and bitwise operator also has an updating
-version that assigns the result of the operation back into its left
-operand. The updating version of the binary operator is formed by placing a
-``=`` immediately after the operator. For example, writing ``x += 3`` is
-equivalent to writing ``x = x + 3``::
+すべての二項算術演算子とビット演算子には、
+演算の結果を左のオペランドに戻す更新版もあります。
+二項演算子の更新版は、演算子の直後に ``=`` を置くことで作られます。
+例えば、 ``x += 3`` と書くことは ``x = x + 3`` と書くことと同値です::
 
       julia> x = 1
       1
@@ -116,15 +115,14 @@ equivalent to writing ``x = x + 3``::
       julia> x
       4
 
-The updating versions of all the binary arithmetic and bitwise operators
-are::
+すべての二項算術演算子とビット演算子の更新版は::
 
     +=  -=  *=  /=  \=  ÷=  %=  ^=  &=  |=  $=  >>>=  >>=  <<=
 
 
 .. note::
-   An updating operator rebinds the variable on the left-hand side.
-   As a result, the type of the variable may change.
+   更新演算子は変数を左辺にリバインドします。
+   結果として、変数の型は変わることがあります。
 
    .. doctest::
 
