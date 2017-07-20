@@ -1,9 +1,11 @@
 
 ***********
- Variables
+ 変数
 ***********
 
 A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to store a value (that you obtained after some math, for example) for later use. For example:
+
+Juliaでは、変数は値に結び付けられた（束縛された）名前です。これは、（例えば計算結果などの）値を後で使うためにしまっておくのに便利です。以下に例を示します。
 
 .. doctest::
 
@@ -23,9 +25,30 @@ A variable, in Julia, is a name associated (or bound) to a value. It's useful wh
     julia> x = "Hello World!"
     "Hello World!"
 
+.. doctest::
+
+    # 10という値を変数xに割り当てる
+    julia> x = 10
+    10
+
+    # xの値を使って計算する
+    julia> x + 1
+    11
+
+    # xに値を再度割り当てる
+    julia> x = 1 + 1
+    2
+
+    # 別の型の値、例えば文字列を割り当てることもできる
+    julia> x = "Hello World!"
+    "Hello World!"
+
 Julia provides an extremely flexible system for naming variables.
 Variable names are case-sensitive, and have no semantic meaning (that is,
 the language will not treat variables differently based on their names).
+
+Juliaでは、非常に柔軟に変数を命名することができます。
+変数名の大文字と小文字は区別されますが、セマンティクスでの意味を持つわけではありません（言語は名前によって変数の扱いを変えない、ということです）。
 
 .. raw:: latex
 
@@ -54,6 +77,8 @@ the language will not treat variables differently based on their names).
 
 Unicode names (in UTF-8 encoding) are allowed:
 
+（UTF-8エンコーディングの）ユニコードでの名前を使うこともできます。
+
 .. raw:: latex
 
     \begin{CJK*}{UTF8}{mj}
@@ -72,11 +97,15 @@ name followed by tab.  For example, the variable name ``δ`` can be
 entered by typing ``\delta``-*tab*, or even ``α̂₂`` by
 ``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab*.
 
+JuliaのREPLや、その他いくつかの編集環境では、バックスラッシュから始まるLaTeX記号名、そしてその後にタブを入力することで、様々なユニコード数学記号を入力することができます。 例えば、　変数名 ``δ`` は ``\delta``-*タブ* 、``α̂₂`` は ``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab* とすることで入力することができます。
+
 .. raw:: latex
 
     \end{CJK*}
 
 Julia will even let you redefine built-in constants and functions if needed:
+
+もし必要であれば、Juliaでは、ビルトインの定数や関数を再定義することすらできます。
 
 .. doctest::
 
@@ -99,7 +128,12 @@ Julia will even let you redefine built-in constants and functions if needed:
 
 However, this is obviously not recommended to avoid potential confusion.
 
+とはいえ、潜在的な混乱を避けるため、これはもちろん推奨されません。
+
 Allowed Variable Names
+======================
+
+許可される変数名
 ======================
 
 Variable names must begin with a letter (A-Z or a-z), underscore, or a
@@ -110,6 +144,12 @@ include ! and digits (0-9 and other characters in categories Nd/No),
 as well as other Unicode code points: diacritics and other modifying
 marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category
 Pc), primes, and a few other characters.
+
+変数名の最初は、アルファベット（A-Zもしくはa-z）、アンダースコア、そして00A0より大きい場所を指し示すユニコードから始まる必要があります。
+ユニコードは特に、`Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl（文字）、Sc/So （通貨とその他の記号）、そしていくつかの文字（letter）のような字（character）（例：Sm数学記号の一部）を使うことができます。
+最初の文字以降は、!や数字（0-9とNd/Noカテゴリにあるその他の文字）、そしてその他のユニコードも使うことができます。
+使用可能なユニコードとしては、　
+発音区別記号（訳注: ``´`` や `````、 ``^`` など）やその他の修飾記号（Mn/Mc/Me/Skカテゴリ）、いくつかの句読点（punctuation connectors）（Pcカテゴリ）、プライム記号（訳注: xxx）、そしてその他いくつかの文字があります。
 
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
