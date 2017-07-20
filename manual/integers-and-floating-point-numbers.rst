@@ -3,7 +3,7 @@
 .. currentmodule:: Base
 
 *************************************
- Integers and Floating-Point Numbers
+ 整数と浮動小数点数
 *************************************
 
 Integers and floating-point values are the basic building blocks of
@@ -13,6 +13,12 @@ floating-point numbers as immediate values in code are known as numeric
 literals. For example, ``1`` is an integer literal, while ``1.0`` is a
 floating-point literal; their binary in-memory representations as
 objects are numeric primitives.
+
+整数と浮動小数点数は、計算処理の基本要素となるものです。
+これらの値の組み込み表現は数値プリミティブと呼ばれます。
+一方、整数と浮動小数点数がコード内で直接の値となっているものは、数値リテラルと呼ばれています。
+例えば、 ``1`` は整数リテラルで、 ``1.0`` は浮動小数点リテラルです。
+これらのオブジェクト（メモリ上のバイナリ表現）が数値プリミティブです。
 
 Julia provides a broad range of primitive numeric types, and a full complement
 of arithmetic and bitwise operators as well as standard mathematical functions
@@ -24,7 +30,16 @@ handle operations on numeric values that cannot be represented effectively in
 native hardware representations, but at the cost of relatively slower
 performance.
 
+Juliaは様々なプリミティブ数値型を用意しています。
+これらの型には、完全な計算・ビット演算子、そして標準的な数学関数が定義されています。
+これらの数値型と演算は、現代のコンピュータでネイティブにサポートされているものと直接対応しています。
+これにより、Juliaは計算リソースを最大限に活用することができるのです。
+加えて、Juliaは :ref:`man-arbitrary-precision-arithmetic` をソフトウェアとしてサポートしています。
+これは、ハードウェアでのネイティブ表現では効率的に表せない数値の演算を可能にしますが、処理は相対的に遅くなります。
+
 The following are Julia's primitive numeric types:
+
+下に示したものが、Juliaのプリミティブ数値型です。
 
 -  **Integer types:**
 
@@ -58,15 +73,58 @@ Type             Precision Number of bits
 .. _single: https://en.wikipedia.org/wiki/Single_precision_floating-point_format
 .. _double: https://en.wikipedia.org/wiki/Double_precision_floating-point_format
 
+
+-  **整数型**
+
+================  =======  ==============  ============== ==================
+型                 符号      ビット数         最小値          最大値
+================  =======  ==============  ============== ==================
+:class:`Int8`        ✓         8            -2^7             2^7 - 1
+:class:`UInt8`                 8             0               2^8 - 1
+:class:`Int16`       ✓         16           -2^15            2^15 - 1
+:class:`UInt16`                16            0               2^16 - 1
+:class:`Int32`       ✓         32           -2^31            2^31 - 1
+:class:`UInt32`                32            0               2^32 - 1
+:class:`Int64`       ✓         64           -2^63            2^63 - 1
+:class:`UInt64`                64            0               2^64 - 1
+:class:`Int128`      ✓         128           -2^127          2^127 - 1
+:class:`UInt128`               128           0               2^128 - 1
+:class:`Bool`       N/A        8           ``false`` (0)  ``true`` (1)
+================  =======  ==============  ============== ==================
+
+-  **浮動小数点型**
+
+================ ========= ==============
+型　　             精度 　　　ビット数
+================ ========= ==============
+:class:`Float16` 半精度_        16
+:class:`Float32` 単精度_        32
+:class:`Float64` 倍精度_        64
+================ ========= ==============
+
+.. _半精度: https://ja.wikipedia.org/wiki/%E5%8D%8A%E7%B2%BE%E5%BA%A6%E6%B5%AE%E5%8B%95%E5%B0%8F%E6%95%B0%E7%82%B9%E6%95%B0
+.. _単精度: https://ja.wikipedia.org/wiki/%E5%8D%98%E7%B2%BE%E5%BA%A6%E6%B5%AE%E5%8B%95%E5%B0%8F%E6%95%B0%E7%82%B9%E6%95%B0
+.. _倍精度: https://ja.wikipedia.org/wiki/%E5%80%8D%E7%B2%BE%E5%BA%A6%E6%B5%AE%E5%8B%95%E5%B0%8F%E6%95%B0%E7%82%B9%E6%95%B0
+
+
+
 Additionally, full support for :ref:`man-complex-and-rational-numbers` is built
 on top of these primitive numeric types. All numeric types interoperate
 naturally without explicit casting, thanks to a flexible, user-extensible
 :ref:`type promotion system <man-conversion-and-promotion>`.
 
+加えて、これらのプリミティブ数値型をもとに :ref:`man-complex-and-rational-numbers` も完全にサポートされています。
+全ての数値型は明示的にキャストしなくても、自然にinterpolateします。これは、フレキシブルでユーザーが拡張可能な :ref:`type promotion system <man-conversion-and-promotion>` によって実現されています。
+
 Integers
 --------
 
+整数
+--------
+
 Literal integers are represented in the standard manner:
+
+リテラルな整数は、標準的な書き方で表されます。
 
 .. doctest::
 
@@ -77,7 +135,11 @@ Literal integers are represented in the standard manner:
     1234
 
 The default type for an integer literal depends on whether the target
-system has a 32-bit architecture or a 64-bit architecture::
+system has a 32-bit architecture or a 64-bit architecture:
+
+整数リテラルのデフォルトでの型は、そのシステムが32ビットのアーキテクチャか64ビットかで変わります。
+
+.. doctest::
 
     # 32-bit system:
     julia> typeof(1)
@@ -87,8 +149,21 @@ system has a 32-bit architecture or a 64-bit architecture::
     julia> typeof(1)
     Int64
 
+    # 32ビットのシステム
+    julia> typeof(1)
+    Int32
+
+    # 64ビットのシステム
+    julia> typeof(1)
+    Int64
+
+
 The Julia internal variable :const:`WORD_SIZE` indicates whether the target system
-is 32-bit or 64-bit.::
+is 32-bit or 64-bit.:
+
+Juliaの内部的な変数 :const:`WORD_SIZE` は、そのシステムが32ビットか64ビットなのかを示します。
+
+.. doctest::
 
     # 32-bit system:
     julia> WORD_SIZE
@@ -98,8 +173,21 @@ is 32-bit or 64-bit.::
     julia> WORD_SIZE
     64
 
+    # 32ビットのシステム
+    julia> WORD_SIZE
+    32
+
+    # 64ビットのシステム
+    julia> WORD_SIZE
+    64
+
 Julia also defines the types :class:`Int` and :class:`UInt`, which are aliases for the
-system's signed and unsigned native integer types respectively.::
+system's signed and unsigned native integer types respectively.:
+
+また、Juliaでは :class:`Int` と :class:`UInt` という型が定義されています。
+これらはそれぞれ、システムでの符号なし・符号付き整数型の別名となっています。
+
+.. doctest::
 
     # 32-bit system:
     julia> Int
@@ -114,17 +202,44 @@ system's signed and unsigned native integer types respectively.::
     julia> UInt
     UInt64
 
+
+    # 32ビットのシステム
+    julia> Int
+    Int32
+    julia> UInt
+    UInt32
+
+
+    # 64ビットのシステム
+    julia> Int
+    Int64
+    julia> UInt
+    UInt64
+
 Larger integer literals that cannot be represented using only 32 bits
 but can be represented in 64 bits always create 64-bit integers,
-regardless of the system type::
+regardless of the system type:
+
+32ビットでは表現できないが64ビットであれば可能な整数リテラルは、どのようなシステムでも必ず64ビットの整数としてつくられます。
+
+
+.. doctest::
 
     # 32-bit or 64-bit system:
+    julia> typeof(3000000000)
+    Int64
+
+    # 32ビット、もしくは64ビットのシステム
     julia> typeof(3000000000)
     Int64
 
 Unsigned integers are input and output using the ``0x`` prefix and hexadecimal
 (base 16) digits ``0-9a-f`` (the capitalized digits ``A-F`` also work for input).
 The size of the unsigned value is determined by the number of hex digits used:
+
+符号なし整数の入出力は、 ``0x`` というプレフィックスがついた16進数 ``0-9a-f`` で表されます（入力の場合は大文字の ``A-F`` を使うこともできます）。
+符号なしの値のサイズは、16進数の文字数により決まります。
+
 
 .. doctest::
 
@@ -157,11 +272,19 @@ hex literals for integer values, one typically is using them to
 represent a fixed numeric byte sequence, rather than just an integer
 value.
 
+このふるまいは、符号なしの16進数リテラルを整数値として使うとき、整数値ではなく固定長の数値バイト列を表すのに使うことが多いことからきています。
+
 Recall that the variable :data:`ans` is set to the value of the last expression
 evaluated in an interactive session. This does not occur when Julia code is
 run in other ways.
 
+以前に述べたように、 :data:`ans` という変数はインタラクティブ・セッションで最後に評価された値となっています。
+これは他の方法でJuliaを実行した際には起こりません。
+
+
 Binary and octal literals are also supported:
+
+バイナリと八進数のリテラルも用意されています。
 
 .. doctest::
 
@@ -179,6 +302,8 @@ Binary and octal literals are also supported:
 
 The minimum and maximum representable values of primitive numeric types
 such as integers are given by the :func:`typemin` and :func:`typemax` functions:
+
+整数のようなプリミティブ数値型が表現できる最小と最大の値はそれぞれ :func:`typemin` と :func:`typemax` という関数で取得できます。
 
 .. doctest::
 
@@ -206,12 +331,21 @@ yet to introduce, including :ref:`for loops <man-loops>`,
 but should be easy enough to understand for users with some existing
 programming experience.)
 
+:func:`typemin` と :func:`typemax` は、必ず引数と同じ型の値を返します
+（:ref:`for loops <man-loops>` や :ref:`man-strings`、:ref:`man-string-interpolation` といったまだ紹介していない機能が上のコードでは使われていますが、他のプログラミング言語の経験者が理解するのはそれほど難しくないでしょう）。
+
+
 
 Overflow behavior
 ~~~~~~~~~~~~~~~~~
 
+オーバーフローのふるまい
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 In Julia, exceeding the maximum representable value of a given type results in
 a wraparound behavior:
+
+Juliaでは、型の表現可能な最大値を超えた場合、ラップアラウンドします。
 
 .. doctest::
 
@@ -231,8 +365,17 @@ modern computers. In applications where overflow is possible, explicit checking
 for wraparound produced by overflow is essential; otherwise, the ``BigInt`` type
 in :ref:`man-arbitrary-precision-arithmetic` is recommended instead.
 
+このことから分かるように、Juliaでの整数の計算は `合同算術（モジュラ計算） <https://ja.wikipedia.org/wiki/%E5%90%88%E5%90%8C%E7%AE%97%E8%A1%93>`_ となっています。
+これは、Juliaを実行する下にある、現代のコンピュータで実装されている整数計算の特徴を反映しています。
+オーバーフローするかもしれないアプリケーションでは、オーバーフローによるラップアラウンドの明示的な確認は必須です。
+そうでなければ、 :ref:`man-arbitrary-precision-arithmetic` の ``BigInt`` を使うことが推奨されます。
+
+
 Division errors
 ~~~~~~~~~~~~~~~
+
+除算エラー
+~~~~~~~~~~~~
 
 Integer division (the ``div`` function) has two exceptional cases: dividing by
 zero, and dividing the lowest negative number (:func:`typemin`) by -1. Both of
@@ -240,10 +383,21 @@ these cases throw a :exc:`DivideError`. The remainder and modulus functions
 (``rem`` and ``mod``) throw a :exc:`DivideError` when their second argument is
 zero.
 
+整数の割り算（``div`` 関数）には2つの例外ケースがあります。ゼロ除算と、最も小さい負の値（:func:`typemin`）を-1で割る場合です。
+どちらのケースも :exc:`DivideError` が投げられます。
+除算の余りを求める関数とモジュロ関数（``rem`` と ``mod``） [#rem-and-mod]_ は、2つめの引数がゼロのとき :exc:`DivideError` を投げます。
+
+
+
 Floating-Point Numbers
 ----------------------
 
+浮動小数点数
+--------------
+
 Literal floating-point numbers are represented in the standard formats:
+
+リテラルな浮動小数点数は、標準的な書き方で表されます。
 
 .. doctest::
 
@@ -271,6 +425,9 @@ Literal floating-point numbers are represented in the standard formats:
 The above results are all ``Float64`` values. Literal ``Float32`` values can
 be entered by writing an ``f`` in place of ``e``:
 
+上の例は全て ``Float64`` の値です。
+リテラルな ``Float32`` の値は、 ``e`` の代わりに ``f`` と書くことで入力できます。
+
 .. doctest::
 
     julia> 0.5f0
@@ -284,6 +441,8 @@ be entered by writing an ``f`` in place of ``e``:
 
 Values can be converted to ``Float32`` easily:
 
+値は簡単に ``Float32`` へ変換することができます。
+
 .. doctest::
 
     julia> Float32(-1.5)
@@ -293,6 +452,8 @@ Values can be converted to ``Float32`` easily:
     Float32
 
 Hexadecimal floating-point literals are also valid, but only as ``Float64`` values:
+
+16進法の浮動小数点リテラルも有効ですが、これは ``Float64`` の値としてのみ可能です。
 
 .. doctest::
 
@@ -311,6 +472,9 @@ Hexadecimal floating-point literals are also valid, but only as ``Float64`` valu
 Half-precision floating-point numbers are also supported (``Float16``), but
 only as a storage format. In calculations they'll be converted to ``Float32``:
 
+半精度の浮動小数点数（``Float16``）も用意されていますが、これは保存の用途でのみ使うことができます。
+計算の際には、これらは ``Float32`` に変換されます。
+
 .. doctest::
 
     julia> sizeof(Float16(4.))
@@ -321,6 +485,8 @@ only as a storage format. In calculations they'll be converted to ``Float32``:
 
 The underscore ``_`` can be used as digit separator:
 
+アンダースコア ``_`` は数字の区切りを表すのに使うことができます。
+
 .. doctest::
 
     julia> 10_000, 0.000_000_005, 0xdead_beef, 0b1011_0010
@@ -329,10 +495,18 @@ The underscore ``_`` can be used as digit separator:
 Floating-point zero
 ~~~~~~~~~~~~~~~~~~~
 
+浮動小数点でのゼロ
+~~~~~~~~~~~~~~~~~~
+
 Floating-point numbers have `two zeros
 <https://en.wikipedia.org/wiki/Signed_zero>`_, positive zero and negative zero.
 They are equal to each other but have different binary representations, as can
 be seen using the ``bits`` function: :
+
+浮動小数点数には`正のゼロと負のゼロ <https://ja.wikipedia.org/wiki/%E2%88%920>`_があります。
+これらは等価ですが、それぞれ異なるバイナリ表現となっています。
+``bits`` 関数でそれぞれのバイナリ表現をみることができます。
+
 
 .. doctest::
 
@@ -350,8 +524,13 @@ be seen using the ``bits`` function: :
 Special floating-point values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+特別な浮動小数点の値
+~~~~~~~~~~~~~~~~~~~~
+
 There are three specified standard floating-point values that do not
 correspond to any point on the real number line:
+
+以下の明確な3つの標準的な浮動小数点の値は、実際の数直線上とは対応しないものです。
 
 =========== =========== ===========  ================= =================================================================
 Special value                        Name              Description
@@ -362,6 +541,18 @@ Special value                        Name              Description
 ``-Inf16``  ``-Inf32``   ``-Inf``    negative infinity a value less than all finite floating-point values
 ``NaN16``   ``NaN32``    ``NaN``     not a number      a value not ``==`` to any floating-point value (including itself)
 =========== =========== ===========  ================= =================================================================
+
+
+=========== =========== ===========  ================= =================================================================
+特別な値                               名前               説明
+-----------------------------------  ----------------- -----------------------------------------------------------------
+``Float16`` ``Float32`` ``Float64``
+=========== =========== ===========  ================= =================================================================
+``Inf16``   ``Inf32``    ``Inf``     正の無限大         全ての有限な浮動小数点の値より大きい値
+``-Inf16``  ``-Inf32``   ``-Inf``    負の無限大 　　　　全ての有限な浮動小数点の値より小さい値　
+``NaN16``   ``NaN32``    ``NaN``     非数、ナン          a value not ``==`` to any floating-point value (including itself)
+=========== =========== ===========  ================= =================================================================
+
 
 For further discussion of how these non-finite floating-point values are
 ordered with respect to each other and other floats, see
@@ -410,6 +601,9 @@ floating-point values are the results of certain arithmetic operations:
 The :func:`typemin` and :func:`typemax` functions also apply to floating-point
 types:
 
+関数 :func:`typemin` と :func:`typemax` は、浮動小数点型に使うこともできます。
+
+
 .. doctest::
 
     julia> (typemin(Float16),typemax(Float16))
@@ -423,6 +617,9 @@ types:
 
 
 Machine epsilon
+~~~~~~~~~~~~~~~
+
+計算機イプシロン
 ~~~~~~~~~~~~~~~
 
 Most real numbers cannot be represented exactly with floating-point numbers,
@@ -503,6 +700,9 @@ floating-point numbers also have adjacent binary integer representations.
 Rounding modes
 ~~~~~~~~~~~~~~
 
+端数処理
+~~~~~~~~~~
+
 If a number doesn't have an exact floating-point representation, it must be
 rounded to an appropriate representable value, however, if wanted, the manner
 in which this rounding is done can be changed according to the rounding modes
@@ -529,6 +729,9 @@ least significant bit.
 
 Background and References
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+背景と参考文献
+~~~~~~~~~~~~~~~~
 
 Floating-point arithmetic entails many subtleties which can be surprising to
 users who are unfamiliar with the low-level implementation details. However,
@@ -566,6 +769,9 @@ computation, and also in the following references:
 Arbitrary Precision Arithmetic
 ------------------------------
 
+任意精度演算
+----------------
+
 To allow computations with arbitrary-precision integers and floating point numbers,
 Julia wraps the `GNU Multiple Precision Arithmetic Library (GMP) <https://gmplib.org>`_ and the `GNU MPFR Library <http://www.mpfr.org>`_, respectively.
 The :class:`BigInt` and :class:`BigFloat` types are available in Julia for arbitrary precision
@@ -596,6 +802,8 @@ Julia's
 
 However, type promotion between the primitive types above and
 :class:`BigInt`/:class:`BigFloat` is not automatic and must be explicitly stated.
+
+しかし、上のプリミティブな型と :class:`BigInt`/:class:`BigFloat` の型プロモーションは自動的には行われず、明示的に示す必要があります。
 
 .. doctest::
 
@@ -649,9 +857,15 @@ block of code by :func:`with_bigfloat_precision` or
 Numeric Literal Coefficients
 ----------------------------
 
+数値リテラルの係数
+-------------------
+
 To make common numeric formulas and expressions clearer, Julia allows
 variables to be immediately preceded by a numeric literal, implying
 multiplication. This makes writing polynomial expressions much cleaner:
+
+よくある数方程式や数式をよりクリーンにするため、Juliaでは変数の直後に数値リテラルを書くと、掛け算を表すようになっています。
+これにより、多項式の数式をとてもクリーンに書くことができます。
 
 .. doctest::
 
@@ -665,6 +879,8 @@ multiplication. This makes writing polynomial expressions much cleaner:
     13.0
 
 It also makes writing exponential functions more elegant:
+
+これにより、指数関数もいっそうエレガントに書くことができます。
 
 .. doctest::
 
@@ -728,6 +944,9 @@ identifier or parenthesized expression which it multiplies.
 Syntax Conflicts
 ~~~~~~~~~~~~~~~~
 
+シンタックスの衝突
+~~~~~~~~~~~~~~~~~
+
 Juxtaposed literal coefficient syntax may conflict with two numeric literal
 syntaxes: hexadecimal integer literals and engineering notation for
 floating-point literals. Here are some situations where syntactic
@@ -746,12 +965,19 @@ numeric literals:
 -  Expressions starting with ``0x`` are always hexadecimal literals.
 -  Expressions starting with a numeric literal followed by ``e`` or
    ``E`` are always floating-point literals.
+   
+- ``0x`` から始まる式は常に16進法リテラル
 
 Literal zero and one
 --------------------
 
+リテラルな0と1
+----------------
+
 Julia provides functions which return literal 0 and 1 corresponding to a
 specified type or the type of a given variable.
+
+Juliaには、リテラルな0と1を返す関数があります。この関数は、指定された型、もしくは与えられた変数に対応するリテラルな0と1を返します。
 
 ====================== =====================================================
 Function               Description
@@ -760,10 +986,19 @@ Function               Description
 :func:`one(x) <one>`   Literal one of type ``x`` or type of variable ``x``
 ====================== =====================================================
 
+====================== =====================================================
+関数                    説明
+====================== =====================================================
+:func:`zero(x) <zero>` 型``x``、もしくは変数``x``の型でのリテラルな0
+:func:`one(x) <one>`   型``x``、もしくは変数``x``の型でのリテラルな1
+====================== =====================================================
+
 These functions are useful in :ref:`man-numeric-comparisons` to avoid overhead
 from unnecessary :ref:`type conversion <man-conversion-and-promotion>`.
 
 Examples:
+
+例：
 
 .. doctest::
 
@@ -779,3 +1014,14 @@ Examples:
     julia> one(BigFloat)
     1.000000000000000000000000000000000000000000000000000000000000000000000000000000
 
+
+
+.. [#rem-and-mod] 訳注: ``rem`` と ``mod`` 関数は、引数が負のときに違った動作をする。
+
+    .. doctest::
+
+        rem(5, 2) => 1, mod(5, 2) => 1
+        rem(-5, 2) => -1, mod(-5, 2) => 1
+        rem(5, -2) => 1, mod(5, -2) => -1
+
+    参考 - `除算後の剰余 - MATLAB rem - MathWorks 日本 <http://jp.mathworks.com/help/matlab/ref/rem.html?requestedDomain=jp.mathworks.com#btv1i9_-6>`_
