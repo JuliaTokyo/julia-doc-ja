@@ -3,48 +3,47 @@
 .. currentmodule:: Base
 
 **************************************************
- Mathematical Operations and Elementary Functions
+ 数学的演算と初歩的関数
 **************************************************
 
-Julia provides a complete collection of basic arithmetic and bitwise
-operators across all of its numeric primitive types, as well as
-providing portable, efficient implementations of a comprehensive
-collection of standard mathematical functions.
+Julia はその数値的プリミティブ型すべてについての基本的算術演算子とビット演算子の
+完全なコレクションを備えており、加えて標準的数学関数の包括的なコレクションの
+可搬的・効率的な実装を提供しています。
 
-Arithmetic Operators
+算術演算子
 --------------------
 
-The following `arithmetic operators
+以下の `算術演算子 (英語)
 <https://en.wikipedia.org/wiki/Arithmetic#Arithmetic_operations>`_
-are supported on all primitive numeric types:
+はすべてのプリミティブ数値型でサポートされています:
 
 ==========  ============== ======================================
-Expression  Name           Description
+表現         名称            概要
 ==========  ============== ======================================
-``+x``      unary plus     the identity operation
-``-x``      unary minus    maps values to their additive inverses
-``x + y``   binary plus    performs addition
-``x - y``   binary minus   performs subtraction
-``x * y``   times          performs multiplication
-``x / y``   divide         performs division
-``x \ y``   inverse divide equivalent to ``y / x``
-``x ^ y``   power          raises ``x`` to the ``y``\ th power
-``x % y``   remainder      equivalent to ``rem(x,y)``
+``+x``      単項プラス       恒等演算
+``-x``      単項マイナス     値をその加法逆元に対応させる
+``x + y``   二項プラス       加算する
+``x - y``   二項マイナス     減算する
+``x * y``   かける          乗算する
+``x / y``   わる            除算する
+``x \ y``   逆にわる         ``y / x`` と同値
+``x ^ y``   累乗            ``x`` を ``y``\ 乗する
+``x % y``   剰余            ``rem(x,y)`` と同値
 ==========  ============== ======================================
 
-as well as the negation on ``Bool`` types:
+さらに ``Bool`` 型における否定もサポートされています:
 
 ==========  ============== ============================================
-Expression  Name           Description
+表現         名称            概要
 ==========  ============== ============================================
-``!x``      negation       changes ``true`` to ``false`` and vice versa
+``!x``      否定            ``true`` を ``false`` にし、逆もまた同様
 ==========  ============== ============================================
 
-Julia's promotion system makes arithmetic operations on mixtures of argument
-types "just work" naturally and automatically. See :ref:`man-conversion-and-promotion`
-for details of the promotion system.
+Julia の昇格システムは引数の型が混合であっても算術演算子が自然かつ自動的に
+「ちゃんと動く」ようになっています。 昇格システムの詳細については
+:ref:`man-conversion-and-promotion` をご覧ください。
 
-Here are some simple examples using arithmetic operators:
+算術演算子を用いたいくつかの単純な例を示します:
 
 .. doctest::
 
@@ -57,29 +56,28 @@ Here are some simple examples using arithmetic operators:
     julia> 3*2/12
     0.5
 
-(By convention, we tend to space less tightly binding operators less
-tightly, but there are no syntactic constraints.)
+(慣例として、我々は結びつきがあまりきつくない演算子はあまりきつくなく間を空けることが
+多いですが、統語論的制約はありません。)
 
-Bitwise Operators
+ビット演算子
 -----------------
 
-The following `bitwise
-operators <https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators>`_
-are supported on all primitive integer types:
+以下の `ビット演算子 (英語) <https://en.wikipedia.org/wiki/Bitwise_operation#Bitwise_operators>`_
+はすべてのプリミティブ整数型でサポートされています:
 
 ===========  =========================================================================
-Expression   Name
+表現   名称
 ===========  =========================================================================
-``~x``       bitwise not
-``x & y``    bitwise and
-``x | y``    bitwise or
-``x $ y``    bitwise xor (exclusive or)
-``x >>> y``  `logical shift <https://en.wikipedia.org/wiki/Logical_shift>`_ right
-``x >> y``   `arithmetic shift <https://en.wikipedia.org/wiki/Arithmetic_shift>`_ right
-``x << y``   logical/arithmetic shift left
+``~x``       ビット単位 not
+``x & y``    ビット単位 and
+``x | y``    ビット単位 or
+``x $ y``    ビット単位 xor (排他的 or)
+``x >>> y``  `論理シフト (英語) <https://en.wikipedia.org/wiki/Logical_shift>`_ 右
+``x >> y``   `算術シフト (英語) <https://en.wikipedia.org/wiki/Arithmetic_shift>`_ 右
+``x << y``   論理/算術シフト 左
 ===========  =========================================================================
 
-Here are some examples with bitwise operators:
+ビット演算子を用いたいくつかの例を示します:
 
 .. doctest::
 
@@ -101,13 +99,12 @@ Here are some examples with bitwise operators:
     julia> ~UInt8(123)
     0x84
 
-Updating operators
+更新演算子
 ------------------
-Every binary arithmetic and bitwise operator also has an updating
-version that assigns the result of the operation back into its left
-operand. The updating version of the binary operator is formed by placing a
-``=`` immediately after the operator. For example, writing ``x += 3`` is
-equivalent to writing ``x = x + 3``::
+すべての二項算術演算子とビット演算子には、
+演算の結果を左のオペランドに戻す更新版もあります。
+二項演算子の更新版は、演算子の直後に ``=`` を置くことで作られます。
+例えば、 ``x += 3`` と書くことは ``x = x + 3`` と書くことと同値です::
 
       julia> x = 1
       1
@@ -118,15 +115,14 @@ equivalent to writing ``x = x + 3``::
       julia> x
       4
 
-The updating versions of all the binary arithmetic and bitwise operators
-are::
+すべての二項算術演算子とビット演算子の更新版は::
 
     +=  -=  *=  /=  \=  ÷=  %=  ^=  &=  |=  $=  >>>=  >>=  <<=
 
 
 .. note::
-   An updating operator rebinds the variable on the left-hand side.
-   As a result, the type of the variable may change.
+   更新演算子は変数を左辺に再バインドします。
+   結果として、変数の型は変わることがあります。
 
    .. doctest::
 
@@ -141,24 +137,23 @@ are::
 
 .. _man-numeric-comparisons:
 
-Numeric Comparisons
+数値比較
 -------------------
 
-Standard comparison operations are defined for all the primitive numeric
-types:
+標準比較演算子はすべてのプリミティブ数値型について定義されています:
 
 =================== ========================
-Operator            Name
+演算子               名称
 =================== ========================
-:obj:`==`           equality
-:obj:`\!=` :obj:`≠` inequality
-:obj:`<`            less than
-:obj:`<=` :obj:`≤`  less than or equal to
-:obj:`>`            greater than
-:obj:`>=` :obj:`≥`  greater than or equal to
+:obj:`==`           等しい
+:obj:`\!=` :obj:`≠` 不しくない
+:obj:`<`            より小さい
+:obj:`<=` :obj:`≤`  より小さいまたは等しい
+:obj:`>`            より大きい
+:obj:`>=` :obj:`≥`  より大きいまたは等しい
 =================== ========================
 
-Here are some simple examples:
+いくつかの簡単な例を示します:
 
 .. doctest::
 
@@ -195,18 +190,16 @@ Here are some simple examples:
     julia> 3 < -0.5
     false
 
-Integers are compared in the standard manner — by comparison of bits.
-Floating-point numbers are compared according to the `IEEE 754
-standard <https://en.wikipedia.org/wiki/IEEE_754-2008>`_:
+整数はビットの比較という標準的な方法で比較されます。
+浮動小数点数は `IEEE 754 (英語) <https://en.wikipedia.org/wiki/IEEE_754-2008>`_ に従って比較されます:
 
--  Finite numbers are ordered in the usual manner.
--  Positive zero is equal but not greater than negative zero.
--  ``Inf`` is equal to itself and greater than everything else except ``NaN``.
--  ``-Inf`` is equal to itself and less then everything else except ``NaN``.
--  ``NaN`` is not equal to, not less than, and not greater than anything,
-   including itself.
+-  有限な数は通常の方法で順序付けられます。
+-  正のゼロは負のゼロと等しく、それより大きくはありません。
+-  ``Inf`` はそれそのものと等しく、 ``NaN`` 以外のあらゆるものより大きいです。
+-  ``-Inf`` はそれそのものと等しく、 ``NaN`` 以外のあらゆるものより小さいです。
+-  ``NaN`` はそれそのものを含むあらゆるものに対して等しくなく、小さくもなく、大きくもありません。
 
-The last point is potentially surprising and thus worth noting:
+最後の点は潜在的に驚くべきことであり、注目に値します:
 
 .. doctest::
 
@@ -222,26 +215,26 @@ The last point is potentially surprising and thus worth noting:
     julia> NaN > NaN
     false
 
-and can cause especial headaches with :ref:`Arrays <man-arrays>`:
+最後の点はさらに :ref:`Arrays <man-arrays>` において特有の頭痛の種となりえます:
 
 .. doctest::
 
     julia> [1 NaN] == [1 NaN]
     false
 
-Julia provides additional functions to test numbers for special values,
-which can be useful in situations like hash key comparisons:
+Julia は特殊な値について数をテストする追加的な関数を提供しています。
+これはハッシュキーの比較のような状況で役に立つことがあります:
 
 =============================== ==================================
-Function                        Tests if
+関数                             テストする内容
 =============================== ==================================
-:func:`isequal(x, y) <isequal>` ``x`` and ``y`` are identical
-:func:`isfinite(x) <isfinite>`  ``x`` is a finite number
-:func:`isinf(x) <isinf>`        ``x`` is infinite
-:func:`isnan(x) <isnan>`        ``x`` is not a number
+:func:`isequal(x, y) <isequal>` ``x`` と ``y`` が等しいか
+:func:`isfinite(x) <isfinite>`  ``x`` が有限な数か
+:func:`isinf(x) <isinf>`        ``x`` が無限大か
+:func:`isnan(x) <isnan>`        ``x`` が数ではないか
 =============================== ==================================
 
-:func:`isequal` considers ``NaN``\ s equal to each other:
+:func:`isequal` は複数の ``NaN`` をお互いに等しいとみなします:
 
 .. doctest::
 
@@ -254,7 +247,7 @@ Function                        Tests if
     julia> isequal(NaN,NaN32)
     true
 
-:func:`isequal` can also be used to distinguish signed zeros:
+:func:`isequal` は符号付きゼロを区別するためにも使えます:
 
 .. doctest::
 
@@ -264,46 +257,42 @@ Function                        Tests if
     julia> isequal(-0.0, 0.0)
     false
 
-Mixed-type comparisons between signed integers, unsigned integers, and
-floats can be tricky. A great deal of care has been taken to ensure
-that Julia does them correctly.
+符号付き整数、符号無し整数、浮動小数点数間の混合型比較は時として難しいことです。
+Julia がそれを確実に正しく行うよう多大な注意が払われてきました。
 
-For other types, :func:`isequal` defaults to calling :func:`==`, so if you want to
-define equality for your own types then you only need to add a :func:`==`
-method.  If you define your own equality function, you should probably
-define a corresponding :func:`hash` method to ensure that ``isequal(x,y)``
-implies ``hash(x) == hash(y)``.
+他の型については、 :func:`isequal` はデフォルトで :func:`==` を呼び出すので、 
+独自の型について等価を定義したい場合は、 :func:`==` メソッドを追加するだけです。
+独自の等価関数を定義するとき、多くの場合は対応する :func:`hash` メソッドを定義して
+``isequal(x,y)`` が ``hash(x) == hash(y)`` を包含するようにすべきです。
 
-Chaining comparisons
+連鎖比較
 ~~~~~~~~~~~~~~~~~~~~
 
-Unlike most languages, with the `notable exception of
-Python <https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators>`_,
-comparisons can be arbitrarily chained:
+`Python という顕著な例外 <https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators>`_ を除くほとんどの言語とは異なり、
+比較は任意に連鎖できます:
 
 .. doctest::
 
     julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5
     true
 
-Chaining comparisons is often quite convenient in numerical code.
-Chained comparisons use the :obj:`&&` operator for scalar comparisons,
-and the :obj:`&` operator for elementwise comparisons, which allows them to
-work on arrays. For example, ``0 .< A .< 1`` gives a boolean array whose
-entries are true where the corresponding elements of ``A`` are between 0
-and 1.
+連鎖比較は数値計算コードにおいてたびたび非常に役に立ちます。
+連鎖比較ではスカラー比較に :obj:`&&` 演算子を、
+要素比較に配列を扱える :obj:`&` 演算子を使います。
+例えば、 ``0 .< A .< 1`` は ``A`` の対応する要素が 
+0 から 1 のあいだであれば真であるという要素からなるブール配列を与えます。
 
-The operator :obj:`.<` is intended for array objects; the operation
-``A .< B`` is valid only if ``A`` and ``B`` have the same dimensions.  The
-operator returns an array with boolean entries and with the same dimensions
-as ``A`` and ``B``.  Such operators are called *elementwise*; Julia offers a
-suite of elementwise operators: :obj:`.*`, :obj:`.+`, etc.  Some of the elementwise
-operators can take a scalar operand such as the example ``0 .< A .< 1`` in
-the preceding paragraph.
-This notation means that the scalar operand should be replicated for each entry of
-the array.
+演算子 :obj:`.<` は配列向けです; 演算 
+``A .< B`` は ``A`` と ``B`` が同じ次元であるときだけ妥当です。 
+この演算子はブール要素からなる
+``A`` and ``B`` と同じ次元である配列を返します。このような演算子は *要素ごとの* 演算子と呼ばれます; Julia は
+要素演算子を一揃い備えています: :obj:`.*`、 :obj:`.+`、 など。 要素演算子には
+前の段落の例 ``0 .< A .< 1`` のように、スカラーオペランドを
+とることができるものもあります。
+この記法は、配列のそれぞれの要素に対して同じスカラーオペランドが
+与えられることを意味しています。 
 
-Note the evaluation behavior of chained comparisons::
+連鎖比較の評価のふるまいにご注意ください::
 
     v(x) = (println(x); x)
 
@@ -318,13 +307,12 @@ Note the evaluation behavior of chained comparisons::
     1
     false
 
-The middle expression is only evaluated once, rather than twice as it
-would be if the expression were written as
-``v(1) < v(2) && v(2) <= v(3)``. However, the order of evaluations in a
-chained comparison is undefined. It is strongly recommended not to use
-expressions with side effects (such as printing) in chained comparisons.
-If side effects are required, the short-circuit :obj:`&&` operator should
-be used explicitly (see :ref:`man-short-circuit-evaluation`).
+真ん中の式がもし ``v(1) < v(2) && v(2) <= v(3)`` だったら
+二度評価されたでしょうが、ここでは一度だけ評価されます。しかし、連鎖比較における
+評価順序は未定義です。連鎖比較において副作用のある式 (print による出力など) を用いるのは
+推奨されません。
+副作用が避けられないときは、短絡回路 :obj:`&&` 演算子を
+明示的に用いましょう (:ref:`man-short-circuit-evaluation` をお読みください。)。
 
 Operator Precedence
 ~~~~~~~~~~~~~~~~~~~
