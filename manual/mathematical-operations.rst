@@ -260,41 +260,39 @@ Julia は特殊な値について数をテストする追加的な関数を提�
 符号付き整数、符号無し整数、浮動小数点数間の混合型比較は時として難しいことです。
 Julia がそれを確実に正しく行うよう多大な注意が払われてきました。
 
-他の型については、 :func:`isequal` はデフォルトで :func:`==` を呼び出すので, 
+他の型については、 :func:`isequal` はデフォルトで :func:`==` を呼び出すので、 
 独自の型について等価を定義したい場合は、 :func:`==` メソッドを追加するだけです。
 独自の等価関数を定義するとき、多くの場合は対応する :func:`hash` メソッドを定義して
 ``isequal(x,y)`` が ``hash(x) == hash(y)`` を包含するようにすべきです。
 
-Chaining comparisons
+連鎖比較
 ~~~~~~~~~~~~~~~~~~~~
 
-Unlike most languages, with the `notable exception of
-Python <https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators>`_,
-comparisons can be arbitrarily chained:
+`Python という顕著な例外 <https://en.wikipedia.org/wiki/Python_syntax_and_semantics#Comparison_operators>`_ を除くほとんどの言語とは異なり、
+比較は任意に連鎖できます:
 
 .. doctest::
 
     julia> 1 < 2 <= 2 < 3 == 3 > 2 >= 1 == 1 < 3 != 5
     true
 
-Chaining comparisons is often quite convenient in numerical code.
-Chained comparisons use the :obj:`&&` operator for scalar comparisons,
-and the :obj:`&` operator for elementwise comparisons, which allows them to
-work on arrays. For example, ``0 .< A .< 1`` gives a boolean array whose
-entries are true where the corresponding elements of ``A`` are between 0
-and 1.
+連鎖比較は数値計算コードにおいてたびたび非常に役に立ちます。
+連鎖比較ではスカラー比較に :obj:`&&` 演算子を、
+要素比較に配列を扱える :obj:`&` 演算子を使います。
+例えば、 ``0 .< A .< 1`` は ``A`` の対応する要素が 
+0 から 1 のあいだであれば真であるという要素からなるブール配列を与えます。
 
-The operator :obj:`.<` is intended for array objects; the operation
-``A .< B`` is valid only if ``A`` and ``B`` have the same dimensions.  The
-operator returns an array with boolean entries and with the same dimensions
-as ``A`` and ``B``.  Such operators are called *elementwise*; Julia offers a
-suite of elementwise operators: :obj:`.*`, :obj:`.+`, etc.  Some of the elementwise
-operators can take a scalar operand such as the example ``0 .< A .< 1`` in
-the preceding paragraph.
-This notation means that the scalar operand should be replicated for each entry of
-the array.
+演算子 :obj:`.<` は配列向けです; 演算 
+``A .< B`` は ``A`` と ``B`` が同じ次元であるときだけ妥当です。 
+この演算子はブール要素からなる
+``A`` and ``B`` と同じ次元である配列を返します。このような演算子は *要素ごとの* 演算子と呼ばれます; Julia は
+要素演算子を一揃い備えています: :obj:`.*`、 :obj:`.+`、 など。 要素演算子には
+前の段落の例 ``0 .< A .< 1`` のように、スカラーオペランドを
+とることができるものもあります。
+この記法は、配列のそれぞれの要素に対して同じスカラーオペランドが
+与えられることを意味しています。 
 
-Note the evaluation behavior of chained comparisons::
+連鎖比較の評価のふるまいにご注意ください::
 
     v(x) = (println(x); x)
 
@@ -309,13 +307,12 @@ Note the evaluation behavior of chained comparisons::
     1
     false
 
-The middle expression is only evaluated once, rather than twice as it
-would be if the expression were written as
-``v(1) < v(2) && v(2) <= v(3)``. However, the order of evaluations in a
-chained comparison is undefined. It is strongly recommended not to use
-expressions with side effects (such as printing) in chained comparisons.
-If side effects are required, the short-circuit :obj:`&&` operator should
-be used explicitly (see :ref:`man-short-circuit-evaluation`).
+真ん中の式がもし ``v(1) < v(2) && v(2) <= v(3)`` だったら
+二度評価されたでしょうが、ここでは一度だけ評価されます。しかし、連鎖比較における
+評価順序は未定義です。連鎖比較において副作用のある式 (print による出力など) を用いるのは
+推奨されません。
+副作用が避けられないときは、短絡回路 :obj:`&&` 演算子を
+明示的に用いましょう (:ref:`man-short-circuit-evaluation` をお読みください。)。
 
 Operator Precedence
 ~~~~~~~~~~~~~~~~~~~
