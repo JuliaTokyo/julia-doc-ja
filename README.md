@@ -1,3 +1,5 @@
+別プロジェクトとして https://github.com/hshindo/julia-doc-ja-v0.6 もご覧ください。
+
 Julia 公式ドキュメント翻訳
 ==========================
 
