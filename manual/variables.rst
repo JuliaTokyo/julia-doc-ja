@@ -1,31 +1,31 @@
 
 ***********
- Variables
+ 変数
 ***********
 
-A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to store a value (that you obtained after some math, for example) for later use. For example:
+Juliaにおいて、変数とは値に関連付けられた(若しくは縛り付けられた)名前を指します。変数はある値（例えば計算などで導出されたもの）を後に用いる為に保管する時に便利です。例:
 
 .. doctest::
 
-    # Assign the value 10 to the variable x
+    # 変数 x に値 10 を代入
     julia> x = 10
     10
 
-    # Doing math with x's value
+    # x の値を利用して計算を行う
     julia> x + 1
     11
 
-    # Reassign x's value
+    # 既に定義された変数 x に別の値を代入
     julia> x = 1 + 1
     2
 
-    # You can assign values of other types, like strings of text
+    # 文字列などの別の種類の値を代入することの可能です
     julia> x = "Hello World!"
     "Hello World!"
 
-Julia provides an extremely flexible system for naming variables.
-Variable names are case-sensitive, and have no semantic meaning (that is,
-the language will not treat variables differently based on their names).
+Juliaは変数の命名について非常に柔軟なシステムを提供します。
+変数名は大文字小文字を区別され、意味論的意味を持ちません。(つまり、
+Juliaは変数名によって扱いを変えることはありません。)
 
 .. raw:: latex
 
@@ -52,7 +52,7 @@ the language will not treat variables differently based on their names).
 
     \end{CJK*}
 
-Unicode names (in UTF-8 encoding) are allowed:
+(UTF-8でエンコードされる場合は)Unicodeを含んだ変数名も使用可能です:
 
 .. raw:: latex
 
@@ -66,17 +66,15 @@ Unicode names (in UTF-8 encoding) are allowed:
     julia> 안녕하세요 = "Hello"
     "Hello"
 
-In the Julia REPL and several other Julia editing environments, you
-can type many Unicode math symbols by typing the backslashed LaTeX symbol
-name followed by tab.  For example, the variable name ``δ`` can be
-entered by typing ``\delta``-*tab*, or even ``α̂₂`` by
-``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab*.
+Julia REPLや他の幾つかの編集環境では、多くのUnicode数学記号をLaTeX式で記述した後に
+TABキーを打つことで入力することができます。例として、変数名``δ``は``\delta``-*[TABキー]*で、
+変数名``α̂₂``は``\alpha``-*[TABキー]-*``\hat``*-[TABキー]-*``\_2``-*[TABキー]*で入力することができます。
 
 .. raw:: latex
 
     \end{CJK*}
 
-Julia will even let you redefine built-in constants and functions if needed:
+必要であればビルトインの定数や変数を再定義することができます:
 
 .. doctest::
 
@@ -97,9 +95,9 @@ Julia will even let you redefine built-in constants and functions if needed:
     WARNING: imported binding for sqrt overwritten in module Main
     4
 
-However, this is obviously not recommended to avoid potential confusion.
+しかしながら、これは明らかに混乱を招く恐れがある為、推奨されません。
 
-Allowed Variable Names
+使用可能な変数名
 ======================
 
 Variable names must begin with a letter (A-Z or a-z), underscore, or a
