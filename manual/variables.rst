@@ -129,20 +129,15 @@ Pc), primes, and a few other characters.
     ERROR: syntax: unexpected "="
 
 
-Stylistic Conventions
+コードスタイルのならわし
 =====================
 
-While Julia imposes few restrictions on valid names, it has become useful to
-adopt the following conventions:
+Julia は有効な名前に対して幾つかの制約を課しているので、その制約を取り入れるのは有用でしょう。
 
-- Names of variables are in lower case.
-- Word separation can be indicated by underscores (``'_'``), but use of
-  underscores is discouraged unless the name would be hard to read otherwise.
-- Names of ``Type``\ s and ``Module``\ s begin with a capital letter and word separation is
-  shown with upper camel case instead of underscores.
-- Names of ``function``\ s and ``macro``\s are in lower case, without
-  underscores.
-- Functions that write to their arguments have names that end in ``!``.
-  These are sometimes called "mutating" or "in-place" functions because
-  they are intended to produce changes in their arguments after the
-  function is called, not just return a value.
+- 変数名は小文字にすること。
+- 変数名の語の区切りはアンダースコア(``'_'``)で示す。ただし、アンダースコアを用いなくても区切りが明確な場合はこの限りではない。
+- ``Type``と``Module``の名前は大文字で始め、語の区切りはアンダースコアではなくアッパーキャメルケースで示す。
+- ``function``と``macro``の名前は小文字にし、アンダースコアは用いない。
+- 引数を上書きする関数の名前の後尾には``!``を付ける。
+この類の関数はただ値を返すのではなく、引数に変更を加えることを意図しているので、"破壊的な"関数と
+しばしば呼ばれています。
