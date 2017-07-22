@@ -111,7 +111,7 @@ Pc), primes, and a few other characters.
 
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
-``+``のような演算子も有効な識別子ですが、特別な解釈をされます。In some contexts,
+``+``のような演算子も有効な識別子ですが、特別な解釈をされます。文脈上、
 演算子は変数と同じように扱うことができます。例えば
 ``(+)``は加算の関数を表し、``(+) = f``とすることで``(+)``を再代入できます。
 ``⊕``のような、ほとんどのカテゴリSmにあるUnicodeインフィックスオペレータは二項演算子として解釈され、
