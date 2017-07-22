@@ -111,16 +111,14 @@ Pc), primes, and a few other characters.
 
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
-Operators like ``+`` are also valid identifiers, but are parsed specially. In
-some contexts, operators can be used just like variables; for example
-``(+)`` refers to the addition function, and ``(+) = f`` will reassign
-it.  Most of the Unicode infix operators (in category Sm),
-such as ``⊕``, are parsed as infix operators and are available for
-user-defined methods (e.g. you can use ``const ⊗ = kron`` to define
-``⊗`` as an infix Kronecker product).
+``+``のような演算子も有効な識別子ですが、特別な解釈をされます。In some contexts,
+演算子は変数と同じように扱うことができます。例えば
+``(+)``は加算の関数を表し、``(+) = f``とすることで``(+)``を再代入できます。
+``⊕``のような、ほとんどのカテゴリSmにあるUnicodeインフィックスオペレータは二項演算子として解釈され、
+ユーザー自らがメゾッドとして定義することが可能です(例えば、``const ⊗ = kron``と記述することで、``⊗``を
+クロネッカー積と定義することができます)。
 
-The only explicitly disallowed names for variables are the names of built-in
-statements:
+ビルトインステートメントに使われている名前のみ変数名として使用することはできません：
 
 .. doctest::
 
