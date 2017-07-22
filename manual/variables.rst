@@ -100,14 +100,10 @@ TABキーを打つことで入力することができます。例として、�
 使用可能な変数名
 ======================
 
-Variable names must begin with a letter (A-Z or a-z), underscore, or a
-subset of Unicode code points greater than 00A0; in particular, `Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl (letters), Sc/So (currency and
-other symbols), and a few other letter-like characters (e.g. a subset
-of the Sm math symbols) are allowed. Subsequent characters may also
-include ! and digits (0-9 and other characters in categories Nd/No),
-as well as other Unicode code points: diacritics and other modifying
-marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category
-Pc), primes, and a few other characters.
+変数名の先頭はラテン文字(A-Z若しくはa-z)、アンダースコア、Unicodeが00A0より大きい記号である必要があります。
+Unicodeにおいてはとりわけ、`Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl(文字)、Sc/So(通貨記号
+その他の記号)、そして幾つかの文字のような記号(例えばSm数学記号の一部)を用いることができます。
+後続の文字には、!や数字(0-9やNd/Noカテゴリにある他の記号)、そして右に提示する他のUnicodeも用いることができます: 発音区別記号、その他の修飾記号(Mn/Mc/Me/Skカテゴリ)、幾つかの句読点(Pcカテゴリ)、プライム記号、そしてそれ以外の少数の記号。
 
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
