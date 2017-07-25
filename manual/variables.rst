@@ -1,31 +1,31 @@
 
 ***********
- Variables
+ 変数
 ***********
 
-A variable, in Julia, is a name associated (or bound) to a value. It's useful when you want to store a value (that you obtained after some math, for example) for later use. For example:
+Juliaにおいて、変数とは値に関連付けられた(若しくは縛り付けられた)名前を指します。変数はある値（例えば計算などで導出されたもの）を後に用いる為に保管する時に便利です。例:
 
 .. doctest::
 
-    # Assign the value 10 to the variable x
+    # 変数 x に値 10 を代入
     julia> x = 10
     10
 
-    # Doing math with x's value
+    # x の値を利用して計算を行う
     julia> x + 1
     11
 
-    # Reassign x's value
+    # 既に定義された変数 x に別の値を代入
     julia> x = 1 + 1
     2
 
-    # You can assign values of other types, like strings of text
+    # 文字列などの別の種類の値を代入することも可能です
     julia> x = "Hello World!"
     "Hello World!"
 
-Julia provides an extremely flexible system for naming variables.
-Variable names are case-sensitive, and have no semantic meaning (that is,
-the language will not treat variables differently based on their names).
+Juliaは変数の命名について非常に柔軟なシステムを提供します。
+変数名は大文字小文字を区別され、意味論的意味を持ちません。(つまり、
+Juliaは変数名によって扱いを変えることはありません。)
 
 .. raw:: latex
 
@@ -52,7 +52,7 @@ the language will not treat variables differently based on their names).
 
     \end{CJK*}
 
-Unicode names (in UTF-8 encoding) are allowed:
+(UTF-8でエンコードされる場合は)Unicodeを含んだ変数名も使用可能です:
 
 .. raw:: latex
 
@@ -66,17 +66,15 @@ Unicode names (in UTF-8 encoding) are allowed:
     julia> 안녕하세요 = "Hello"
     "Hello"
 
-In the Julia REPL and several other Julia editing environments, you
-can type many Unicode math symbols by typing the backslashed LaTeX symbol
-name followed by tab.  For example, the variable name ``δ`` can be
-entered by typing ``\delta``-*tab*, or even ``α̂₂`` by
-``\alpha``-*tab*-``\hat``-*tab*-``\_2``-*tab*.
+Julia REPLや他の幾つかの編集環境では、多くのUnicode数学記号をLaTeX式で記述した後に
+TABキーを打つことで入力することができます。例として、変数名``δ``は``\delta``-*[TABキー]*で、
+変数名``α̂₂``は``\alpha``-*[TABキー]-*``\hat``*-[TABキー]-*``\_2``-*[TABキー]*で入力することができます。
 
 .. raw:: latex
 
     \end{CJK*}
 
-Julia will even let you redefine built-in constants and functions if needed:
+必要であればビルトインの定数や変数を再定義することができます:
 
 .. doctest::
 
@@ -97,32 +95,26 @@ Julia will even let you redefine built-in constants and functions if needed:
     WARNING: imported binding for sqrt overwritten in module Main
     4
 
-However, this is obviously not recommended to avoid potential confusion.
+しかしながら、これは明らかに混乱を招く恐れがある為、推奨されません。
 
-Allowed Variable Names
+使用可能な変数名
 ======================
 
-Variable names must begin with a letter (A-Z or a-z), underscore, or a
-subset of Unicode code points greater than 00A0; in particular, `Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl (letters), Sc/So (currency and
-other symbols), and a few other letter-like characters (e.g. a subset
-of the Sm math symbols) are allowed. Subsequent characters may also
-include ! and digits (0-9 and other characters in categories Nd/No),
-as well as other Unicode code points: diacritics and other modifying
-marks (categories Mn/Mc/Me/Sk), some punctuation connectors (category
-Pc), primes, and a few other characters.
+変数名の先頭はラテン文字(A-Z若しくはa-z)、アンダースコア、Unicodeが00A0より大きい記号である必要があります。
+Unicodeにおいてはとりわけ、`Unicode character categories`_ Lu/Ll/Lt/Lm/Lo/Nl(文字)、Sc/So(通貨記号
+その他の記号)、そして幾つかの文字のような記号(例えばSm数学記号の一部)を用いることができます。
+後続の文字には、!や数字(0-9やNd/Noカテゴリにある他の記号)、そして右に提示する他のUnicodeも用いることができます: 発音区別記号、その他の修飾記号(Mn/Mc/Me/Skカテゴリ)、幾つかの句読点(Pcカテゴリ)、プライム記号、そしてそれ以外の少数の記号。
 
 .. _Unicode character categories: http://www.fileformat.info/info/unicode/category/index.htm
 
-Operators like ``+`` are also valid identifiers, but are parsed specially. In
-some contexts, operators can be used just like variables; for example
-``(+)`` refers to the addition function, and ``(+) = f`` will reassign
-it.  Most of the Unicode infix operators (in category Sm),
-such as ``⊕``, are parsed as infix operators and are available for
-user-defined methods (e.g. you can use ``const ⊗ = kron`` to define
-``⊗`` as an infix Kronecker product).
+``+``のような演算子も有効な識別子ですが、特別な解釈をされます。文脈上、
+演算子は変数と同じように扱うことができます。例えば
+``(+)``は加算の関数を表し、``(+) = f``とすることで``(+)``を再代入できます。
+``⊕``のような、ほとんどのカテゴリSmにあるUnicodeインフィックスオペレータは二項演算子として解釈され、
+ユーザー自らがメゾッドとして定義することが可能です(例えば、``const ⊗ = kron``と記述することで、``⊗``を
+クロネッカー積と定義することができます)。
 
-The only explicitly disallowed names for variables are the names of built-in
-statements:
+ビルトインステートメントに使われている名前のみ変数名として使用することはできません：
 
 .. doctest::
 
@@ -133,20 +125,15 @@ statements:
     ERROR: syntax: unexpected "="
 
 
-Stylistic Conventions
+コードスタイルのならわし
 =====================
 
-While Julia imposes few restrictions on valid names, it has become useful to
-adopt the following conventions:
+Julia は有効な名前に対して幾つかの制約を課しているので、その制約を取り入れるのは有用でしょう。
 
-- Names of variables are in lower case.
-- Word separation can be indicated by underscores (``'_'``), but use of
-  underscores is discouraged unless the name would be hard to read otherwise.
-- Names of ``Type``\ s and ``Module``\ s begin with a capital letter and word separation is
-  shown with upper camel case instead of underscores.
-- Names of ``function``\ s and ``macro``\s are in lower case, without
-  underscores.
-- Functions that write to their arguments have names that end in ``!``.
-  These are sometimes called "mutating" or "in-place" functions because
-  they are intended to produce changes in their arguments after the
-  function is called, not just return a value.
+- 変数名は小文字にすること。
+- 変数名の語の区切りはアンダースコア(``'_'``)で示す。ただし、アンダースコアを用いなくても区切りが明確な場合はこの限りではない。
+- ``Type``と``Module``の名前は大文字で始め、語の区切りはアンダースコアではなくアッパーキャメルケースで示す。
+- ``function``と``macro``の名前は小文字にし、アンダースコアは用いない。
+- 引数を上書きする関数の名前の後尾には``!``を付ける。
+この類の関数はただ値を返すのではなく、引数に変更を加えることを意図しているので、"破壊的な"関数と
+よく呼ばれています。
