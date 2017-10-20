@@ -4,7 +4,7 @@
 始めよう
 *****************
 
-コンパイル済のバイナリを使うのであれ、ソースからコンパイルするのであれ、Juliaのインストールは簡単です。`http://julialang.org/downloads/ <http://julialang.org/downloads/>`_ にある手順に従い、Juliaをダウンロードしてインストールしてください。
+コンパイル済のバイナリを使うのであれ、ソースからコンパイルするのであれ、Juliaのインストールは簡単です。`https://julialang.org/downloads/ <https://julialang.org/downloads/>`_ にある手順に従い、Juliaをダウンロードしてインストールしてください。
 
 Juliaを学んだり試したりする一番簡単な方法は、インタラクティブ・セッション（read-eval-print loop、もしくは"repl"とも呼ばれるものです）を使ったものです。セッションを起動するには、Juliaの実行ファイルをダブルクリックするか、コマンドラインから ``julia`` を実行します。
 
