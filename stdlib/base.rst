@@ -7,15 +7,19 @@
 Introduction
 ------------
 
-The Julia standard library contains a range of functions and macros appropriate for performing scientific and numerical computing, but is also as broad as those of many general purpose programming languages.  Additional functionality is available from a growing collection of available packages. Functions are grouped by topic below.
+Julia標準ライブラリには、多くの汎用プログラミング言語と同様に科学的な数値計算を実行するのに適した一連の関数と
+マクロが含まれています。追加機能は、利用可能なパッケージコレクションから利用することができます。
+関数は、以下のトピックごとにグループ化されています。
 
-Some general notes:
+いくつかの一般的な事項:
 
-* Except for functions in built-in modules (:mod:`~Base.Pkg`, :mod:`~Base.Collections`,
-  :mod:`~Base.Test` and :mod:`~Base.Profile`), all functions documented here are directly available for use in programs.
-* To use module functions, use ``import Module`` to import the module, and ``Module.fn(x)`` to use the functions.
-* Alternatively, ``using Module`` will import all exported ``Module`` functions into the current namespace.
-* By convention, function names ending with an exclamation point (``!``) modify their arguments.  Some functions have both modifying (e.g., ``sort!``) and non-modifying (``sort``) versions.
+* 組み込みモジュール(:mod:`~Base.Pkg`, :mod:`~Base.Collections`, :mod:`~Base.Test` and :mod:`~Base.Profile`)
+  の関数を除いた、ここに記述されているすべての関数はプログラムで直接使用できます。
+* モジュール関数を使用するには、 ``import Module`` を使ってモジュールをインポートし、 ``Module.fn(x)`` を使って
+  関数を使います。
+* もう一つの方法として、 ``using Module`` は、エクスポートされたすべての ``Module`` 関数を現在の名前空間にインポートします。
+* 規約では、感嘆符( ``!`` )で終わる関数名は引数を変更します。いくつかの関数は、引数を変更するバージョン(例えば、 ``short!`` )
+  と引数を変更しないバージョン(例えば、 ``short`` )を持っています。
 
 Getting Around
 --------------
