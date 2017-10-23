@@ -24,7 +24,8 @@ Getting Around
 
    .. Docstring generated from Julia source
 
-   Quit (or control-D at the prompt). The default exit code is zero, indicating that the processes completed successfully.
+   プログラムを終了する(または、プロンプトでcontrol-Dを押す)。
+   通常の終了コードは`0`で、プロセスが正常に完了したことを示します。
 
 .. function:: quit()
 
