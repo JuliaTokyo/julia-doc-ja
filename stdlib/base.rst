@@ -30,7 +30,8 @@ Getting Around
 
    .. Docstring generated from Julia source
 
-   Quit the program indicating that the processes completed successfully. This function calls ``exit(0)`` (see :func:`exit`).
+   処理が正常に完了したことを示して、プログラムを終了します。
+   この関数は、``exit(0)`` (:func:`exit` を参照)を呼び出します。
 
 .. function:: atexit(f)
 
